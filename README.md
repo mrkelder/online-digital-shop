@@ -1,5 +1,8 @@
 # Online Digital Shop
 
+![Version](https://img.shields.io/github/package-json/v/mrkelder/online-digital-shop?color=green)
+![Code-Size](https://img.shields.io/github/languages/code-size/mrkelder/online-digital-shop)
+
 It's a pet-project to showcase my general skills in a web development.
 
 This project is about my capability of developing modern e-commerce projects.
@@ -12,6 +15,7 @@ If you're just looking for practice, feel free to copy and modify this code in a
 
 - [Setting Up](#Setting-Up)
 - [Technology Stack](#Technology-Stack)
+- [Commits Naming](#Commits-Naming)
 
 ## Setting Up
 
@@ -37,8 +41,24 @@ The tech stack I'm currently using in this project:
 
 Please note that this stack **may change in the future**.
 
-_In the nearest future the stack above might also include:_
+_In the nearest future, the stack above might also include:_
 
 1. Either Stripe.js or pure payment handling
 2. Node.js (for handling payments)
 3. Framer Motion
+
+## Commits Naming
+
+Here are a few git commits naming conventions. Every commit has to start with one of these:
+
+- **feat:** - a new functionality is added
+- **dev:** - a new dependency is added, a new work flow is applied etc.
+- **fix:** - bug fixes
+- **test:** - writing tests
+- **docs:** - modifying docs
+
+## Workflow
+
+This project is following **Git Flow** convention as shown below.
+
+![Git Flow](/docs/gitflow.png)
