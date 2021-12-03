@@ -16,6 +16,7 @@ If you're just looking for practice, feel free to copy and modify this code in a
 - [Setting Up](#Setting-Up)
 - [Technology Stack](#Technology-Stack)
 - [Commits Naming](#Commits-Naming)
+- [Workflow](#Workflow)
 
 ## Setting Up
 
