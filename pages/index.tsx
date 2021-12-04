@@ -7,7 +7,6 @@ const Home: NextPage = () => {
       <Head>
         <title>New London</title>
       </Head>
-      <h1>Hello world!</h1>
     </>
   );
 };

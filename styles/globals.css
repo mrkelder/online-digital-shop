@@ -52,7 +52,9 @@ h6 {
 }
 
 p,
-a {
+a,
+span,
+pre {
   @apply font-regular text-lg;
 }
 
