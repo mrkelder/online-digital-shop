@@ -47,13 +47,14 @@ _In the nearest future, the stack above might also include:_
 1. Either Stripe.js or pure payment handling
 2. Node.js (for handling payments)
 3. Framer Motion
+4. Shopify API
 
 ## Commits Naming
 
 Here are a few git commits naming conventions. Every commit has to start with one of these:
 
 - **feat:** - a new functionality is added
-- **dev:** - a new dependency is added, a new work flow is applied etc.
+- **dev:** - a new dependency is added, a new work flow is applied, the version is changed etc.
 - **fix:** - bug fixes
 - **test:** - writing tests
 - **docs:** - modifying docs
