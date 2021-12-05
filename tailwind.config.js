@@ -5,7 +5,9 @@ module.exports = {
     colors: {
       white: "#fff",
       grey: {
+        50: "#FAFAFA",
         100: "#D6D6D6",
+        200: "#afafaf",
         300: "#666",
         400: "#4a4d4e",
         500: "#3C3F40",
@@ -22,7 +24,10 @@ module.exports = {
     }
   },
   variants: {
-    extend: {}
+    extend: {
+      display: ["group-hover", "group-focus"],
+      rotate: ["group-hover", "group-focus"]
+    }
   },
   plugins: []
 };

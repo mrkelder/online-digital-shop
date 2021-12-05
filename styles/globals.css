@@ -4,16 +4,17 @@
 
 @font-face {
   font-family: "Vodafone Rg";
-  src: url("/font/Vodafone_rg.ttf") format("truetype");
+  src: url("/font/Vodafone-rg.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Vodafone Lt";
-  src: url("/font/Vodafone_lt.ttf") format("truetype");
+  src: url("/font/Vodafone-lt.ttf") format("truetype");
 }
 
 html,
 body {
+  background-color: "#FAFAFA";
   padding: 0;
   margin: 0;
 }
@@ -54,7 +55,8 @@ h6 {
 p,
 a,
 span,
-pre {
+pre,
+button {
   @apply font-regular text-lg;
 }
 
