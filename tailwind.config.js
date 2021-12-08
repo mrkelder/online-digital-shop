@@ -21,6 +21,20 @@ module.exports = {
       fontFamily: {
         regular: ["Vodafone Rg", "sans"],
         light: ["Vodafone Lt", "sans"]
+      },
+      keyframes: {
+        slide: {
+          "0%": { transform: "translateX(-120%)" },
+          "100%": { transform: "translateX(0px)" }
+        },
+        disappear: {
+          "0%": { opacity: 1 },
+          "100%": { opacity: 0 }
+        }
+      },
+      animation: {
+        slide: "slide .4s ease-in-out",
+        disappear: "disappear .4s ease-in-out"
       }
     }
   },
