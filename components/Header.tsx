@@ -4,7 +4,10 @@ import {
   SetStateAction,
   Dispatch,
   MouseEvent,
-  TouchEvent
+  TouchEvent,
+  useReducer,
+  ReducerState,
+  ReducerAction
 } from "react";
 import Logo from "public/img/logo.svg";
 import MenuIcon from "public/img/menu.svg";
@@ -24,14 +27,16 @@ const staticLinks = [
   { name: "Магазины", link: "/" }
 ];
 
+// FIXME: decomposition
+
 const Dialog: FC<{
   opened: boolean;
-  setter: Dispatch<SetStateAction<boolean>>;
-}> = ({ children, opened, setter }) => {
+  onClose: () => void;
+}> = ({ children, opened, onClose }) => {
   const variant = opened ? "block" : "hidden";
 
   const closeDialog = (e: MouseEvent | TouchEvent) => {
-    setter(false);
+    onClose();
   };
 
   const stopPropagation = (e: MouseEvent | TouchEvent) => {
@@ -62,9 +67,9 @@ const Cart: FC<{ items?: number }> = ({ items }) => {
   );
 };
 
-const Product: FC = () => {
+const Product: FC<{ onClick: () => void }> = ({ onClick }) => {
   return (
-    <button className="flex py-3 px-5 items-center">
+    <button className="flex py-3 px-5 items-center w-full" onClick={onClick}>
       <span className="mr-5 text-xs">icon</span>
       <p className="flex-1 text-left text-base">Телефоны</p>
       <span className="text-grey-400 transform rotate-180 w-2">
@@ -74,13 +79,59 @@ const Product: FC = () => {
   );
 };
 
-const MobileMenu: FC = () => {
-  // TODO: add subcategories tab
-  const [isMenuOpened, setIsMenuOpened] = useState(false);
+const SubCategory: FC<{ isOpened: boolean; closeSubMenu: () => void }> = ({
+  isOpened,
+  closeSubMenu
+}) => {
+  const translate = isOpened ? "translate-x-0" : "translate-x-full";
+  return (
+    <div
+      className={`absolute top-0 left-0 w-full h-screen bg-white z-20 transition-transform transform ${translate}`}
+    >
+      <div className="bg-red text-white h-14 flex justify-center items-center relative">
+        <button className="w-3 absolute left-4" onClick={closeSubMenu}>
+          <ArrowIcon />
+        </button>
+        <span className="font-light text-lg">Каталог </span>
+      </div>
+      <Product />
+    </div>
+  );
+};
 
-  const toggleMenu = () => {
-    setIsMenuOpened(!isMenuOpened);
-  };
+// 0 - closed
+// 1 - menu is opened
+// 2 - sub category is opened
+
+type MenuState = 0 | 1 | 2;
+
+const DEFAULT_MENU_STATE: MenuState = 0;
+
+type MenuActions = "close" | "open-menu" | "open-sub-menu";
+
+type MenuAction = { type: MenuActions };
+
+function menuReducer(state: MenuState, action: MenuAction) {
+  switch (action.type) {
+    case "close":
+      return 0;
+    case "open-menu":
+      return 1;
+    case "open-sub-menu":
+      return 2;
+    default:
+      throw new Error("Unexpected menu state behavior: " + process.cwd);
+  }
+}
+
+const MobileMenu: FC = () => {
+  const [menuState, dispatch] = useReducer(menuReducer, DEFAULT_MENU_STATE);
+
+  function changeState(type: MenuActions) {
+    return () => {
+      dispatch({ type });
+    };
+  }
 
   return (
     <div className="flex items-center h-14 px-3 w-full lg:hidden">
@@ -89,7 +140,10 @@ const MobileMenu: FC = () => {
           <Logo />
         </a>
       </Link>
-      <button className="flex items-center ml-3 text-red" onClick={toggleMenu}>
+      <button
+        className="flex items-center ml-3 text-red"
+        onClick={changeState("open-menu")}
+      >
         <span className="w-3 mr-1">
           <MenuIcon />
         </span>
@@ -102,20 +156,25 @@ const MobileMenu: FC = () => {
       <button className="text-grey-300 w-5">
         <BurgerIcon />
       </button>
-      <Dialog opened={isMenuOpened} setter={setIsMenuOpened}>
+      <Dialog opened={menuState > 0} onClose={changeState("close")}>
         <div className="absolute w-4/5 h-screen bg-white flex flex-col animate-slide">
-          <div className="bg-red text-white h-14 flex justify-center items-center relative">
-            <button className="w-5 absolute left-4" onClick={toggleMenu}>
-              <CrossIcon />
-            </button>
-            <span className="font-light text-lg">Каталог товаров</span>
-          </div>
-          <div className="flex flex-col overflow-y-auto flex-1">
-            <Product />
-            <Product />
-            <Product />
-            <Product />
-            <Product />
+          <div className="relative overflow-hidden">
+            <div className="bg-red text-white h-14 flex justify-center items-center relative">
+              <button
+                className="w-5 absolute left-4"
+                onClick={changeState("close")}
+              >
+                <CrossIcon />
+              </button>
+              <span className="font-light text-lg">Каталог товаров</span>
+            </div>
+            <div className="flex flex-col overflow-y-auto flex-1">
+              <Product onClick={changeState("open-sub-menu")} />
+            </div>
+            <SubCategory
+              isOpened={menuState === 2}
+              closeSubMenu={changeState("open-menu")}
+            />
           </div>
         </div>
       </Dialog>
