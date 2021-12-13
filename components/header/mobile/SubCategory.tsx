@@ -1,11 +1,22 @@
 import { FC } from "react";
+import { useRouter } from "next/router";
 import Tab from "./Tab";
 import ArrowIcon from "public/img/arrow.svg";
 
-const SubCategory: FC<{ isOpened: boolean; closeSubMenu: () => void }> = ({
-  isOpened,
-  closeSubMenu
-}) => {
+const SubCategory: FC<{
+  isOpened: boolean;
+  closeSubMenu: () => void;
+  closeMenu: () => void;
+}> = ({ isOpened, closeSubMenu, closeMenu }) => {
+  const { push } = useRouter();
+
+  function changeLink(link: string) {
+    return () => {
+      closeMenu();
+      push(link);
+    };
+  }
+
   const translate = isOpened ? "translate-x-0" : "translate-x-full";
   return (
     <div
@@ -17,7 +28,7 @@ const SubCategory: FC<{ isOpened: boolean; closeSubMenu: () => void }> = ({
         </button>
         <span className="font-light text-lg">Каталог </span>
       </div>
-      <Tab onClick={() => {}} />
+      <Tab onClick={changeLink("/")} />
     </div>
   );
 };

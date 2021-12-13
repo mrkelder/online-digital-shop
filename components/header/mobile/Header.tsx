@@ -86,6 +86,7 @@ const MobileMenu: FC = () => {
             <SubCategory
               isOpened={menuState === 2}
               closeSubMenu={changeState("open-menu")}
+              closeMenu={changeState("close")}
             />
           </div>
         </div>
