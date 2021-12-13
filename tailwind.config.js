@@ -12,7 +12,8 @@ module.exports = {
         400: "#4a4d4e",
         500: "#3C3F40",
         600: "#333",
-        650: "#303233"
+        650: "#303233",
+        transparent: "#333333a6"
       },
       red: "#e60000"
     },
@@ -20,6 +21,20 @@ module.exports = {
       fontFamily: {
         regular: ["Vodafone Rg", "sans"],
         light: ["Vodafone Lt", "sans"]
+      },
+      keyframes: {
+        slide: {
+          "0%": { transform: "translateX(-120%)" },
+          "100%": { transform: "translateX(0px)" }
+        },
+        disappear: {
+          "0%": { opacity: 1 },
+          "100%": { opacity: 0 }
+        }
+      },
+      animation: {
+        slide: "slide .4s ease-in-out",
+        disappear: "disappear .4s ease-in-out"
       }
     }
   },
