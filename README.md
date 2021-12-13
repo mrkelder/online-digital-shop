@@ -23,7 +23,7 @@ If you're just looking for practice, feel free to copy and modify this code in a
 To get started with the project:
 
 1. Install Node.js following [this link](https://nodejs.org/).
-2. Clone it via `git clone https://github.com/freemnw/grisha-api.git`
+2. Clone it via `git clone https://github.com/mrkelder/online-digital-shop.git`
 3. Open up **online-digital-shop** folder (type `cd online-digital-shop` in bash)
 4. Install the dependencies `npm i`
 5. Start a local server `npm run dev`
