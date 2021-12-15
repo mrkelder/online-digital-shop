@@ -10,8 +10,8 @@ import {
 } from "firebase/firestore";
 
 class Firebase {
-  db: Firestore;
-  private _cache: Map<string, SubCategory[]>;
+  private readonly db: Firestore;
+  readonly _cache: Map<string, SubCategory[]>;
 
   static firebaseConfig = {
     apiKey: "AIzaSyBrHoU08YA0Q7lBEAWyc9Ld4Fze0R_O8w4",

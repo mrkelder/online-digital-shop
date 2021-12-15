@@ -8,11 +8,14 @@ import { FirebaseContext } from "utils/firebase";
 const Header: FC = () => {
   const firebase = useContext(FirebaseContext);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
 
   useEffect(() => {
     async function fetch() {
+      setCategoriesLoading(true);
       const data = await firebase.getCategories();
       setCategories(data);
+      setCategoriesLoading(false);
     }
 
     fetch();
@@ -20,7 +23,7 @@ const Header: FC = () => {
 
   return (
     <header className="flex items-center bg-white border-b border-grey-100 lg:border-b-0">
-      <MobileMenu {...{ categories }} />
+      <MobileMenu {...{ categories }} isLoading={categoriesLoading} />
       <DesktopMenu />
     </header>
   );

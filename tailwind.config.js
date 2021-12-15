@@ -34,7 +34,7 @@ module.exports = {
       },
       animation: {
         slide: "slide .4s ease-in-out",
-        disappear: "disappear .4s ease-in-out"
+        disappear: "disappear 1s ease-in-out"
       }
     }
   },

@@ -3,6 +3,7 @@ import Link from "next/link";
 import Tab from "./Tab";
 import Dialog from "./Dialog";
 import SubCategory from "./SubCategory";
+import Loading from "./Loading";
 import Logo from "public/img/logo.svg";
 import MenuIcon from "public/img/menu.svg";
 import BurgerIcon from "public/img/burger.svg";
@@ -37,15 +38,26 @@ function menuReducer(state: MenuState, action: MenuAction) {
   }
 }
 
-const MobileMenu: FC<{ categories: Category[] }> = ({ categories }) => {
-  // TODO: add loading spinner while data is being fetched
+const MobileMenu: FC<{ categories: Category[]; isLoading: boolean }> = ({
+  categories,
+  isLoading
+}) => {
   const firebase = useContext(FirebaseContext);
   const [menuState, dispatch] = useReducer(menuReducer, DEFAULT_MENU_STATE);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const [subCategoriesLoading, setSubCategoriesLoading] = useState(false);
 
   async function switchSubCategories(category: string) {
-    const data = await firebase.getSubCategories(category);
-    setSubCategories(data);
+    const cache = firebase._cache;
+
+    if (cache.has(category)) {
+      setSubCategories(cache.get(category) as SubCategory[]);
+    } else {
+      setSubCategoriesLoading(true);
+      const data = await firebase.getSubCategories(category);
+      setSubCategoriesLoading(false);
+      setSubCategories(data);
+    }
   }
 
   function changeState(type: MenuActions) {
@@ -84,7 +96,7 @@ const MobileMenu: FC<{ categories: Category[] }> = ({ categories }) => {
       </button>
       <Dialog opened={menuState > 0} onClose={changeState("close")}>
         <div className="absolute w-4/5 h-screen bg-white flex flex-col animate-slide">
-          <div className="relative overflow-hidden">
+          <div className="relative overflow-hidden h-full">
             <div className="bg-red text-white h-14 flex justify-center items-center relative">
               <button
                 className="w-5 absolute left-4"
@@ -94,7 +106,8 @@ const MobileMenu: FC<{ categories: Category[] }> = ({ categories }) => {
               </button>
               <span className="font-light text-lg">Каталог товаров</span>
             </div>
-            <div className="flex flex-col overflow-y-auto flex-1">
+            <div className="flex flex-col overflow-y-auto h-full flex-1 relative">
+              <Loading {...{ isLoading }} />
               {categories.map(i => (
                 <Tab
                   name={i.name}
@@ -105,6 +118,7 @@ const MobileMenu: FC<{ categories: Category[] }> = ({ categories }) => {
               ))}
             </div>
             <SubCategory
+              isLoading={subCategoriesLoading}
               isOpened={menuState === 2}
               closeSubMenu={changeState("open-menu")}
               closeMenu={changeState("close")}
