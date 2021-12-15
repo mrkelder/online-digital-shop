@@ -7,7 +7,8 @@ const SubCategory: FC<{
   isOpened: boolean;
   closeSubMenu: () => void;
   closeMenu: () => void;
-}> = ({ isOpened, closeSubMenu, closeMenu }) => {
+  subCategories: SubCategory[];
+}> = ({ isOpened, closeSubMenu, closeMenu, subCategories }) => {
   const { push } = useRouter();
 
   function changeLink(link: string) {
@@ -26,9 +27,11 @@ const SubCategory: FC<{
         <button className="w-3 absolute left-4" onClick={closeSubMenu}>
           <ArrowIcon />
         </button>
-        <span className="font-light text-lg">Каталог </span>
+        <span className="font-light text-lg">Каталог</span>
       </div>
-      <Tab onClick={changeLink("/")} />
+      {subCategories.map(i => (
+        <Tab key={i.id} name={i.name} onClick={changeLink("/")} />
+      ))}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { FC, useReducer } from "react";
+import { FC, useContext, useReducer, useState } from "react";
 import Link from "next/link";
 import Tab from "./Tab";
 import Dialog from "./Dialog";
@@ -8,6 +8,7 @@ import MenuIcon from "public/img/menu.svg";
 import BurgerIcon from "public/img/burger.svg";
 import SearchIcon from "public/img/search.svg";
 import CrossIcon from "public/img/cross.svg";
+import { FirebaseContext } from "utils/firebase";
 
 /**
  * @type {0} - menu is closed
@@ -36,13 +37,26 @@ function menuReducer(state: MenuState, action: MenuAction) {
   }
 }
 
-const MobileMenu: FC = () => {
+const MobileMenu: FC<{ categories: Category[] }> = ({ categories }) => {
+  // TODO: add loading spinner while data is being fetched
+  const firebase = useContext(FirebaseContext);
   const [menuState, dispatch] = useReducer(menuReducer, DEFAULT_MENU_STATE);
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+
+  async function switchSubCategories(category: string) {
+    const data = await firebase.getSubCategories(category);
+    setSubCategories(data);
+  }
 
   function changeState(type: MenuActions) {
     return () => {
       dispatch({ type });
     };
+  }
+
+  async function TabClick(categoryId: string) {
+    switchSubCategories(categoryId);
+    changeState("open-sub-menu")();
   }
 
   return (
@@ -81,12 +95,20 @@ const MobileMenu: FC = () => {
               <span className="font-light text-lg">Каталог товаров</span>
             </div>
             <div className="flex flex-col overflow-y-auto flex-1">
-              <Tab onClick={changeState("open-sub-menu")} showIcon />
+              {categories.map(i => (
+                <Tab
+                  name={i.name}
+                  key={i.id}
+                  onClick={() => TabClick(i.id)}
+                  showIcon
+                />
+              ))}
             </div>
             <SubCategory
               isOpened={menuState === 2}
               closeSubMenu={changeState("open-menu")}
               closeMenu={changeState("close")}
+              {...{ subCategories }}
             />
           </div>
         </div>
