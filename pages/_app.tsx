@@ -4,9 +4,9 @@ import Layout from "components/Layout";
 import Firebase from "utils/firebase";
 import { FirebaseContext } from "utils/firebase";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  const firebase = new Firebase();
+const firebase = new Firebase();
 
+function MyApp({ Component, pageProps }: AppProps) {
   return (
     <FirebaseContext.Provider value={firebase}>
       <Layout>
