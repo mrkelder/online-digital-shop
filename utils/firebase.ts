@@ -1,7 +1,11 @@
 import { createContext } from "react";
 import { initializeApp } from "firebase/app";
+import { getFirestore, Firestore } from "firebase/firestore";
 
 class Firebase {
+  db: Firestore;
+  private _cache: Map<string, SubCategory[]>;
+
   static firebaseConfig = {
     apiKey: "AIzaSyBrHoU08YA0Q7lBEAWyc9Ld4Fze0R_O8w4",
     authDomain: "new-london-8d2c3.firebaseapp.com",
@@ -12,9 +16,10 @@ class Firebase {
     measurementId: "G-SSZS19QCH8"
   };
 
-  init() {
-    const app = initializeApp(Firebase.firebaseConfig);
-    return app;
+  constructor() {
+    initializeApp(Firebase.firebaseConfig);
+    this.db = getFirestore();
+    this._cache = new Map();
   }
 }
 
