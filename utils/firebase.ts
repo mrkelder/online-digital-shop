@@ -4,7 +4,9 @@ import {
   getFirestore,
   collection,
   getDocs,
-  Firestore
+  Firestore,
+  query,
+  where
 } from "firebase/firestore";
 
 class Firebase {
@@ -34,6 +36,26 @@ class Firebase {
       data.push({ ...doc.data(), id: doc.id } as Category)
     );
     return data;
+  }
+
+  async getSubCategories(categoryId: string) {
+    if (this._cache.has(categoryId)) {
+      return this._cache.get(categoryId) as SubCategory[];
+    } else {
+      let data: SubCategory[] = [];
+      const q = query(
+        collection(this.db, "subcategories"),
+        where("category", "==", categoryId)
+      );
+
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(doc =>
+        data.push({ ...doc.data(), id: doc.id } as SubCategory)
+      );
+
+      this._cache.set(categoryId, data);
+      return data;
+    }
   }
 }
 
