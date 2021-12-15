@@ -1,6 +1,11 @@
 import { createContext } from "react";
 import { initializeApp } from "firebase/app";
-import { getFirestore, Firestore } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  Firestore
+} from "firebase/firestore";
 
 class Firebase {
   db: Firestore;
@@ -20,6 +25,15 @@ class Firebase {
     initializeApp(Firebase.firebaseConfig);
     this.db = getFirestore();
     this._cache = new Map();
+  }
+
+  async getCategories() {
+    let data: Category[] = [];
+    const querySnapshot = await getDocs(collection(this.db, "categories"));
+    querySnapshot.forEach(doc =>
+      data.push({ ...doc.data(), id: doc.id } as Category)
+    );
+    return data;
   }
 }
 
