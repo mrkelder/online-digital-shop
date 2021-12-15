@@ -1,5 +1,5 @@
+import { createContext } from "react";
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
 
 class Firebase {
   static firebaseConfig = {
@@ -18,4 +18,8 @@ class Firebase {
   }
 }
 
+const firebaseContext = createContext<Firebase>(new Firebase());
+firebaseContext.displayName = "firebase";
+
+export const FirebaseContext = firebaseContext;
 export default Firebase;
