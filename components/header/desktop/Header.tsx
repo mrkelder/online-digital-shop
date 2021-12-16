@@ -16,7 +16,7 @@ const staticLinks = [
 const DesktopMenu: FC = () => (
   <div className="hidden lg:flex flex-col w-full">
     <div className="bg-grey-400 text-white w-full px-12">
-      <div className="flex justify-between h-7 max-w-7xl mx-auto">
+      <nav className="flex justify-between h-7 max-w-7xl mx-auto">
         <div className="flex items-center space-x-7">
           {staticLinks.map(({ name, link }) => (
             <Link href={link} key={name}>
@@ -47,7 +47,7 @@ const DesktopMenu: FC = () => (
             </button>
           </div>
         </div>
-      </div>
+      </nav>
     </div>
     <div className="bg-white h-14 px-12">
       <div className="flex justify-between items-center h-full max-w-7xl mx-auto">
@@ -57,9 +57,12 @@ const DesktopMenu: FC = () => (
               <Logo />
             </a>
           </Link>
-          <button className="text-2xl text-grey-400 font-light">
-            Каталог товаров
-          </button>
+          <div className="relative">
+            <button className="text-2xl text-grey-400 font-light">
+              Каталог товаров
+            </button>
+            <div></div>
+          </div>
         </div>
         <div className="flex-1 mx-5">
           <Input type="search" />
