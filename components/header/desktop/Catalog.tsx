@@ -49,7 +49,10 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
       className={`absolute bg-grey-transparent left-0 w-screen justify-center ${display}`}
       style={{ top: "84px", height: "calc(100vh - 84px)" }}
     >
-      <div className="h-56 w-1/2 bg-white grid grid-cols-4" ref={menuRef}>
+      <div
+        className="h-96 w-2/3 bg-white grid grid-cols-4 grid-flo"
+        ref={menuRef}
+      >
         <div className="col-span-1">
           {categories.map(i => (
             <Tab
@@ -57,10 +60,11 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
               name={i.name}
               onClick={chooseCategory(i.id)}
               focused={chosenCategory === i.id}
+              showIcon
             />
           ))}
         </div>
-        <div className="col-span-3 bg-grey-100">
+        <div className="col-span-3 bg-grey-75 flex flex-col flex-wrap p-3 space-y-4">
           {subCategories.map(i => (
             <SubCategory key={i.id} subCategory={i} />
           ))}
