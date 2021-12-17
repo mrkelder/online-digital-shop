@@ -1,14 +1,20 @@
 import { FC } from "react";
 import ArrowIcon from "public/img/arrow.svg";
 
-const Tab: FC<{ onClick: () => void; showIcon?: boolean; name: string }> = ({
-  onClick,
-  showIcon,
-  name
-}) => {
+const Tab: FC<{
+  onClick: () => void;
+  showIcon?: boolean;
+  name: string;
+  focused?: boolean;
+}> = ({ onClick, showIcon, name, focused }) => {
+  const background = focused
+    ? "bg-grey-100"
+    : "bg-white hover:bg-grey-100 focus:bg-grey-100";
   return (
     <button
-      className="flex py-3 px-5 items-center w-full transition-colors hover:bg-grey-100 focus:bg-grey-100"
+      className={
+        "flex py-3 px-5 items-center w-full transition-colors " + background
+      }
       onClick={onClick}
     >
       <span className="mr-5 text-xs">icon</span>

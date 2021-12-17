@@ -7,6 +7,7 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
   const display = isOpened ? "flex" : "hidden";
   const firebase = useContext(FirebaseContext);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [chosenCategory, setChosenCategory] = useState("");
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
 
   useEffect(() => {
@@ -21,6 +22,7 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
   function chooseCategory(id: string) {
     return async () => {
       const data = await firebase.getSubCategories(id);
+      setChosenCategory(id);
       setSubCategories(data);
     };
   }
@@ -33,7 +35,12 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
       <div className="h-56 w-1/2 bg-white grid grid-cols-4">
         <div className="col-span-1">
           {categories.map(i => (
-            <Tab key={i.id} name={i.name} onClick={chooseCategory(i.id)} />
+            <Tab
+              key={i.id}
+              name={i.name}
+              onClick={chooseCategory(i.id)}
+              focused={chosenCategory === i.id}
+            />
           ))}
         </div>
         <div className="col-span-3 bg-grey-100">
