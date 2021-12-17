@@ -1,19 +1,23 @@
-import { FC, useReducer } from "react";
+import { FC, useContext, useReducer, useState } from "react";
 import Link from "next/link";
-import Tab from "./Tab";
+import Tab from "components/header/Tab";
 import Dialog from "./Dialog";
 import SubCategory from "./SubCategory";
+import Loading from "./Loading";
 import Logo from "public/img/logo.svg";
 import MenuIcon from "public/img/menu.svg";
 import BurgerIcon from "public/img/burger.svg";
 import SearchIcon from "public/img/search.svg";
 import CrossIcon from "public/img/cross.svg";
+import { FirebaseContext } from "utils/firebase";
 
 /**
  * @type {0} - menu is closed
  * @type {1} - menu is opened
  * @type {2} - sub category is closed
  */
+
+// TODO: close menu when a user is getting out (like native mobile apps do)
 
 type MenuState = 0 | 1 | 2;
 
@@ -36,13 +40,37 @@ function menuReducer(state: MenuState, action: MenuAction) {
   }
 }
 
-const MobileMenu: FC = () => {
+const MobileMenu: FC<{ categories: Category[]; isLoading: boolean }> = ({
+  categories,
+  isLoading
+}) => {
+  const firebase = useContext(FirebaseContext);
   const [menuState, dispatch] = useReducer(menuReducer, DEFAULT_MENU_STATE);
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const [subCategoriesLoading, setSubCategoriesLoading] = useState(false);
+
+  async function switchSubCategories(category: string) {
+    const cache = firebase._cache;
+
+    if (cache.has(category)) {
+      setSubCategories(cache.get(category) as SubCategory[]);
+    } else {
+      setSubCategoriesLoading(true);
+      const data = await firebase.getSubCategories(category);
+      setSubCategoriesLoading(false);
+      setSubCategories(data);
+    }
+  }
 
   function changeState(type: MenuActions) {
     return () => {
       dispatch({ type });
     };
+  }
+
+  async function TabClick(categoryId: string) {
+    switchSubCategories(categoryId);
+    changeState("open-sub-menu")();
   }
 
   return (
@@ -70,7 +98,7 @@ const MobileMenu: FC = () => {
       </button>
       <Dialog opened={menuState > 0} onClose={changeState("close")}>
         <div className="absolute w-4/5 h-screen bg-white flex flex-col animate-slide">
-          <div className="relative overflow-hidden">
+          <div className="relative overflow-hidden h-full">
             <div className="bg-red text-white h-14 flex justify-center items-center relative">
               <button
                 className="w-5 absolute left-4"
@@ -80,13 +108,23 @@ const MobileMenu: FC = () => {
               </button>
               <span className="font-light text-lg">Каталог товаров</span>
             </div>
-            <div className="flex flex-col overflow-y-auto flex-1">
-              <Tab onClick={changeState("open-sub-menu")} showIcon />
+            <div className="flex flex-col overflow-y-auto h-full flex-1 relative">
+              <Loading {...{ isLoading }} />
+              {categories.map(i => (
+                <Tab
+                  name={i.name}
+                  key={i.id}
+                  onClick={() => TabClick(i.id)}
+                  showIcon
+                />
+              ))}
             </div>
             <SubCategory
+              isLoading={subCategoriesLoading}
               isOpened={menuState === 2}
               closeSubMenu={changeState("open-menu")}
               closeMenu={changeState("close")}
+              {...{ subCategories }}
             />
           </div>
         </div>
