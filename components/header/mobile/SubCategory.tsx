@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { useRouter } from "next/router";
-import Tab from "./Tab";
+import Tab from "components/header/Tab";
 import ArrowIcon from "public/img/arrow.svg";
 import Loading from "./Loading";
 

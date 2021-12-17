@@ -1,6 +1,6 @@
 import { FC, useContext, useReducer, useState } from "react";
 import Link from "next/link";
-import Tab from "./Tab";
+import Tab from "components/header/Tab";
 import Dialog from "./Dialog";
 import SubCategory from "./SubCategory";
 import Loading from "./Loading";
