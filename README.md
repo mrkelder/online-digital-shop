@@ -39,6 +39,7 @@ The tech stack I'm currently using in this project:
 3. Redux
 4. Firebase
 5. Google Maps API
+6. Tailwindcss
 
 Please note that this stack **may change in the future**.
 
