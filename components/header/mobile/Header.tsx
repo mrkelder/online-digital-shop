@@ -17,6 +17,8 @@ import { FirebaseContext } from "utils/firebase";
  * @type {2} - sub category is closed
  */
 
+// TODO: close menu when a user is getting out (like native mobile apps do)
+
 type MenuState = 0 | 1 | 2;
 
 const DEFAULT_MENU_STATE: MenuState = 0;

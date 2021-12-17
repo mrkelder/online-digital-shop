@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Input from "components/Input";
 import Cart from "./Cart";
 import Catalog from "./Catalog";
@@ -20,6 +20,17 @@ const DesktopMenu: FC = () => {
   const toggleCatalog = () => {
     setIsCatalogOpened(!isCatalogOpened);
   };
+
+  useEffect(() => {
+    function handleCatalogClose() {
+      if (isCatalogOpened) setIsCatalogOpened(false);
+    }
+
+    addEventListener("close-catalog", handleCatalogClose);
+    return () => {
+      removeEventListener("close-catalog", handleCatalogClose);
+    };
+  }, [isCatalogOpened]);
 
   // TODO: close catalog when a user clicks empty space
 

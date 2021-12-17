@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useRef, useState } from "react";
 import { FirebaseContext } from "utils/firebase";
 import Tab from "components/header/Tab";
 import SubCategory from "./SubCategory";
@@ -6,6 +6,7 @@ import SubCategory from "./SubCategory";
 const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
   const display = isOpened ? "flex" : "hidden";
   const firebase = useContext(FirebaseContext);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [chosenCategory, setChosenCategory] = useState("");
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
@@ -18,6 +19,22 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
 
     fetch();
   }, [firebase]);
+
+  useEffect(() => {
+    function handleClickOutside(e: Event) {
+      // FIXME: deal with e.path problem
+      const path = e.path || (e.composedPath && e.composedPath());
+      if (!path.includes(menuRef.current)) {
+        const event = new Event("close-catalog");
+        window.dispatchEvent(event);
+      }
+    }
+
+    addEventListener("click", handleClickOutside);
+    return () => {
+      removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   function chooseCategory(id: string) {
     return async () => {
@@ -32,7 +49,7 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
       className={`absolute bg-grey-transparent left-0 w-screen justify-center ${display}`}
       style={{ top: "84px", height: "calc(100vh - 84px)" }}
     >
-      <div className="h-56 w-1/2 bg-white grid grid-cols-4">
+      <div className="h-56 w-1/2 bg-white grid grid-cols-4" ref={menuRef}>
         <div className="col-span-1">
           {categories.map(i => (
             <Tab
