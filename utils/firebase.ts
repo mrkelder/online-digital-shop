@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 
 class Firebase {
+  // TODO: fetch categories and subcategories once and cache them together
   private readonly db: Firestore;
   readonly _cache: Map<string, SubCategory[]>;
 
