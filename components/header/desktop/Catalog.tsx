@@ -46,11 +46,11 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
 
   return (
     <div
-      className={`absolute z-10 bg-grey-transparent left-0 w-screen justify-center ${display}`}
+      className={`absolute z-20 bg-grey-transparent left-0 w-screen justify-center ${display}`}
       style={{ top: "84px", height: "calc(100vh - 84px)" }}
     >
       <div
-        className="h-96 w-2/3 bg-white grid grid-cols-4 grid-flo"
+        className="h-96 w-2/3 max-w-7xl bg-white grid grid-cols-4 grid-flo"
         ref={menuRef}
       >
         <div className="col-span-1">
