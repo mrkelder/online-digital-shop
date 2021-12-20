@@ -16,7 +16,7 @@ const Dialog: FC<{
 
   return (
     <div
-      className={`absolute bg-grey-transparent w-screen h-screen top-0 left-0 ${variant}`}
+      className={`absolute bg-grey-transparent w-screen h-screen top-0 left-0 z-10 ${variant}`}
       onClick={closeDialog}
     >
       <div onClick={stopPropagation}>{children}</div>
