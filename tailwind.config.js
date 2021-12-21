@@ -16,9 +16,19 @@ module.exports = {
         650: "#303233",
         transparent: "#333333a6"
       },
-      red: "#e60000"
+      red: "#e60000",
+      transparent: "#0000"
     },
     extend: {
+      width: {
+        120: "418px",
+        215: "1500px"
+      },
+      height: {
+        86: "335px",
+        130: "510px"
+        // 144: "778px"
+      },
       fontFamily: {
         regular: ["Vodafone Rg", "sans"],
         light: ["Vodafone Lt", "sans"]

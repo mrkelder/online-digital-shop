@@ -8,10 +8,17 @@ import {
   query,
   where
 } from "firebase/firestore";
+import {
+  FirebaseStorage,
+  getStorage,
+  ref,
+  getDownloadURL
+} from "firebase/storage";
 
 class Firebase {
   // TODO: fetch categories and subcategories once and cache them together
   private readonly db: Firestore;
+  private readonly storage: FirebaseStorage;
   readonly _cache: Map<string, SubCategory[]>;
 
   static firebaseConfig = {
@@ -25,12 +32,14 @@ class Firebase {
   };
 
   constructor() {
-    initializeApp(Firebase.firebaseConfig);
+    const app = initializeApp(Firebase.firebaseConfig);
     this.db = getFirestore();
+    this.storage = getStorage(app);
     this._cache = new Map();
   }
 
   async getCategories() {
+    // FIXME: DRY
     let data: Category[] = [];
     const querySnapshot = await getDocs(collection(this.db, "categories"));
     querySnapshot.forEach(doc =>
@@ -57,6 +66,28 @@ class Firebase {
       this._cache.set(categoryId, data);
       return data;
     }
+  }
+
+  async getAllSlides() {
+    // FIXME: DRY
+    let data: Slide[] = [];
+    const querySnapshot = await getDocs(collection(this.db, "slider"));
+    querySnapshot.forEach(doc =>
+      data.push({ ...doc.data(), id: doc.id } as Slide)
+    );
+    return data;
+  }
+
+  async downloadFiles(directoryName: string, fileNames: string[]) {
+    let files: Promise<string>[] = [];
+
+    for (const i of fileNames) {
+      const pathReference = ref(this.storage, directoryName + "/" + i);
+      const downloadPromise = getDownloadURL(pathReference);
+      files.push(downloadPromise);
+    }
+
+    return await Promise.all(files);
   }
 }
 
