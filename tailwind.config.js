@@ -20,6 +20,15 @@ module.exports = {
       transparent: "#0000"
     },
     extend: {
+      width: {
+        120: "418px",
+        215: "1500px"
+      },
+      height: {
+        86: "335px",
+        130: "510px"
+        // 144: "778px"
+      },
       fontFamily: {
         regular: ["Vodafone Rg", "sans"],
         light: ["Vodafone Lt", "sans"]
