@@ -8,3 +8,8 @@ interface SubCategory {
   name: string;
   category: string;
 }
+
+interface Slide {
+  id: string;
+  name: string;
+}

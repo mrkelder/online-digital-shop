@@ -68,3 +68,19 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.swiper-pagination-bullet {
+  width: 10px !important;
+  height: 10px !important;
+  background-color: white !important;
+  opacity: 1 !important;
+  margin-bottom: 2px !important;
+}
+
+.swiper-pagination-bullet-active {
+  width: 15px !important;
+  height: 15px !important;
+  background-color: transparent !important;
+  border: 2px solid white !important;
+  margin-bottom: 0 !important;
+}
