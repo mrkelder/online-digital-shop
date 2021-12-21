@@ -31,7 +31,6 @@ const Home: NextPage<SlideNames> = ({ slideNames }) => {
       </Head>
 
       <Slider {...{ slides }} />
-      <p>test</p>
     </>
   );
 };
