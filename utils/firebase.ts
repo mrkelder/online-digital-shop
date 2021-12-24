@@ -17,6 +17,7 @@ import {
 
 class Firebase {
   // TODO: fetch categories and subcategories once and cache them together
+  // FIXME: rename _cache to something more clarified
   private readonly db: Firestore;
   private readonly storage: FirebaseStorage;
   readonly _cache: Map<string, SubCategory[]>;
