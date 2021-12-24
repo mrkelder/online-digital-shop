@@ -27,7 +27,6 @@ module.exports = {
       height: {
         86: "335px",
         130: "510px"
-        // 144: "778px"
       },
       fontFamily: {
         regular: ["Vodafone Rg", "sans"],
@@ -54,6 +53,5 @@ module.exports = {
       display: ["group-hover", "group-focus"],
       rotate: ["group-hover", "group-focus"]
     }
-  },
-  plugins: []
+  }
 };
