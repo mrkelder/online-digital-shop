@@ -22,6 +22,8 @@ const Home: NextPage<SlideNames> = ({ slideNames }) => {
   const [slides, setSlides] = useState<string[]>([]);
 
   useEffect(() => {
+    // FIXME: remove js from slide fetching logic (use <picture> tag)
+
     async function fetch() {
       const SLIDER_DIR =
         "slider/" +
