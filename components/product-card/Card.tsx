@@ -17,9 +17,9 @@ const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
   const link = `/products/${id}`;
 
   return (
-    <div className="flex flex-col shadow-lg my-10 bg-white w-60 px-3 py-5 text-grey-300">
+    <div className="flex flex-col shadow-lg my-10 bg-white w-60 px-3 py-5 text-grey-300 lg:w-80 lg:px-5 lg:py-6">
       <Link href={link}>
-        <a className="relative h-48 mb-2">
+        <a className="relative h-48 mb-2 lg:h-64">
           <Image
             src={photo}
             alt="Фотография товара"
@@ -29,30 +29,30 @@ const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
         </a>
       </Link>
 
-      <div className="relative inline h-12 overflow-hidden">
+      <div className="relative inline h-12 overflow-hidden lg:h-14 ">
         <Link href={link}>
-          <a className="text-sm">{name}</a>
+          <a className="text-sm lg:text-lg">{name}</a>
         </Link>
-        <div className="absolute w-full h-3 bottom-0 left-0 white-shadow" />
+        <div className="absolute w-full h-3 bottom-0 left-0 white-shadow lg:h-4" />
       </div>
 
-      <div className="flex">
+      <div className="flex space-x-1 lg:mt-1">
         {new Array(rating).fill(0).map((_, index) => (
-          <div className="w-3" key={`star_${index}`}>
+          <div className="w-3 lg:w-4" key={`star_${index}`}>
             <Image src={starActiveIcon} alt="Рейтинг" />
           </div>
         ))}
         {new Array(5 - rating).fill(0).map((_, index) => (
-          <div className="w-3" key={`star_${index}`}>
+          <div className="w-3 lg:w-4" key={`star_${index}`}>
             <Image src={starIcon} alt="Рейтинг" />
           </div>
         ))}
       </div>
 
-      <span className="text-red my-1">{price} грн</span>
+      <span className="text-red my-1 lg:text-xl lg:mt-0">{price} грн</span>
 
       <Link href={link}>
-        <a className="bg-red text-white text-sm p-2 mt-1 text-center">
+        <a className="bg-red text-white text-sm p-2 mt-1 text-center lg:text-base">
           Детальнее
         </a>
       </Link>
@@ -60,6 +60,12 @@ const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
       <style jsx>{`
         .white-shadow {
           box-shadow: inset 0 -7px 4px 1px white;
+        }
+
+        @media (min-width: 1024px) {
+          .white-shadow {
+            box-shadow: inset 0 -10px 7px 1px white;
+          }
         }
       `}</style>
     </div>
