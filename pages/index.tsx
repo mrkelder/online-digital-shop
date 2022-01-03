@@ -43,13 +43,18 @@ const Home: NextPage<SlideNames> = ({ slideNames }) => {
 
       <Slider {...{ slides }} />
 
-      <ul className="hidden lg:px-2 lg:py-5 lg:justify-center lg:space-x-10 lg:flex lg:bg-grey-400 lg:text-white w-full">
+      <ul className="flex flex-col bg-grey-400 w-full text-white p-5 lg:px-2 lg:justify-center lg:space-x-10 lg:flex-row">
         {advantages.map(I => (
-          <li className="flex flex-col items-center" key={I.text}>
+          <li
+            className="flex p-4 h-20 border items-center lg:p-0 lg:flex-col lg:border-none"
+            key={I.text}
+          >
             <span className="w-8">
               <I.img />
             </span>
-            <p className="font-regular w-48 text-center">{I.text}</p>
+            <p className="font-regular ml-4 lg:ml-0 lg:w-48 lg:text-center">
+              {I.text}
+            </p>
           </li>
         ))}
       </ul>
