@@ -18,14 +18,16 @@ const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
 
   return (
     <div className="flex flex-col shadow-lg my-10 bg-white w-60 px-3 py-5 text-grey-300">
-      <div className="relative h-48 mb-2">
-        <Image
-          src={photo}
-          alt="Фотография товара"
-          objectFit="contain"
-          layout="fill"
-        />
-      </div>
+      <Link href={link}>
+        <a className="relative h-48 mb-2">
+          <Image
+            src={photo}
+            alt="Фотография товара"
+            objectFit="contain"
+            layout="fill"
+          />
+        </a>
+      </Link>
 
       <div className="relative inline h-12 overflow-hidden">
         <Link href={link}>
