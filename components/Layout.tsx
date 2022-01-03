@@ -4,7 +4,7 @@ import Header from "components/header/Header";
 const Layout: FC = ({ children }) => (
   <>
     <Header />
-    <main>{children}</main>
+    <main className="max-w-7xl mx-auto">{children}</main>
     <footer></footer>
   </>
 );

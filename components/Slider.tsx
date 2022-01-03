@@ -6,6 +6,8 @@ import "swiper/css/pagination";
 import "swiper/css";
 
 const Slider: FC<{ slides: string[] }> = ({ slides }) => {
+  // FIXME: slides aren't shown properly on desktop devices (they come out of view scope)
+
   const swiperParams: SwiperProps = {
     slidesPerView: 1,
     modules: [Autoplay, Pagination],
