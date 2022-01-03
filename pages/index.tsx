@@ -6,6 +6,9 @@ import Firebase, { FirebaseContext } from "utils/firebase";
 import GuaranteeIcon from "public/img/guarantee.svg";
 import LikeIcon from "public/img/like.svg";
 import TruckIcon from "public/img/truck.svg";
+import Card from "components/product-card/Card";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 
 type SlideNames = { slideNames: string[] };
 
@@ -17,6 +20,25 @@ const advantages = [
   { img: GuaranteeIcon, text: "Официальная гарантия от производителя" }
 ];
 
+const swiperBreakpoints = {
+  320: {
+    slidesPerView: 1,
+    spaceBetween: 25
+  },
+  500: {
+    slidesPerView: 2,
+    spaceBetween: 15
+  },
+  700: {
+    slidesPerView: 3,
+    spaceBetween: 25
+  },
+  1000: {
+    slidesPerView: 4,
+    spaceBetween: 25
+  }
+};
+
 const Home: NextPage<SlideNames> = ({ slideNames }) => {
   const firebase = useContext(FirebaseContext);
   const [slides, setSlides] = useState<string[]>([]);
@@ -25,6 +47,7 @@ const Home: NextPage<SlideNames> = ({ slideNames }) => {
     // FIXME: remove js from slide fetching logic (use <picture> tag)
 
     async function fetch() {
+      // FIXME: remove this, this eliminates any sense to use SSR
       const SLIDER_DIR =
         "slider/" +
         (window.innerWidth < DESKTOP_SLIDE_BREAKPOINT ? "mobile" : "desktop");
@@ -58,6 +81,27 @@ const Home: NextPage<SlideNames> = ({ slideNames }) => {
           </li>
         ))}
       </ul>
+
+      <section className="flex flex-col items-center">
+        <strong className="font-light text-2xl mt-5 mx-5 text-center lg:text-4xl lg:mt-4 lg:mb-3">
+          Лучшие предложения на{" "}
+          <span className="text-red text-2xl font-light lg:text-4xl">
+            сегодня
+          </span>
+        </strong>
+
+        <div className="w-full my-3">
+          <Swiper breakpoints={swiperBreakpoints}>
+            {new Array(10).fill(0).map((_, index) => (
+              <SwiperSlide key={`slide_${index}`}>
+                <div className="w-full flex justify-center">
+                  <Card />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </section>
     </>
   );
 };
