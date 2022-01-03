@@ -17,7 +17,7 @@ const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
   const link = `/products/${id}`;
 
   return (
-    <div className="flex flex-col shadow-lg my-10 bg-white w-60 px-3 py-5 text-grey-300 lg:w-80 lg:px-5 lg:py-6">
+    <div className="flex flex-col shadow-lg bg-white w-60 px-3 py-5 text-grey-300 lg:w-80 lg:px-5 lg:py-6">
       <Link href={link}>
         <a className="relative h-48 mb-2 lg:h-64">
           <Image
