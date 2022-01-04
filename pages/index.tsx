@@ -10,7 +10,9 @@ import Card from "components/product-card/Card";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
-type SlideNames = { slideNames: string[] };
+type SlideNames = {
+  slides: ReadonlyArray<{ mobile: string; desktop: string }>;
+};
 
 const DESKTOP_SLIDE_BREAKPOINT = 1024;
 
@@ -39,25 +41,7 @@ const swiperBreakpoints = {
   }
 };
 
-const Home: NextPage<SlideNames> = ({ slideNames }) => {
-  const firebase = useContext(FirebaseContext);
-  const [slides, setSlides] = useState<string[]>([]);
-
-  useEffect(() => {
-    // FIXME: remove js from slide fetching logic (use <picture> tag)
-
-    async function fetch() {
-      // FIXME: remove this, this eliminates any sense to use SSR
-      const SLIDER_DIR =
-        "slider/" +
-        (window.innerWidth < DESKTOP_SLIDE_BREAKPOINT ? "mobile" : "desktop");
-      const slideLinks = await firebase.downloadFiles(SLIDER_DIR, slideNames);
-      setSlides(slideLinks);
-    }
-
-    fetch();
-  }, [firebase, slideNames]);
-
+const Home: NextPage<SlideNames> = ({ slides }) => {
   return (
     <>
       <Head>
@@ -108,9 +92,21 @@ const Home: NextPage<SlideNames> = ({ slideNames }) => {
 
 export const getServerSideProps: GetServerSideProps<SlideNames> = async () => {
   const firebase = new Firebase();
-  const slides = await firebase.getAllSlides();
-  const slideNames = slides.map(i => i.name);
-  return { props: { slideNames }, notFound: false };
+  const dbSlides = await firebase.getAllSlides();
+  const slideNames = dbSlides.map(i => i.name);
+
+  const mobile = await firebase.downloadFiles("slider/mobile", slideNames);
+  const desktop = await firebase.downloadFiles("slider/desktop", slideNames);
+
+  const slides = mobile.map((i, index) => ({
+    mobile: i,
+    desktop: desktop[index]
+  }));
+
+  return {
+    props: { slides },
+    notFound: false
+  };
 };
 
 export default Home;
