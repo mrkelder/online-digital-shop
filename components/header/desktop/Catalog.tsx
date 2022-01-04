@@ -13,7 +13,9 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
 
   useEffect(() => {
     async function fetch() {
-      const data = await firebase.getCategories();
+      const data = await firebase.getAllDocumentsInCollection<Category>(
+        "categories"
+      );
       setCategories(data);
     }
 

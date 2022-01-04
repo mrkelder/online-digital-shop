@@ -92,7 +92,7 @@ const Home: NextPage<SlideNames> = ({ slides }) => {
 
 export const getServerSideProps: GetServerSideProps<SlideNames> = async () => {
   const firebase = new Firebase();
-  const dbSlides = await firebase.getAllSlides();
+  const dbSlides = await firebase.getAllDocumentsInCollection<Slide>("slider");
   const slideNames = dbSlides.map(i => i.name);
 
   const mobile = await firebase.downloadFiles("slider/mobile", slideNames);

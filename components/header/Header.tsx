@@ -13,7 +13,9 @@ const Header: FC = () => {
   useEffect(() => {
     async function fetch() {
       setCategoriesLoading(true);
-      const data = await firebase.getCategories();
+      const data = await firebase.getAllDocumentsInCollection<Category>(
+        "categories"
+      );
       setCategories(data);
       setCategoriesLoading(false);
     }
