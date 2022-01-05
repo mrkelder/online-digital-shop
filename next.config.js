@@ -10,7 +10,8 @@ module.exports = {
     return config;
   },
   images: {
-    domains: ["firebasestorage.googleapis.com"]
+    // FIXME: remove www.vodafone.ua when going to production
+    domains: ["firebasestorage.googleapis.com", "www.vodafone.ua"]
   },
   reactStrictMode: true
 };

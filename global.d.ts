@@ -13,3 +13,21 @@ interface Slide {
   id: string;
   name: string;
 }
+
+interface Reccommendation {
+  id: string;
+  item_id: string;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  available_in: string[];
+  available: boolean;
+  characteristics: Array<{ [name: string]: string }>;
+  key_characteristics: string[];
+  price: number;
+  subcategory: string;
+  photo: string | StaticImageData;
+  rating: 0 | 1 | 2 | 3 | 4 | 5;
+}

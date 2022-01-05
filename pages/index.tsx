@@ -1,15 +1,18 @@
-import { useContext, useEffect, useState } from "react";
 import Slider from "components/Slider";
 import Head from "next/head";
 import type { GetServerSideProps, NextPage } from "next";
-import Firebase, { FirebaseContext } from "utils/firebase";
+import Firebase from "utils/firebase";
 import GuaranteeIcon from "public/img/guarantee.svg";
 import LikeIcon from "public/img/like.svg";
 import TruckIcon from "public/img/truck.svg";
+import Card from "components/product-card/Card";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 
-type SlideNames = { slideNames: string[] };
-
-const DESKTOP_SLIDE_BREAKPOINT = 1024;
+interface Props {
+  slides: ReadonlyArray<{ mobile: string; desktop: string }>;
+  reccommendedItems: ReadonlyArray<Product>;
+}
 
 const advantages = [
   { img: LikeIcon, text: "Пополнение счета без комиссии" },
@@ -17,24 +20,26 @@ const advantages = [
   { img: GuaranteeIcon, text: "Официальная гарантия от производителя" }
 ];
 
-const Home: NextPage<SlideNames> = ({ slideNames }) => {
-  const firebase = useContext(FirebaseContext);
-  const [slides, setSlides] = useState<string[]>([]);
+const swiperBreakpoints = {
+  320: {
+    slidesPerView: 1,
+    spaceBetween: 25
+  },
+  500: {
+    slidesPerView: 2,
+    spaceBetween: 15
+  },
+  700: {
+    slidesPerView: 3,
+    spaceBetween: 25
+  },
+  1000: {
+    slidesPerView: 4,
+    spaceBetween: 25
+  }
+};
 
-  useEffect(() => {
-    // FIXME: remove js from slide fetching logic (use <picture> tag)
-
-    async function fetch() {
-      const SLIDER_DIR =
-        "slider/" +
-        (window.innerWidth < DESKTOP_SLIDE_BREAKPOINT ? "mobile" : "desktop");
-      const slideLinks = await firebase.downloadFiles(SLIDER_DIR, slideNames);
-      setSlides(slideLinks);
-    }
-
-    fetch();
-  }, [firebase, slideNames]);
-
+const Home: NextPage<Props> = ({ slides, reccommendedItems }) => {
   return (
     <>
       <Head>
@@ -58,15 +63,58 @@ const Home: NextPage<SlideNames> = ({ slideNames }) => {
           </li>
         ))}
       </ul>
+
+      <section className="flex flex-col items-center">
+        <strong className="font-light text-2xl mt-5 mx-5 text-center lg:text-4xl lg:mt-4 lg:mb-3">
+          Лучшие предложения на{" "}
+          <span className="text-red text-2xl font-light lg:text-4xl">
+            сегодня
+          </span>
+        </strong>
+
+        <div className="w-full my-3">
+          <Swiper breakpoints={swiperBreakpoints}>
+            {reccommendedItems.map(item => (
+              <SwiperSlide key={`slide_${item.id}`}>
+                <div className="w-full flex justify-center">
+                  <Card {...item} />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </section>
     </>
   );
 };
 
-export const getServerSideProps: GetServerSideProps<SlideNames> = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const firebase = new Firebase();
-  const slides = await firebase.getAllSlides();
-  const slideNames = slides.map(i => i.name);
-  return { props: { slideNames }, notFound: false };
+  const dbSlides = await firebase.getAllDocumentsInCollection<Slide>("slider");
+  const dbReccommendations =
+    await firebase.getAllDocumentsInCollection<Reccommendation>(
+      "reccommendations"
+    );
+  const slideNames = dbSlides.map(i => i.name);
+
+  const mobile = await firebase.downloadFiles("slider/mobile", slideNames);
+  const desktop = await firebase.downloadFiles("slider/desktop", slideNames);
+
+  const slides = mobile.map((i, index) => ({
+    mobile: i,
+    desktop: desktop[index]
+  }));
+
+  const reccommendations = dbReccommendations.map(i => i.item_id);
+
+  const reccommendedItems = await firebase.fetchDocumentsById(
+    "products",
+    reccommendations
+  );
+
+  return {
+    props: { slides, reccommendedItems }
+  };
 };
 
 export default Home;
