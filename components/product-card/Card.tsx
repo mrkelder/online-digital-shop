@@ -5,15 +5,7 @@ import starActiveIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
 import Image from "next/image";
 
-interface Props {
-  id: string;
-  rating: 0 | 1 | 2 | 3 | 4 | 5;
-  price: number;
-  name: string;
-  photo: StaticImageData | string;
-}
-
-const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
+const Card: FC<Product> = ({ rating, price, name, photo, id }) => {
   const link = `/products/${id}`;
 
   return (
@@ -21,7 +13,7 @@ const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
       <Link href={link}>
         <a className="relative h-48 mb-2 lg:h-64">
           <Image
-            src={photo}
+            src={photo ? photo : DefaultPhoto}
             alt="Фотография товара"
             objectFit="contain"
             layout="fill"

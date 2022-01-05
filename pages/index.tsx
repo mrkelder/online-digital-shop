@@ -1,8 +1,7 @@
-import { useContext, useEffect, useState } from "react";
 import Slider from "components/Slider";
 import Head from "next/head";
 import type { GetServerSideProps, NextPage } from "next";
-import Firebase, { FirebaseContext } from "utils/firebase";
+import Firebase from "utils/firebase";
 import GuaranteeIcon from "public/img/guarantee.svg";
 import LikeIcon from "public/img/like.svg";
 import TruckIcon from "public/img/truck.svg";
@@ -10,11 +9,10 @@ import Card from "components/product-card/Card";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
-type SlideNames = {
+interface Props {
   slides: ReadonlyArray<{ mobile: string; desktop: string }>;
-};
-
-const DESKTOP_SLIDE_BREAKPOINT = 1024;
+  reccommendedItems: ReadonlyArray<Product>;
+}
 
 const advantages = [
   { img: LikeIcon, text: "Пополнение счета без комиссии" },
@@ -41,7 +39,7 @@ const swiperBreakpoints = {
   }
 };
 
-const Home: NextPage<SlideNames> = ({ slides }) => {
+const Home: NextPage<Props> = ({ slides, reccommendedItems }) => {
   return (
     <>
       <Head>
@@ -76,10 +74,10 @@ const Home: NextPage<SlideNames> = ({ slides }) => {
 
         <div className="w-full my-3">
           <Swiper breakpoints={swiperBreakpoints}>
-            {new Array(10).fill(0).map((_, index) => (
-              <SwiperSlide key={`slide_${index}`}>
+            {reccommendedItems.map(item => (
+              <SwiperSlide key={`slide_${item.id}`}>
                 <div className="w-full flex justify-center">
-                  <Card />
+                  <Card {...item} />
                 </div>
               </SwiperSlide>
             ))}
@@ -90,9 +88,13 @@ const Home: NextPage<SlideNames> = ({ slides }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps<SlideNames> = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const firebase = new Firebase();
   const dbSlides = await firebase.getAllDocumentsInCollection<Slide>("slider");
+  const dbReccommendations =
+    await firebase.getAllDocumentsInCollection<Reccommendation>(
+      "reccommendations"
+    );
   const slideNames = dbSlides.map(i => i.name);
 
   const mobile = await firebase.downloadFiles("slider/mobile", slideNames);
@@ -103,9 +105,15 @@ export const getServerSideProps: GetServerSideProps<SlideNames> = async () => {
     desktop: desktop[index]
   }));
 
+  const reccommendations = dbReccommendations.map(i => i.item_id);
+
+  const reccommendedItems = await firebase.fetchDocumentsById(
+    "products",
+    reccommendations
+  );
+
   return {
-    props: { slides },
-    notFound: false
+    props: { slides, reccommendedItems }
   };
 };
 
