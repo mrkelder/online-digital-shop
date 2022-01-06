@@ -39,7 +39,12 @@ interface City {
 interface Shop {
   id: string;
   city: City["id"];
-  geo: [number, number];
+  geo: { _lat: number; _long: number };
   name: string;
   schedule: string[];
+}
+
+interface GeoInfo {
+  shops: Shop[];
+  cities: City[];
 }
