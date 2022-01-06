@@ -31,3 +31,16 @@ interface Product {
   photo: string | StaticImageData;
   rating: 0 | 1 | 2 | 3 | 4 | 5;
 }
+
+interface City {
+  id: string;
+  name: string;
+}
+
+interface Shop {
+  id: string;
+  city: City["id"];
+  geo: [number, number];
+  name: string;
+  schedule: string[];
+}
