@@ -45,24 +45,25 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems }) => {
       <Head>
         <title>New London</title>
       </Head>
+      <section>
+        <Slider {...{ slides }} />
 
-      <Slider {...{ slides }} />
-
-      <ul className="flex flex-col bg-grey-400 w-full text-white p-5 lg:px-2 lg:justify-center lg:space-x-10 lg:flex-row">
-        {advantages.map(I => (
-          <li
-            className="flex p-4 h-20 border items-center lg:p-0 lg:flex-col lg:border-none"
-            key={I.text}
-          >
-            <span className="w-8">
-              <I.img />
-            </span>
-            <p className="font-regular ml-4 lg:ml-0 lg:w-48 lg:text-center">
-              {I.text}
-            </p>
-          </li>
-        ))}
-      </ul>
+        <ul className="flex flex-col bg-grey-400 w-full text-white p-5 lg:px-2 lg:justify-center lg:space-x-10 lg:flex-row">
+          {advantages.map(I => (
+            <li
+              className="flex p-4 h-20 border items-center lg:p-0 lg:flex-col lg:border-none"
+              key={I.text}
+            >
+              <span className="w-8">
+                <I.img />
+              </span>
+              <p className="font-regular ml-4 lg:ml-0 lg:w-48 lg:text-center">
+                {I.text}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section className="flex flex-col items-center">
         <strong className="font-light text-2xl mt-5 mx-5 text-center lg:text-4xl lg:mt-4 lg:mb-3">
