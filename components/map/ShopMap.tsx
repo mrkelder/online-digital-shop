@@ -1,4 +1,4 @@
-import { FC, useState, FormEventHandler } from "react";
+import { FC, useState, FormEventHandler, useReducer, Reducer } from "react";
 import GMap from "./GMap";
 import styles from "styles/map.module.css";
 
@@ -7,13 +7,38 @@ interface SearchInfo {
   searchResults: City[];
 }
 
+type ChosenCityId = { type: "change-current-city"; payload: City["id"] };
+type CitySearchResults = {
+  type: "change-city-search-results";
+  payload: City[];
+};
+
+type MenuAction = CitySearchResults | ChosenCityId;
+
+type MapSearchReducer = Reducer<SearchInfo, MenuAction>;
+
+const mapInfoReducer: MapSearchReducer = (state, action) => {
+  switch (action.type) {
+    case "change-current-city":
+      return { ...state, chosenCityId: action.payload };
+    case "change-city-search-results":
+      return { ...state, searchResults: action.payload };
+    default:
+      throw new Error("Unexpected menu state behavior: " + process.cwd);
+  }
+};
+
 const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
-  const [showShops, setShowShops] = useState(false);
-  // FIXME: replace useState with useReducer
-  const [searchInfo, setSearchInfo] = useState<SearchInfo>({
+  const INITIAL_MAP_INFO = {
     chosenCityId: geoInfo.cities[0].id,
     searchResults: geoInfo.cities
-  });
+  };
+
+  const [searchInfo, searchInfoDispatch] = useReducer<MapSearchReducer>(
+    mapInfoReducer,
+    INITIAL_MAP_INFO
+  );
+  const [showShops, setShowShops] = useState(false);
 
   const { searchResults, chosenCityId } = searchInfo;
   const resultShops = geoInfo.shops.filter(i => i.city === chosenCityId);
@@ -23,19 +48,25 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
     setShowShops(!showShops);
   };
 
-  const handleSearch: FormEventHandler<HTMLInputElement> = event => {
+  const searchCity: FormEventHandler<HTMLInputElement> = event => {
     const { value } = event.target as HTMLInputElement;
     const regEx = new RegExp("^" + value, "i");
     const resultCities = geoInfo.cities.filter(i => i.name.match(regEx));
 
     resultCities.length > 0
-      ? setSearchInfo({ ...searchInfo, searchResults: resultCities })
-      : setSearchInfo({ ...searchInfo, searchResults: geoInfo.cities });
+      ? searchInfoDispatch({
+          type: "change-city-search-results",
+          payload: resultCities
+        })
+      : searchInfoDispatch({
+          type: "change-city-search-results",
+          payload: geoInfo.cities
+        });
   };
 
   const chooseCity = (cityId: City["id"]) => {
     return () => {
-      setSearchInfo({ ...searchInfo, chosenCityId: cityId });
+      searchInfoDispatch({ type: "change-current-city", payload: cityId });
     };
   };
 
@@ -47,7 +78,7 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
             type="text"
             placeholder="Город"
             className={styles["map-search-input"]}
-            onInput={handleSearch}
+            onInput={searchCity}
           />
           <div className="space-y-2 px-2 py-2 w-full overflow-y-auto border border-grey-400">
             {searchResults.map(i => (
