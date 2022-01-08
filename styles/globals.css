@@ -19,6 +19,10 @@ body {
   margin: 0;
 }
 
+input {
+  font-family: "Vodafone Lt";
+}
+
 h1,
 h2,
 h3,

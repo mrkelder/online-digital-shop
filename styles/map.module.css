@@ -1,0 +1,26 @@
+.map-pannel {
+  @apply absolute w-full z-30 p-2 left-0;
+}
+
+.top-map-pannel {
+  @apply map-pannel top-0;
+}
+
+.bottom-map-pannel {
+  @apply map-pannel bottom-0;
+}
+
+.city-result {
+  @apply bg-white flex flex-col items-start overflow-hidden;
+  height: 36px;
+}
+
+.map-search-input {
+  @apply w-full outline-none text-sm border border-grey-400 px-2;
+  min-height: 36px;
+}
+
+.city-result:focus-within {
+  height: auto;
+  max-height: 300px;
+}
