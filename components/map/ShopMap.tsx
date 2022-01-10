@@ -1,26 +1,37 @@
-import { FC, useState, FormEventHandler, useReducer, Reducer } from "react";
+import {
+  FC,
+  useState,
+  FormEventHandler,
+  useReducer,
+  Reducer,
+  useEffect
+} from "react";
 import GMap from "./GMap";
 import styles from "styles/map.module.css";
 
 interface SearchInfo {
   chosenCityId: City["id"];
+  chosenShop: Shop;
   searchResults: City[];
 }
 
-type ChosenCityId = { type: "change-current-city"; payload: City["id"] };
+type ChosenCityId = { type: "change-city"; payload: City["id"] };
+type ChosenShop = { type: "change-shop"; payload: Shop };
 type CitySearchResults = {
   type: "change-city-search-results";
   payload: City[];
 };
 
-type MenuAction = CitySearchResults | ChosenCityId;
+type MenuAction = CitySearchResults | ChosenCityId | ChosenShop;
 
 type MapSearchReducer = Reducer<SearchInfo, MenuAction>;
 
 const mapInfoReducer: MapSearchReducer = (state, action) => {
   switch (action.type) {
-    case "change-current-city":
+    case "change-city":
       return { ...state, chosenCityId: action.payload };
+    case "change-shop":
+      return { ...state, chosenShop: action.payload };
     case "change-city-search-results":
       return { ...state, searchResults: action.payload };
     default:
@@ -29,8 +40,12 @@ const mapInfoReducer: MapSearchReducer = (state, action) => {
 };
 
 const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
-  const INITIAL_MAP_INFO = {
+  // TODO: foresee cases when geo info is empty
+  const INITIAL_MAP_INFO: SearchInfo = {
     chosenCityId: geoInfo.cities[0].id,
+    chosenShop: geoInfo.shops.find(
+      i => i.city === geoInfo.cities[0].id
+    ) as Shop,
     searchResults: geoInfo.cities
   };
 
@@ -64,11 +79,21 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
         });
   };
 
-  const chooseCity = (cityId: City["id"]) => {
+  function chooseCity(cityId: City["id"]) {
     return () => {
-      searchInfoDispatch({ type: "change-current-city", payload: cityId });
+      searchInfoDispatch({ type: "change-city", payload: cityId });
     };
-  };
+  }
+
+  function chooseShop(shopObj: Shop) {
+    return () => {
+      searchInfoDispatch({ type: "change-shop", payload: shopObj });
+    };
+  }
+
+  useEffect(() => {
+    console.log(searchInfo);
+  }, [searchInfo]);
 
   return (
     <div className="relative">
@@ -101,7 +126,9 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
         }
       >
         {resultShops.map(i => (
-          <button key={i.id}>{i.name}</button>
+          <button key={i.id} onClick={chooseShop(i)}>
+            {i.name}
+          </button>
         ))}
       </div>
       <div className={styles["bottom-map-pannel"]}>
