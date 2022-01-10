@@ -4,7 +4,8 @@ import {
   FormEventHandler,
   useReducer,
   Reducer,
-  useEffect
+  useEffect,
+  useMemo
 } from "react";
 import GMap from "./GMap";
 import styles from "styles/map.module.css";
@@ -59,6 +60,18 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
   const resultShops = geoInfo.shops.filter(i => i.city === chosenCityId);
   const shopListStyle = showShops ? "flex" : "hidden";
 
+  const memoizedGMAP = useMemo(
+    () => (
+      <GMap
+        currentShop={searchInfo.chosenShop}
+        allShopsInCurrentCity={geoInfo.shops.filter(
+          i => i.city === searchInfo.chosenCityId
+        )}
+      />
+    ),
+    [searchInfo.chosenShop, searchInfo.chosenCityId, geoInfo.shops]
+  );
+
   const toggleShopList = () => {
     setShowShops(!showShops);
   };
@@ -79,15 +92,21 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
         });
   };
 
-  function chooseCity(cityId: City["id"]) {
+  function chooseShop(shopObj: Shop) {
     return () => {
-      searchInfoDispatch({ type: "change-city", payload: cityId });
+      if (shopObj.id !== searchInfo.chosenShop.id) {
+        searchInfoDispatch({ type: "change-shop", payload: shopObj });
+      }
+      setShowShops(false);
     };
   }
 
-  function chooseShop(shopObj: Shop) {
+  function chooseCity(cityId: City["id"]) {
     return () => {
-      searchInfoDispatch({ type: "change-shop", payload: shopObj });
+      if (cityId !== searchInfo.chosenCityId) {
+        searchInfoDispatch({ type: "change-city", payload: cityId });
+        chooseShop(geoInfo.shops.find(i => i.city === cityId) as Shop)();
+      }
     };
   }
 
@@ -118,7 +137,7 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
           </div>
         </div>
       </div>
-      <GMap />
+      {memoizedGMAP}
       <div
         className={
           "absolute bg-white w-full h-full top-0 left-0 z-30 flex-col items-start " +
