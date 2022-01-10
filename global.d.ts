@@ -26,6 +26,7 @@ interface Product {
   photo: string | StaticImageData;
   rating: 0 | 1 | 2 | 3 | 4 | 5;
 }
+
 interface Reccommendation {
   id: string;
   item_id: Product["id"];
@@ -41,7 +42,7 @@ interface Shop {
   city: City["id"];
   geo: { lat: number; lng: number };
   name: string;
-  schedule: string[];
+  schedule: ReadonlyArray<{ from: string; to: string } | null>;
 }
 
 interface GeoInfo {

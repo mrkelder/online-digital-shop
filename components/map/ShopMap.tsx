@@ -5,10 +5,12 @@ import {
   useReducer,
   Reducer,
   useEffect,
-  useMemo
+  useMemo,
+  useCallback
 } from "react";
 import GMap from "./GMap";
 import styles from "styles/map.module.css";
+import Shop from "./Shop";
 
 interface SearchInfo {
   chosenCityId: City["id"];
@@ -42,6 +44,7 @@ const mapInfoReducer: MapSearchReducer = (state, action) => {
 
 const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
   // TODO: foresee cases when geo info is empty
+  // TODO: add animation for shop list
   const INITIAL_MAP_INFO: SearchInfo = {
     chosenCityId: geoInfo.cities[0].id,
     chosenShop: geoInfo.shops.find(
@@ -92,14 +95,16 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
         });
   };
 
-  function chooseShop(shopObj: Shop) {
-    return () => {
-      if (shopObj.id !== searchInfo.chosenShop.id) {
-        searchInfoDispatch({ type: "change-shop", payload: shopObj });
-      }
-      setShowShops(false);
-    };
-  }
+  const chooseShop = useCallback(
+    (shopObj: Shop) => {
+      return () => {
+        if (shopObj.id !== searchInfo.chosenShop.id) {
+          searchInfoDispatch({ type: "change-shop", payload: shopObj });
+        }
+      };
+    },
+    [searchInfo.chosenShop.id]
+  );
 
   function chooseCity(cityId: City["id"]) {
     return () => {
@@ -109,10 +114,6 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
       }
     };
   }
-
-  useEffect(() => {
-    console.log(searchInfo);
-  }, [searchInfo]);
 
   return (
     <div className="relative">
@@ -140,14 +141,17 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
       {memoizedGMAP}
       <div
         className={
-          "absolute bg-white w-full h-full top-0 left-0 z-30 flex-col items-start " +
+          "absolute bg-white w-full h-full top-0 left-0 z-30 flex-col items-start overflow-y-auto py-4 " +
           shopListStyle
         }
       >
         {resultShops.map(i => (
-          <button key={i.id} onClick={chooseShop(i)}>
-            {i.name}
-          </button>
+          <Shop
+            key={i.id}
+            shopObj={i}
+            onClick={chooseShop(i)}
+            isSelected={i.id === searchInfo.chosenShop.id}
+          />
         ))}
       </div>
       <div className={styles["bottom-map-pannel"]}>
