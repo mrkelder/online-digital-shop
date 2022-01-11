@@ -1,4 +1,5 @@
 import Slider from "components/Slider";
+import ShopMap from "components/map/ShopMap";
 import Head from "next/head";
 import type { GetServerSideProps, NextPage } from "next";
 import Firebase from "utils/firebase";
@@ -8,10 +9,12 @@ import TruckIcon from "public/img/truck.svg";
 import Card from "components/product-card/Card";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import serializableShopDTO from "utils/dto/serializableShopDTO";
 
 interface Props {
   slides: ReadonlyArray<{ mobile: string; desktop: string }>;
   reccommendedItems: ReadonlyArray<Product>;
+  geoInfo: GeoInfo;
 }
 
 const advantages = [
@@ -39,30 +42,31 @@ const swiperBreakpoints = {
   }
 };
 
-const Home: NextPage<Props> = ({ slides, reccommendedItems }) => {
+const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
   return (
     <>
       <Head>
         <title>New London</title>
       </Head>
+      <section>
+        <Slider {...{ slides }} />
 
-      <Slider {...{ slides }} />
-
-      <ul className="flex flex-col bg-grey-400 w-full text-white p-5 lg:px-2 lg:justify-center lg:space-x-10 lg:flex-row">
-        {advantages.map(I => (
-          <li
-            className="flex p-4 h-20 border items-center lg:p-0 lg:flex-col lg:border-none"
-            key={I.text}
-          >
-            <span className="w-8">
-              <I.img />
-            </span>
-            <p className="font-regular ml-4 lg:ml-0 lg:w-48 lg:text-center">
-              {I.text}
-            </p>
-          </li>
-        ))}
-      </ul>
+        <ul className="flex flex-col bg-grey-400 w-full text-white p-5 lg:px-2 lg:justify-center lg:space-x-10 lg:flex-row">
+          {advantages.map(I => (
+            <li
+              className="flex p-4 h-20 border items-center lg:p-0 lg:flex-col lg:border-none"
+              key={I.text}
+            >
+              <span className="w-8">
+                <I.img />
+              </span>
+              <p className="font-regular ml-4 lg:ml-0 lg:w-48 lg:text-center">
+                {I.text}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section className="flex flex-col items-center">
         <strong className="font-light text-2xl mt-5 mx-5 text-center lg:text-4xl lg:mt-4 lg:mb-3">
@@ -83,6 +87,9 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems }) => {
             ))}
           </Swiper>
         </div>
+      </section>
+      <section className="my-2">
+        <ShopMap {...{ geoInfo }} />
       </section>
     </>
   );
@@ -106,14 +113,23 @@ export const getServerSideProps: GetServerSideProps = async () => {
   }));
 
   const reccommendations = dbReccommendations.map(i => i.item_id);
-
   const reccommendedItems = await firebase.fetchDocumentsById(
     "products",
     reccommendations
   );
 
+  const shops = await firebase.getAllDocumentsInCollection<FirebaseShop>(
+    "shops"
+  );
+  const cities = await firebase.getAllDocumentsInCollection<City>("cities");
+
+  const geoInfo: GeoInfo = {
+    shops: shops.map(shop => serializableShopDTO(shop)),
+    cities
+  };
+
   return {
-    props: { slides, reccommendedItems }
+    props: { slides, reccommendedItems, geoInfo }
   };
 };
 

@@ -6,17 +6,12 @@ interface Category {
 interface SubCategory {
   id: string;
   name: string;
-  category: string;
+  category: Category["id"];
 }
 
 interface Slide {
   id: string;
   name: string;
-}
-
-interface Reccommendation {
-  id: string;
-  item_id: string;
 }
 
 interface Product {
@@ -30,4 +25,31 @@ interface Product {
   subcategory: string;
   photo: string | StaticImageData;
   rating: 0 | 1 | 2 | 3 | 4 | 5;
+}
+
+interface Reccommendation {
+  id: string;
+  item_id: Product["id"];
+}
+
+interface City {
+  id: string;
+  name: string;
+}
+
+interface Shop {
+  id: string;
+  city: City["id"];
+  geo: { lat: number; lng: number };
+  name: string;
+  schedule: ReadonlyArray<{ from: string; to: string } | null>;
+}
+
+type FirebaseShop = Omit<Shop, "geo"> & {
+  geo: { _lat: number; _long: number };
+};
+
+interface GeoInfo {
+  shops: Shop[];
+  cities: City[];
 }
