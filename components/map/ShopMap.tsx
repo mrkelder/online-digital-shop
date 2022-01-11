@@ -176,6 +176,7 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
             onInput={searchCity}
             value={searchValue}
             name="city"
+            autoComplete="off"
           />
           <div className={styles["city-list"]}>{cityList}</div>
         </form>
@@ -191,6 +192,7 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
               onInput={searchCity}
               value={searchValue}
               name="city"
+              autoComplete="off"
             />
             <div className={styles["city-list"]}>{cityList}</div>
           </form>
