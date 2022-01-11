@@ -36,7 +36,7 @@ const GMap: FC<Props> = ({ allShopsInCurrentCity, currentShop }) => {
         );
         mapRef.current = map;
       } else {
-        mapRef.current.setCenter({ lat, lng });
+        mapRef.current.panTo({ lat, lng });
       }
 
       removeMarkers();
