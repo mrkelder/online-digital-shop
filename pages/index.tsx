@@ -91,14 +91,23 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
           </Swiper>
         </div>
       </section>
-      <section className="my-2">
-        {geoInfoCondition ? (
-          <ShopMap {...{ geoInfo }} />
-        ) : (
-          <div className="w-full bg-grey-500 text-white text-xl h-86 flex items-center justify-center text-center px-2 lg:h-130">
-            Возникла проблема при загрузке карты
-          </div>
-        )}
+      <section className="flex flex-col items-center my-2">
+        <strong className="font-light text-2xl mt-5 mb-2 mx-5 text-center lg:text-4xl lg:mt-4 lg:mb-5">
+          Магазины{" "}
+          <span className="text-red text-2xl font-light lg:text-4xl">
+            New London
+          </span>{" "}
+          на карте
+        </strong>
+        <div className="w-full">
+          {geoInfoCondition ? (
+            <ShopMap {...{ geoInfo }} />
+          ) : (
+            <div className="w-full bg-grey-500 text-white text-xl h-86 flex items-center justify-center text-center px-2 lg:h-130">
+              Возникла проблема при загрузке карты
+            </div>
+          )}
+        </div>
       </section>
     </>
   );
