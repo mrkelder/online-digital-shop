@@ -15,6 +15,7 @@ If you're just looking for practice, feel free to copy and modify this code in a
 
 - [Setting Up](#Setting-Up)
 - [Technology Stack](#Technology-Stack)
+- [Environment Variables](#Environment-Variables)
 - [Commits Naming](#Commits-Naming)
 - [Workflow](#Workflow)
 
@@ -50,7 +51,7 @@ _In the nearest future, the stack above might also include:_
 3. Framer Motion
 4. Shopify API
 
-## Environment variables
+## Environment Variables
 
 To start the application properly you have to specify the following options in **.env.local** file in the root directory
 
