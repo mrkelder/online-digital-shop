@@ -6,7 +6,8 @@ import {
   getDocs,
   Firestore,
   query,
-  where
+  where,
+  documentId
 } from "firebase/firestore";
 import {
   FirebaseStorage,
@@ -39,16 +40,6 @@ class Firebase {
     this._cache = new Map();
   }
 
-  async getCategories() {
-    // FIXME: DRY
-    let data: Category[] = [];
-    const querySnapshot = await getDocs(collection(this.db, "categories"));
-    querySnapshot.forEach(doc =>
-      data.push({ ...doc.data(), id: doc.id } as Category)
-    );
-    return data;
-  }
-
   async getSubCategories(categoryId: string) {
     if (this._cache.has(categoryId)) {
       return this._cache.get(categoryId) as SubCategory[];
@@ -69,14 +60,29 @@ class Firebase {
     }
   }
 
-  async getAllSlides() {
-    // FIXME: DRY
-    let data: Slide[] = [];
-    const querySnapshot = await getDocs(collection(this.db, "slider"));
+  async getAllDocumentsInCollection<T>(collectionName: string) {
+    let data: T[] = [];
+    const querySnapshot = await getDocs(collection(this.db, collectionName));
     querySnapshot.forEach(doc =>
-      data.push({ ...doc.data(), id: doc.id } as Slide)
+      data.push({ ...doc.data(), id: doc.id } as unknown as T)
     );
     return data;
+  }
+
+  async fetchDocumentsById(collectionName: string, ids: string[]) {
+    const q = query(
+      collection(this.db, collectionName),
+      where(documentId(), "in", ids)
+    );
+    const queryResults = await getDocs(q);
+    const parsedResults = queryResults.docs.map(
+      doc =>
+        ({
+          ...doc.data(),
+          id: doc.id
+        } as Product)
+    );
+    return parsedResults;
   }
 
   async downloadFiles(directoryName: string, fileNames: string[]) {

@@ -13,7 +13,9 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
 
   useEffect(() => {
     async function fetch() {
-      const data = await firebase.getCategories();
+      const data = await firebase.getAllDocumentsInCollection<Category>(
+        "categories"
+      );
       setCategories(data);
     }
 
@@ -21,12 +23,22 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
   }, [firebase]);
 
   useEffect(() => {
+    const handleScroll = () => {
+      if (isOpened) dispatchCloseEvent();
+    };
+
+    addEventListener("scroll", handleScroll);
+    return () => {
+      removeEventListener("scroll", handleScroll);
+    };
+  }, [isOpened]);
+
+  useEffect(() => {
     function handleClickOutside(e: Event) {
       // FIXME: deal with e.path problem
       const path = e.path || (e.composedPath && e.composedPath());
       if (!path.includes(menuRef.current)) {
-        const event = new Event("close-catalog");
-        window.dispatchEvent(event);
+        dispatchCloseEvent();
       }
     }
 
@@ -35,6 +47,11 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
       removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  const dispatchCloseEvent = () => {
+    const event = new Event("close-catalog");
+    window.dispatchEvent(event);
+  };
 
   function chooseCategory(id: string) {
     return async () => {
@@ -46,7 +63,7 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
 
   return (
     <div
-      className={`absolute z-20 bg-grey-transparent left-0 w-screen justify-center ${display}`}
+      className={`absolute z-20 bg-grey-transparent left-0 w-full justify-center ${display}`}
       style={{ top: "84px", height: "calc(100vh - 84px)" }}
     >
       <div
