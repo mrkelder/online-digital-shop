@@ -1,5 +1,5 @@
 .map-pannel {
-  @apply absolute w-full z-30 p-2 left-0;
+  @apply absolute w-full z-30 p-2 left-0 lg:hidden;
 }
 
 .top-map-pannel {
@@ -11,16 +11,32 @@
 }
 
 .city-result {
-  @apply bg-white flex flex-col items-start overflow-hidden;
-  height: 36px;
+  @apply relative lg:mb-2;
 }
 
 .map-search-input {
   @apply w-full outline-none text-sm border border-grey-400 px-2;
-  min-height: 36px;
+  height: 36px;
+}
+
+.city-list {
+  @apply w-full space-y-2 p-2 overflow-y-auto max-h-64 border border-grey-400 absolute z-20 top-9 bg-white;
+}
+
+.city-list {
+  display: none;
+}
+
+.city-result:focus-within > .city-list {
+  display: block;
 }
 
 .city-result:focus-within {
+  @apply lg:overflow-visible;
   height: auto;
   max-height: 300px;
+}
+
+.desktop-city-result {
+  @apply mb-2;
 }

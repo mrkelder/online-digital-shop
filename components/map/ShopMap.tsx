@@ -4,13 +4,13 @@ import {
   FormEventHandler,
   useReducer,
   Reducer,
-  useEffect,
   useMemo,
   useCallback
 } from "react";
 import GMap from "./GMap";
 import styles from "styles/map.module.css";
 import Shop from "./Shop";
+import Input from "components/Input";
 
 interface SearchInfo {
   chosenCityId: City["id"];
@@ -45,6 +45,7 @@ const mapInfoReducer: MapSearchReducer = (state, action) => {
 const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
   // TODO: foresee cases when geo info is empty
   // TODO: add animation for shop list
+  // TODO: when user clicks a marker we have to choose this point
   const INITIAL_MAP_INFO: SearchInfo = {
     chosenCityId: geoInfo.cities[0].id,
     chosenShop: geoInfo.shops.find(
@@ -63,7 +64,7 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
   const resultShops = geoInfo.shops.filter(i => i.city === chosenCityId);
   const shopListStyle = showShops ? "flex" : "hidden";
 
-  const memoizedGMAP = useMemo(
+  const memoizedGMap = useMemo(
     () => (
       <GMap
         currentShop={searchInfo.chosenShop}
@@ -115,44 +116,59 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
     };
   }
 
+  const shopList = resultShops.map(i => (
+    <Shop
+      key={i.id}
+      shopObj={i}
+      onClick={chooseShop(i)}
+      isSelected={i.id === searchInfo.chosenShop.id}
+    />
+  ));
+
+  const cityList = searchResults.map(i => (
+    <button
+      key={i.id}
+      className="font-light text-sm w-full text-left"
+      onClick={chooseCity(i.id)}
+    >
+      {i.name}
+    </button>
+  ));
+
+  function Form() {
+    return (
+      <div className={styles["city-result"]}>
+        <input
+          type="text"
+          placeholder="Город"
+          className={styles["map-search-input"]}
+          onInput={searchCity}
+        />
+        <div className={styles["city-list"]}>{cityList}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
       <div className={styles["top-map-pannel"]}>
-        <div className={styles["city-result"]}>
-          <input
-            type="text"
-            placeholder="Город"
-            className={styles["map-search-input"]}
-            onInput={searchCity}
-          />
-          <div className="space-y-2 px-2 py-2 w-full overflow-y-auto border border-grey-400">
-            {searchResults.map(i => (
-              <button
-                key={i.id}
-                className="font-light text-sm w-full text-left"
-                onClick={chooseCity(i.id)}
-              >
-                {i.name}
-              </button>
-            ))}
-          </div>
-        </div>
+        <Form />
       </div>
-      {memoizedGMAP}
+      <div className="flex lg:shadow-lg bg-white">
+        {/* Desktop side bar */}
+        <div className="hidden flex-col p-4 w-96 lg:flex">
+          <Form />
+          <div className="overflow-y-auto h-full">{shopList}</div>
+        </div>
+        <div className="flex-1">{memoizedGMap}</div>
+      </div>
       <div
         className={
-          "absolute bg-white w-full h-full top-0 left-0 z-30 flex-col items-start overflow-y-auto py-4 " +
+          "absolute bg-white w-full h-full top-0 left-0 z-30 flex-col items-start overflow-y-auto py-4 lg:hidden " +
           shopListStyle
         }
       >
-        {resultShops.map(i => (
-          <Shop
-            key={i.id}
-            shopObj={i}
-            onClick={chooseShop(i)}
-            isSelected={i.id === searchInfo.chosenShop.id}
-          />
-        ))}
+        {shopList}
       </div>
       <div className={styles["bottom-map-pannel"]}>
         <button

@@ -42,7 +42,7 @@ const Shop: FC<Props> = ({ onClick, shopObj, isSelected }) => {
     >
       <div className="flex justify-between items-center w-full">
         <div className="flex flex-col items-start w-4/5">
-          <p className="mb-1 text-grey-600 font-regular text-lg truncate w-full text-left">
+          <p className="mb-1 text-grey-600 font-regular text-lg w-full text-left">
             {shopObj.name}
           </p>
           {!isSelected && (
@@ -62,7 +62,11 @@ const Shop: FC<Props> = ({ onClick, shopObj, isSelected }) => {
           <ArrowIcon />
         </span>
       </div>
-      <div className={"flex-col items-start w-1/2 mb-2 " + timetableStyle}>
+      <div
+        className={
+          "flex-col items-start w-48 mb-2 lg:w-full lg:mt-2 " + timetableStyle
+        }
+      >
         {shopObj.schedule.map((i, index) => (
           <div
             key={`day_${index}`}
@@ -75,7 +79,8 @@ const Shop: FC<Props> = ({ onClick, shopObj, isSelected }) => {
               {" "}
               {i ? (
                 <>
-                  {i?.from} - {i?.to}
+                  <time dateTime={i?.from}>{i?.from}</time> -{" "}
+                  <time dateTime={today?.to}>{i?.to}</time>
                 </>
               ) : (
                 <>выходной</>
