@@ -7,7 +7,12 @@ interface Props {
 }
 
 const GMap: FC<Props> = ({ allShopsInCurrentCity, currentShop }) => {
-  const markersRef = useRef<google.maps.Marker[]>([]);
+  const markersRef = useRef<
+    Array<{
+      marker: google.maps.Marker;
+      listener: google.maps.MapsEventListener;
+    }>
+  >([]);
   const mapRef = useRef<google.maps.Map | null>(null);
   const GOOGLE_ELEMENT_NAME = "google-map-el";
 
@@ -50,7 +55,10 @@ const GMap: FC<Props> = ({ allShopsInCurrentCity, currentShop }) => {
   }, [currentShop, allShopsInCurrentCity]);
 
   function removeMarkers() {
-    markersRef.current.forEach(marker => marker.setMap(null));
+    markersRef.current.forEach(markerObj => {
+      markerObj.marker.setMap(null);
+      markerObj.listener.remove();
+    });
     markersRef.current = [];
   }
 
@@ -60,7 +68,12 @@ const GMap: FC<Props> = ({ allShopsInCurrentCity, currentShop }) => {
       map,
       title: shopObj.name
     });
-    markersRef.current.push(marker);
+    const listener = marker.addListener("click", () => {
+      mapRef.current?.panTo(shopObj.geo);
+      const event = new CustomEvent("change-shop", { detail: shopObj });
+      dispatchEvent(event);
+    });
+    markersRef.current.push({ marker, listener });
   }
 
   return (

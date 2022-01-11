@@ -5,7 +5,8 @@ import {
   useReducer,
   Reducer,
   useMemo,
-  useCallback
+  useCallback,
+  useEffect
 } from "react";
 import GMap from "./GMap";
 import styles from "styles/map.module.css";
@@ -43,7 +44,6 @@ const mapInfoReducer: MapSearchReducer = (state, action) => {
 
 const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
   // TODO: add animation for shop list
-  // TODO: when user clicks a marker we have to choose this point
   const INITIAL_MAP_INFO: SearchInfo = {
     chosenCityId: geoInfo.cities[0].id,
     chosenShop: geoInfo.shops.find(
@@ -131,6 +131,20 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
       }
     };
   }
+
+  useEffect(() => {
+    function handler(event: CustomEvent<Shop>) {
+      searchInfoDispatch({ type: "change-shop", payload: event.detail });
+    }
+
+    const SHOP_LIST_EVENT_NAME = "change-shop";
+
+    addEventListener(SHOP_LIST_EVENT_NAME, handler as EventListener);
+
+    return () => {
+      removeEventListener(SHOP_LIST_EVENT_NAME, handler as EventListener);
+    };
+  }, []);
 
   const shopList = resultShops.map(i => (
     <Shop
