@@ -45,6 +45,10 @@ interface Shop {
   schedule: ReadonlyArray<{ from: string; to: string } | null>;
 }
 
+type FirebaseShop = Omit<Shop, "geo"> & {
+  geo: { _lat: number; _long: number };
+};
+
 interface GeoInfo {
   shops: Shop[];
   cities: City[];
