@@ -63,7 +63,7 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
 
   return (
     <div
-      className={`absolute z-20 bg-grey-transparent left-0 w-full justify-center ${display}`}
+      className={`absolute z-50 bg-grey-transparent left-0 w-full justify-center ${display}`}
       style={{ top: "84px", height: "calc(100vh - 84px)" }}
     >
       <div
