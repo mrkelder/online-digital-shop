@@ -10,7 +10,6 @@ import {
 import GMap from "./GMap";
 import styles from "styles/map.module.css";
 import Shop from "./Shop";
-import Input from "components/Input";
 
 interface SearchInfo {
   chosenCityId: City["id"];
@@ -135,29 +134,31 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
     </button>
   ));
 
-  function Form() {
-    return (
-      <div className={styles["city-result"]}>
-        <input
-          type="text"
-          placeholder="Город"
-          className={styles["map-search-input"]}
-          onInput={searchCity}
-        />
-        <div className={styles["city-list"]}>{cityList}</div>
-      </div>
-    );
-  }
-
   return (
     <div className="relative">
       <div className={styles["top-map-pannel"]}>
-        <Form />
+        <div className={styles["city-result"]}>
+          <input
+            type="text"
+            placeholder="Город"
+            className={styles["map-search-input"]}
+            onInput={searchCity}
+          />
+          <div className={styles["city-list"]}>{cityList}</div>
+        </div>
       </div>
       <div className="flex lg:shadow-lg bg-white">
         {/* Desktop side bar */}
         <div className="hidden flex-col p-4 w-96 lg:flex">
-          <Form />
+          <div className={styles["city-result"]}>
+            <input
+              type="text"
+              placeholder="Город"
+              className={styles["map-search-input"]}
+              onInput={searchCity}
+            />
+            <div className={styles["city-list"]}>{cityList}</div>
+          </div>
           <div className="overflow-y-auto h-full">{shopList}</div>
         </div>
         <div className="flex-1">{memoizedGMap}</div>
