@@ -43,6 +43,9 @@ const swiperBreakpoints = {
 };
 
 const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
+  const geoInfoCondition =
+    geoInfo.cities.length !== 0 && geoInfo.shops.length !== 0;
+
   return (
     <>
       <Head>
@@ -89,7 +92,13 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
         </div>
       </section>
       <section className="my-2">
-        <ShopMap {...{ geoInfo }} />
+        {geoInfoCondition ? (
+          <ShopMap {...{ geoInfo }} />
+        ) : (
+          <div className="w-full bg-grey-500 text-white text-xl h-86 flex items-center justify-center text-center px-2 lg:h-130">
+            Возникла проблема при загрузке карты
+          </div>
+        )}
       </section>
     </>
   );

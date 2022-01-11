@@ -42,7 +42,6 @@ const mapInfoReducer: MapSearchReducer = (state, action) => {
 };
 
 const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
-  // TODO: foresee cases when geo info is empty
   // TODO: add animation for shop list
   // TODO: when user clicks a marker we have to choose this point
   const INITIAL_MAP_INFO: SearchInfo = {
