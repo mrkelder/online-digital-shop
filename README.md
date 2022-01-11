@@ -50,6 +50,13 @@ _In the nearest future, the stack above might also include:_
 3. Framer Motion
 4. Shopify API
 
+## Environment variables
+
+To start the application properly you have to specify the following options in **.env.local** file in the root directory
+
+- NEXT_PUBLIC_MAPS_API_KEY - Google Maps API key
+- NEXT_PUBLIC_MAPS_ID - Google Maps Id (for styling purposes)
+
 ## Commits Naming
 
 Here are a few git commits naming conventions. Every commit has to start with one of these:
