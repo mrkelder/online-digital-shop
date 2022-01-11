@@ -57,6 +57,7 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
     INITIAL_MAP_INFO
   );
   const [showShops, setShowShops] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
   const { searchResults, chosenCityId } = searchInfo;
   const resultShops = geoInfo.shops.filter(i => i.city === chosenCityId);
@@ -78,20 +79,37 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
     setShowShops(!showShops);
   };
 
+  function selectCityAccordingToValue(value: string) {
+    try {
+      const regEx = new RegExp("^" + value, "i");
+      const resultCities = geoInfo.cities.filter(i => i.name.match(regEx));
+
+      resultCities.length > 0
+        ? searchInfoDispatch({
+            type: "change-city-search-results",
+            payload: resultCities
+          })
+        : searchInfoDispatch({
+            type: "change-city-search-results",
+            payload: geoInfo.cities
+          });
+    } catch {
+      searchInfoDispatch({
+        type: "change-city-search-results",
+        payload: geoInfo.cities
+      });
+    }
+  }
+
   const searchCity: FormEventHandler<HTMLInputElement> = event => {
     const { value } = event.target as HTMLInputElement;
-    const regEx = new RegExp("^" + value, "i");
-    const resultCities = geoInfo.cities.filter(i => i.name.match(regEx));
+    setSearchValue(value);
+    selectCityAccordingToValue(value);
+  };
 
-    resultCities.length > 0
-      ? searchInfoDispatch({
-          type: "change-city-search-results",
-          payload: resultCities
-        })
-      : searchInfoDispatch({
-          type: "change-city-search-results",
-          payload: geoInfo.cities
-        });
+  const submitSerach: FormEventHandler<HTMLFormElement> = event => {
+    event.preventDefault();
+    selectCityAccordingToValue(searchValue);
   };
 
   const chooseShop = useCallback(
@@ -105,7 +123,7 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
     [searchInfo.chosenShop.id]
   );
 
-  function chooseCity(cityId: City["id"]) {
+  function changeCity(cityId: City["id"]) {
     return () => {
       if (cityId !== searchInfo.chosenCityId) {
         searchInfoDispatch({ type: "change-city", payload: cityId });
@@ -127,7 +145,7 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
     <button
       key={i.id}
       className="font-light text-sm w-full text-left"
-      onClick={chooseCity(i.id)}
+      onClick={changeCity(i.id)}
     >
       {i.name}
     </button>
@@ -136,28 +154,32 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
   return (
     <div className="relative">
       <div className={styles["top-map-pannel"]}>
-        <div className={styles["city-result"]}>
+        <form onSubmit={submitSerach} className={styles["city-result"]}>
           <input
             type="text"
             placeholder="Город"
             className={styles["map-search-input"]}
             onInput={searchCity}
+            value={searchValue}
+            name="city"
           />
           <div className={styles["city-list"]}>{cityList}</div>
-        </div>
+        </form>
       </div>
       <div className="flex lg:shadow-lg bg-white">
         {/* Desktop side bar */}
         <div className="hidden flex-col p-4 w-96 lg:flex">
-          <div className={styles["city-result"]}>
+          <form onSubmit={submitSerach} className={styles["city-result"]}>
             <input
               type="text"
               placeholder="Город"
               className={styles["map-search-input"]}
               onInput={searchCity}
+              value={searchValue}
+              name="city"
             />
             <div className={styles["city-list"]}>{cityList}</div>
-          </div>
+          </form>
           <div className="overflow-y-auto h-full">{shopList}</div>
         </div>
         <div className="flex-1">{memoizedGMap}</div>
