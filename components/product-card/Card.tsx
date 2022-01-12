@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FC } from "react";
+import Button from "components/Button";
 import DefaultPhoto from "public/img/default-photo.jpg";
 import starActiveIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
@@ -44,8 +45,8 @@ const Card: FC<Product> = ({ rating, price, name, photo, id }) => {
       <span className="text-red my-1 lg:text-xl lg:mt-0">{price} грн</span>
 
       <Link href={link}>
-        <a className="bg-red text-white text-sm p-2 mt-1 text-center lg:text-base">
-          Детальнее
+        <a className="mt-1">
+          <Button>Детальнее</Button>
         </a>
       </Link>
 
