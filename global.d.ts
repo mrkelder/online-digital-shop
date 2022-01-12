@@ -23,7 +23,10 @@ interface Product {
   key_characteristics: string[];
   price: number;
   subcategory: string;
-  photo: string | StaticImageData;
+  photo: {
+    image1x: string;
+    image2x: string;
+  } | null;
   rating: 0 | 1 | 2 | 3 | 4 | 5;
 }
 
