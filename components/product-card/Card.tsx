@@ -5,6 +5,7 @@ import DefaultPhoto from "public/img/default-photo.jpg";
 import starActiveIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
 import Image from "next/image";
+import Picture from "components/Picture";
 
 const Card: FC<Product> = ({ rating, price, name, photo, id }) => {
   const link = `/products/${id}`;
@@ -12,13 +13,17 @@ const Card: FC<Product> = ({ rating, price, name, photo, id }) => {
   return (
     <div className="flex flex-col shadow-lg bg-white w-60 px-3 py-5 text-grey-300 lg:w-80 lg:px-5 lg:py-6">
       <Link href={link}>
-        <a className="relative h-48 mb-2 lg:h-64">
-          <Image
-            src={photo ? photo : DefaultPhoto}
-            alt="Фотография товара"
-            objectFit="contain"
-            layout="fill"
-          />
+        <a className="relative h-44 mb-2 lg:h-64">
+          {photo ? (
+            <Picture {...photo} alt="Фотография товара" />
+          ) : (
+            <Image
+              src={DefaultPhoto}
+              alt="Фотография товара"
+              objectFit="contain"
+              layout="fill"
+            />
+          )}
         </a>
       </Link>
 
@@ -70,7 +75,7 @@ Card.defaultProps = {
   rating: 3,
   price: 9999,
   name: "Смартфон Samsung Galaxy A52 4/128GB Black Смартфон Samsung Galaxy A52 4/128GB Black Смартфон Samsung Galaxy A52 4/128GB Black Смартфон Samsung Galaxy A52 4/128GB Black",
-  photo: DefaultPhoto
+  photo: null
 };
 
 export default Card;
