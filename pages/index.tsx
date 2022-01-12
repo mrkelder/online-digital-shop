@@ -8,7 +8,9 @@ import LikeIcon from "public/img/like.svg";
 import TruckIcon from "public/img/truck.svg";
 import Card from "components/product-card/Card";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, SwiperOptions } from "swiper";
 import "swiper/css";
+import "swiper/css/autoplay";
 import serializableShopDTO from "utils/dto/serializableShopDTO";
 
 interface Props {
@@ -39,6 +41,14 @@ const swiperBreakpoints = {
   1000: {
     slidesPerView: 4,
     spaceBetween: 25
+  }
+};
+
+const swiperConfig: SwiperOptions = {
+  modules: [Autoplay],
+  breakpoints: swiperBreakpoints,
+  autoplay: {
+    delay: 3500
   }
 };
 
@@ -80,7 +90,7 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
         </strong>
 
         <div className="w-full my-3">
-          <Swiper breakpoints={swiperBreakpoints}>
+          <Swiper {...swiperConfig}>
             {reccommendedItems.map(item => (
               <SwiperSlide key={`slide_${item.id}`}>
                 <div className="w-full flex justify-center">
