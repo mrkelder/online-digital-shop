@@ -69,7 +69,7 @@ class Firebase {
     return data;
   }
 
-  async getDocumentsById(collectionName: string, ids: string[]) {
+  async getDocumentsById<T>(collectionName: string, ids: string[]) {
     const q = query(
       collection(this.db, collectionName),
       where(documentId(), "in", ids)
@@ -80,7 +80,7 @@ class Firebase {
         ({
           ...doc.data(),
           id: doc.id
-        } as Product)
+        } as unknown as T)
     );
     return parsedResults;
   }
