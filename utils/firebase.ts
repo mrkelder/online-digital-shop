@@ -69,7 +69,7 @@ class Firebase {
     return data;
   }
 
-  async fetchDocumentsById(collectionName: string, ids: string[]) {
+  async getDocumentsById(collectionName: string, ids: string[]) {
     const q = query(
       collection(this.db, collectionName),
       where(documentId(), "in", ids)
