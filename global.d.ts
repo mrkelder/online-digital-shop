@@ -56,3 +56,9 @@ interface GeoInfo {
   shops: Shop[];
   cities: City[];
 }
+
+interface Characteristic {
+  id: string;
+  name: string;
+  subCategory: SubCategory["id"];
+}
