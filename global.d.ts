@@ -30,7 +30,7 @@ interface Product {
   rating: 0 | 1 | 2 | 3 | 4 | 5;
 }
 
-type FirebaseProduct = Omit<Shop, "characteristics"> & {
+type FirebaseProduct = Omit<Product, "characteristics"> & {
   characteristics: [Characteristic["id"], string][];
 };
 
