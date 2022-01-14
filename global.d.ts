@@ -19,7 +19,7 @@ interface Product {
   name: string;
   available_in: string[];
   available: boolean;
-  characteristics: [Characteristic["id"], string][];
+  characteristics: [Characteristic["name"], string][];
   key_characteristics: string[];
   price: number;
   subcategory: string;
