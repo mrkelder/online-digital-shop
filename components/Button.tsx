@@ -16,7 +16,7 @@ const Button: FC<Props> = ({ children, variant, color, onClick }) => {
   return (
     <button
       {...{ onClick }}
-      className={`text-white font-light w-full bg-${colorStyle} ${sizeStyle}`}
+      className={`text-white font-light w-full bg-${colorStyle} ${sizeStyle} transition-colors hover:bg-red-focus`}
     >
       {children}
     </button>

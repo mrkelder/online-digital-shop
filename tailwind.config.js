@@ -17,6 +17,7 @@ module.exports = {
         transparent: "#333333a6"
       },
       red: "#e60000",
+      "red-focus": "#af0000",
       transparent: "#0000"
     },
     extend: {
