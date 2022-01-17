@@ -1,0 +1,15 @@
+.table {
+  @apply bg-white border border-grey-100 p-2 divide-y divide-grey-75 table-fixed w-full;
+}
+
+.th-value {
+  @apply text-sm font-light text-left;
+}
+
+.th-name {
+  @apply th-value py-3 px-3.5;
+}
+
+.tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
