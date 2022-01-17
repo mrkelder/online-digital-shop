@@ -14,13 +14,19 @@ interface Slide {
   name: string;
 }
 
+interface ProductCharacteristic {
+  name: Characteristic["name"];
+  value: string;
+  id: Characteristic["id"];
+}
+
 interface Product {
   id: string;
   name: string;
-  available_in: string[];
+  available_in: Shop[];
   available: boolean;
-  characteristics: [Characteristic["name"], string][];
-  key_characteristics: string[];
+  characteristics: ProductCharacteristic[];
+  key_characteristics: ProductCharacteristic[];
   price: number;
   subcategory: string;
   photo: {
@@ -30,8 +36,13 @@ interface Product {
   rating: 0 | 1 | 2 | 3 | 4 | 5;
 }
 
-type FirebaseProduct = Omit<Product, "characteristics"> & {
-  characteristics: [Characteristic["id"], string][];
+type FirebaseProduct = Omit<
+  Omit<Product, "characteristics">,
+  "key_characteristics"
+> & {
+  characteristics: Array<{ name: Characteristic["id"]; value: string }>;
+  key_characteristics: Array<Characteristic["id"]>;
+  available_in: Array<Shop["id"]>;
 };
 
 interface Reccommendation {
