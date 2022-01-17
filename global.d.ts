@@ -20,6 +20,11 @@ interface ProductCharacteristic {
   id: Characteristic["id"];
 }
 
+interface Photo {
+  image1x: string;
+  image2x: string;
+}
+
 interface Product {
   id: string;
   name: string;
@@ -29,11 +34,9 @@ interface Product {
   key_characteristics: ProductCharacteristic[];
   price: number;
   subcategory: string;
-  photo: {
-    image1x: string;
-    image2x: string;
-  } | null;
+  photo: Photo | null;
   rating: 0 | 1 | 2 | 3 | 4 | 5;
+  photos: Photo[];
 }
 
 type FirebaseProduct = Omit<
