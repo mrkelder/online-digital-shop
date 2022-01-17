@@ -14,12 +14,39 @@ import LocationIcon from "public/img/geo-point.svg";
 import Link from "next/link";
 import ArrowIcon from "public/img/arrow.svg";
 import Head from "next/head";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, SwiperOptions } from "swiper";
+import "swiper/css";
+import "swiper/css/free-mode";
 
 interface Props {
   itemObj: Product;
 }
 
 // FIXME: make it shceme.org friendly (https://schema.org/price)
+
+const swiperConf: SwiperOptions = {
+  modules: [FreeMode],
+  freeMode: true,
+  slidesPerView: 2.4,
+  breakpoints: {
+    320: {
+      slidesPerView: 1.2
+    },
+    400: {
+      slidesPerView: 1.8
+    },
+    560: {
+      slidesPerView: 2.2
+    },
+    728: {
+      slidesPerView: 2.8
+    },
+    1024: {
+      slidesPerView: 2
+    }
+  }
+};
 
 function createStars(starIcon: StaticImageData, quantity: number) {
   return new Array(quantity).fill(0).map((_, index) => (
@@ -70,24 +97,49 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
         {activeStars}
         {inactiveStars}
       </div>
-      <div className="bg-white p-2.5 mb-2 border border-grey-100 w-72 mx-3.5">
-        <div className="relative h-64">
-          {itemObj.photo ? (
-            <Picture
-              image1x={itemObj.photo.image1x}
-              image2x={itemObj.photo.image2x}
-              alt="Фото товара"
-            />
-          ) : (
-            <Image
-              layout="fill"
-              src={DefaultPhoto}
-              alt="Фото товара"
-              objectFit="cover"
-              objectPosition="50%"
-            />
-          )}
-        </div>
+      <div className="mb-2 w-full px-3.5 overflow-hidden">
+        <Swiper {...swiperConf}>
+          <SwiperSlide>
+            <div className="relative bg-white border border-grey-100 p-2.5">
+              {itemObj.photo ? (
+                <Picture
+                  image1x={itemObj.photo.image1x}
+                  image2x={itemObj.photo.image2x}
+                  alt="Фото товара"
+                />
+              ) : (
+                <Image
+                  layout="fill"
+                  src={DefaultPhoto}
+                  alt="Фото товара"
+                  objectFit="cover"
+                  objectPosition="50%"
+                />
+              )}
+            </div>
+          </SwiperSlide>
+          {itemObj.photos.map((photo, index) => (
+            <SwiperSlide key={`slide_${index}`}>
+              <div className="relative bg-white border border-grey-100 p-2.5">
+                {photo ? (
+                  <Picture
+                    image1x={photo.image1x}
+                    image2x={photo.image2x}
+                    alt="Фото товара"
+                  />
+                ) : (
+                  <Image
+                    layout="fill"
+                    src={DefaultPhoto}
+                    alt="Фото товара"
+                    objectFit="cover"
+                    objectPosition="50%"
+                  />
+                )}
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
       <p className="text-red text-2xl mb-1 text-light mx-3.5">
         {itemObj.price} грн
