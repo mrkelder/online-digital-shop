@@ -115,9 +115,9 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
         Показать все характеристики
       </a>
       <div className="my-3 mx-3.5">
-        <h2 className="text-grey-400 text-lg mb-1">
+        <h2 className="text-grey-400 text-lg mb-1 flex items-center">
           Доступные магазины{" "}
-          <span className="inline-block w-2.5">
+          <span className="inline-block w-2.5 ml-1 text-red">
             <LocationIcon />
           </span>
         </h2>
