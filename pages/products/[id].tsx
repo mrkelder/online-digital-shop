@@ -11,6 +11,8 @@ import Characteristics from "components/product-page/Characteristics";
 import styles from "styles/item-page.module.css";
 import serializableShopDTO from "utils/dto/serializableShopDTO";
 import LocationIcon from "public/img/geo-point.svg";
+import Link from "next/link";
+import ArrowIcon from "public/img/arrow.svg";
 
 interface Props {
   itemObj: Product;
@@ -42,7 +44,21 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
 
   return (
     <div>
-      <h1 className="text-xl font-bold text-grey-650 my-1 mx-3.5">
+      <Link
+        href={{
+          pathname: "/subcategory",
+          query: { id: itemObj.subcategory }
+        }}
+      >
+        <a className="mx-3.5 mt-1 flex items-center text-grey-400 text-sm">
+          {" "}
+          <span className="w-1 inline-block mr-1">
+            <ArrowIcon />
+          </span>{" "}
+          На страницу подкатегорий
+        </a>
+      </Link>
+      <h1 className="text-xl font-bold text-grey-400 my-1 mx-3.5">
         {itemObj.name}
       </h1>
       <div className="flex mb-2 mx-3.5">
