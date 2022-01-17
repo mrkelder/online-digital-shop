@@ -13,6 +13,7 @@ import serializableShopDTO from "utils/dto/serializableShopDTO";
 import LocationIcon from "public/img/geo-point.svg";
 import Link from "next/link";
 import ArrowIcon from "public/img/arrow.svg";
+import Head from "next/head";
 
 interface Props {
   itemObj: Product;
@@ -44,6 +45,10 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
 
   return (
     <div>
+      <Head>
+        <title>{itemObj.name}</title>
+      </Head>
+
       <Link
         href={{
           pathname: "/subcategory",
