@@ -37,6 +37,7 @@ interface Product {
   photo: Photo | null;
   rating: 0 | 1 | 2 | 3 | 4 | 5;
   photos: Photo[];
+  description: string;
 }
 
 type FirebaseProduct = Omit<

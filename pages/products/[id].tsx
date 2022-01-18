@@ -200,11 +200,8 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
           </div>
           <div className="lg:hidden">
             <SectionWrapper text="Описание" position="first">
-              <p className="text-base mx-3.5 my-2">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Quisquam vel consectetur animi voluptatum voluptatem enim
-                aliquam error! Fugiat, eaque harum placeat incidunt aliquam
-                mollitia soluta non porro error dolorum veniam!
+              <p className="text-base mx-3.5 my-2 text-grey-600">
+                {itemObj.description}
               </p>
             </SectionWrapper>
             <span id="all-characteristics" />
@@ -219,6 +216,10 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
         </div>
       </div>
       <div className="hidden bg-white mt-10 p-4 mb-2 lg:block">
+        <h2>Описание</h2>
+        <p className="text-base text-grey-600 mt-1">{itemObj.description}</p>
+      </div>
+      <div className="hidden bg-white p-4 mb-2 lg:block">
         <h2>Характеристики</h2>
         <Characteristics characteristics={itemObj.characteristics} />
       </div>
