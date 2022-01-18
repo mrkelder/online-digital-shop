@@ -154,11 +154,24 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
             {itemObj.price} грн
           </p>
           <div className="mx-3.5 lg:hidden">
-            <Button variant="lg">Купить</Button>
+            <Button variant="lg" disabled={!itemObj.available}>
+              Купить
+            </Button>
           </div>
           <div className="hidden lg:block w-48">
-            <Button variant="sm">Купить</Button>
+            <Button variant="sm" disabled={!itemObj.available}>
+              Купить
+            </Button>
           </div>
+          <b
+            className={
+              itemObj.available
+                ? "hidden"
+                : "inline" + " mx-3.5 mt-1 text-grey-300 lg:mx-0"
+            }
+          >
+            Нет в наличии
+          </b>
           <hr className="hidden mt-2 lg:block" />
           <h2 className="text-base font-regular mt-2 text-grey-650 mx-3.5 lg:text-lg">
             Ключевые особенности
