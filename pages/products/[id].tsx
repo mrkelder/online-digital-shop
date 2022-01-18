@@ -18,6 +18,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, SwiperOptions } from "swiper";
 import "swiper/css";
 import "swiper/css/free-mode";
+import { useState } from "react";
 
 interface Props {
   itemObj: Product;
@@ -43,7 +44,7 @@ const swiperConf: SwiperOptions = {
       slidesPerView: 2.8
     },
     1024: {
-      slidesPerView: 2
+      slidesPerView: 3
     }
   }
 };
@@ -60,6 +61,16 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   const MAXIMUM_RATING = 5;
   const activeStars = createStars(activeStarIcon, itemObj.rating);
   const inactiveStars = createStars(starIcon, MAXIMUM_RATING - itemObj.rating);
+  const [chosenPhotoIndex, setChosenPhotoIndex] = useState(0);
+
+  // FIXME: render conditionally
+  // TODO: add side buttons for photo selector
+
+  const choosePhotoIndex = (index: number) => {
+    return () => {
+      setChosenPhotoIndex(index);
+    };
+  };
 
   const resolveDaySchedule = (schedule: Shop["schedule"]) => {
     // FIXME: extract to utils
@@ -97,107 +108,113 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
         {activeStars}
         {inactiveStars}
       </div>
-      <div className="mb-2 w-full px-3.5 overflow-hidden">
-        <Swiper {...swiperConf}>
-          <SwiperSlide>
-            <div className="relative bg-white border border-grey-100 p-2.5">
-              {itemObj.photo ? (
-                <Picture
-                  image1x={itemObj.photo.image1x}
-                  image2x={itemObj.photo.image2x}
-                  alt="Фото товара"
-                />
-              ) : (
-                <Image
-                  layout="fill"
-                  src={DefaultPhoto}
-                  alt="Фото товара"
-                  objectFit="cover"
-                  objectPosition="50%"
-                />
-              )}
-            </div>
-          </SwiperSlide>
-          {itemObj.photos.map((photo, index) => (
-            <SwiperSlide key={`slide_${index}`}>
-              <div className="relative bg-white border border-grey-100 p-2.5">
-                {photo ? (
-                  <Picture
-                    image1x={photo.image1x}
-                    image2x={photo.image2x}
-                    alt="Фото товара"
-                  />
-                ) : (
-                  <Image
-                    layout="fill"
-                    src={DefaultPhoto}
-                    alt="Фото товара"
-                    objectFit="cover"
-                    objectPosition="50%"
-                  />
-                )}
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
-      <p className="text-red text-2xl mb-1 text-light mx-3.5">
-        {itemObj.price} грн
-      </p>
-      <div className="mx-3.5">
-        <Button variant="lg">Купить</Button>
-      </div>
-      <h2 className="text-base font-regular mt-2 text-grey-650 mx-3.5">
-        Ключевые особенности
-      </h2>
-      <table className={styles["table"]}>
-        <tbody>
-          {itemObj.key_characteristics.map(c => (
-            <tr key={c.id}>
-              <th className={styles["th-name"]}>{c.name}</th>
-              <th className={styles["th-value"]}>{c.value}</th>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <a
-        href="#all-characteristics"
-        className="text-sm underline font-regular mt-2 mb-10 text-grey-650 mx-3.5"
-      >
-        Показать все характеристики
-      </a>
-      <div className="my-3 mx-3.5">
-        <h2 className="text-grey-400 text-lg mb-1 flex items-center">
-          Доступные магазины{" "}
-          <span className="inline-block w-2.5 ml-1 text-red">
-            <LocationIcon />
-          </span>
-        </h2>
-        {itemObj.available_in.map(i => (
-          <div key={i.id} className="flex flex-col mb-2">
-            <b className="text-grey-650 text-xs mb-0.5">{i.name}</b>
-            <span className="text-xs text-grey-300 underline">
-              {resolveDaySchedule(i.schedule)}
-            </span>
+      <div className="flex flex-col lg:flex-row lg:space-x-5 lg:mx-3.5">
+        <div className="lg:bg-white box-border lg:flex-1 lg:p-4 lg:shadow-xl lg:flex lg:flex-col lg:items-center">
+          <div className="hidden relative w-full h-96 mb-2 lg:block">
+            <Image
+              src={itemObj.photos[chosenPhotoIndex].image2x as string}
+              layout="fill"
+              alt="Фото товара"
+              objectFit="contain"
+              objectPosition="50%"
+            />
           </div>
-        ))}
+          <div className="mb-2 w-full px-3.5 overflow-hidden lg:w-1/2">
+            <Swiper {...swiperConf}>
+              {itemObj.photos.map((photo, index) => (
+                <SwiperSlide
+                  key={`slide_${index}`}
+                  onClick={choosePhotoIndex(index)}
+                >
+                  <div className={styles["photo-slide"]}>
+                    {photo ? (
+                      <Picture
+                        image1x={photo.image1x}
+                        image2x={photo.image2x}
+                        alt="Фото товара"
+                      />
+                    ) : (
+                      <Image
+                        layout="fill"
+                        src={DefaultPhoto}
+                        alt="Фото товара"
+                        objectFit="cover"
+                        objectPosition="50%"
+                      />
+                    )}
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </div>
+        <div className="box-border lg:flex-1 lg:bg-white lg:shadow-xl lg:p-4">
+          <p className="text-red text-2xl mb-1 text-light mx-3.5 lg:text-grey-500 lg:mx-0 lg:text-3xl lg:mb-2.5">
+            {itemObj.price} грн
+          </p>
+          <div className="mx-3.5 lg:hidden">
+            <Button variant="lg">Купить</Button>
+          </div>
+          <div className="hidden lg:block w-48">
+            <Button variant="sm">Купить</Button>
+          </div>
+          <hr className="hidden mt-2 lg:block" />
+          <h2 className="text-base font-regular mt-2 text-grey-650 mx-3.5 lg:text-lg">
+            Ключевые особенности
+          </h2>
+          <table className={styles["table"]}>
+            <tbody>
+              {itemObj.key_characteristics.map(c => (
+                <tr key={c.id}>
+                  <th className={styles["th-name"]}>{c.name}</th>
+                  <th className={styles["th-value"]}>{c.value}</th>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <hr className="hidden mb-2 lg:block" />
+          <a
+            href="#all-characteristics"
+            className="text-sm underline font-regular mt-2 mb-10 text-grey-650 mx-3.5 lg:hidden"
+          >
+            Показать все характеристики
+          </a>
+          <div className="my-3 mx-3.5 lg:my-1">
+            <h2 className="text-grey-650 font-regular text-lg mb-1 flex items-center lg:text-lg lg:mb-2">
+              Доступные магазины{" "}
+              <span className="inline-block w-2.5 ml-1 text-red">
+                <LocationIcon />
+              </span>
+            </h2>
+            {itemObj.available_in.map(i => (
+              <div key={i.id} className="flex flex-col mb-2 lg:mb-3">
+                <b className="text-grey-650 text-xs mb-0.5">{i.name}</b>
+                <span className="text-xs text-grey-300 underline">
+                  {resolveDaySchedule(i.schedule)}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="lg:hidden">
+            <SectionWrapper text="Описание" position="first">
+              <p className="text-base mx-3.5 my-2">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                Quisquam vel consectetur animi voluptatum voluptatem enim
+                aliquam error! Fugiat, eaque harum placeat incidunt aliquam
+                mollitia soluta non porro error dolorum veniam!
+              </p>
+            </SectionWrapper>
+            <span id="all-characteristics" />
+            <SectionWrapper
+              text="Характеристики"
+              id="all-characteristics"
+              openedByDefault
+            >
+              <Characteristics characteristics={itemObj.characteristics} />
+            </SectionWrapper>
+          </div>
+        </div>
       </div>
-      <SectionWrapper text="Описание" position="first">
-        <p className="text-base mx-3.5 my-2">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam vel
-          consectetur animi voluptatum voluptatem enim aliquam error! Fugiat,
-          eaque harum placeat incidunt aliquam mollitia soluta non porro error
-          dolorum veniam!
-        </p>
-      </SectionWrapper>
-      <span id="all-characteristics" />
-      <SectionWrapper
-        text="Характеристики"
-        id="all-characteristics"
-        openedByDefault
-      >
-        <Characteristics characteristics={itemObj.characteristics} />
-      </SectionWrapper>
     </div>
   );
 };

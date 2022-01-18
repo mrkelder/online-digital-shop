@@ -1,15 +1,19 @@
 .table {
-  @apply bg-white border border-grey-100 p-2 divide-y divide-grey-75 table-fixed w-full;
+  @apply bg-white border border-grey-100 p-2 divide-y divide-grey-75 table-fixed w-full lg:border-none lg:my-2;
 }
 
 .th-value {
-  @apply text-sm font-light text-left;
+  @apply text-sm font-light text-left py-3 lg:py-0 lg:text-base;
 }
 
 .th-name {
-  @apply th-value py-3 px-3.5;
+  @apply th-value px-3.5;
 }
 
 .tr:nth-child(even) {
   background-color: #f5f5f5;
+}
+
+.photo-slide {
+  @apply relative bg-white border border-grey-100 p-2.5 lg:border-none;
 }

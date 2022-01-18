@@ -73,6 +73,10 @@ a {
   box-sizing: border-box;
 }
 
+hr {
+  border-color: #d6d6d6;
+}
+
 .swiper-pagination-bullet {
   width: 10px !important;
   height: 10px !important;
