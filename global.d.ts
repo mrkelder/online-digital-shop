@@ -14,18 +14,40 @@ interface Slide {
   name: string;
 }
 
+interface ProductCharacteristic {
+  name: Characteristic["name"];
+  value: string;
+  id: Characteristic["id"];
+}
+
+interface Photo {
+  image1x: string;
+  image2x: string;
+}
+
 interface Product {
   id: string;
   name: string;
-  available_in: string[];
+  available_in: Shop[];
   available: boolean;
-  characteristics: Array<{ [name: string]: string }>;
-  key_characteristics: string[];
+  characteristics: ProductCharacteristic[];
+  key_characteristics: ProductCharacteristic[];
   price: number;
   subcategory: string;
-  photo: string | StaticImageData;
+  photo: Photo | null;
   rating: 0 | 1 | 2 | 3 | 4 | 5;
+  photos: Photo[];
+  description: string;
 }
+
+type FirebaseProduct = Omit<
+  Omit<Product, "characteristics">,
+  "key_characteristics"
+> & {
+  characteristics: Array<{ name: Characteristic["id"]; value: string }>;
+  key_characteristics: Array<Characteristic["id"]>;
+  available_in: Array<Shop["id"]>;
+};
 
 interface Reccommendation {
   id: string;
@@ -52,4 +74,10 @@ type FirebaseShop = Omit<Shop, "geo"> & {
 interface GeoInfo {
   shops: Shop[];
   cities: City[];
+}
+
+interface Characteristic {
+  id: string;
+  name: string;
+  subCategory: SubCategory["id"];
 }
