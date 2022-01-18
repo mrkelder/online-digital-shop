@@ -141,7 +141,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   }));
 
   const reccommendations = dbReccommendations.map(i => i.item_id);
-  const reccommendedItems = await firebase.fetchDocumentsById(
+  const reccommendedItems = await firebase.getDocumentsById(
     "products",
     reccommendations
   );
