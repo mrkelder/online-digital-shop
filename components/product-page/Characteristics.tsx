@@ -8,9 +8,9 @@ const Characteristics: FC<{ characteristics: Product["characteristics"] }> = ({
     <table className={styles["table"]}>
       <tbody>
         {characteristics.map(c => (
-          <tr key={c.id} className={styles["tr"]}>
-            <th className={styles["th-name"]}>{c.name}</th>
-            <th className={styles["th-value"]}>{c.value}</th>
+          <tr key={c.id} className={styles["tr-c"]}>
+            <th className={styles["th-name-c"]}>{c.name}</th>
+            <th className={styles["th-value-c"]}>{c.value}</th>
           </tr>
         ))}
       </tbody>

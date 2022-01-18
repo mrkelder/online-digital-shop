@@ -16,9 +16,9 @@ import ArrowIcon from "public/img/arrow.svg";
 import Head from "next/head";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, SwiperOptions } from "swiper";
+import { useState } from "react";
 import "swiper/css";
 import "swiper/css/free-mode";
-import { useState } from "react";
 
 interface Props {
   itemObj: Product;
@@ -65,6 +65,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
 
   // FIXME: render conditionally
   // TODO: add side buttons for photo selector
+  // TODO: prefetch all photos to prevent lagging while swithcing between photos
 
   const choosePhotoIndex = (index: number) => {
     return () => {
@@ -93,7 +94,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
           query: { id: itemObj.subcategory }
         }}
       >
-        <a className="mx-3.5 mt-1 flex items-center text-grey-400 text-sm">
+        <a className="mx-3.5 mt-1 flex items-center text-grey-400 text-sm lg:mx-0">
           {" "}
           <span className="w-1 inline-block mr-1">
             <ArrowIcon />
@@ -101,14 +102,14 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
           На страницу подкатегорий
         </a>
       </Link>
-      <h1 className="text-xl font-bold text-grey-400 my-1 mx-3.5">
+      <h1 className="text-xl font-bold text-grey-400 my-1 mx-3.5 lg:mx-0">
         {itemObj.name}
       </h1>
-      <div className="flex mb-2 mx-3.5">
+      <div className="flex mb-2 mx-3.5 lg:mx-0">
         {activeStars}
         {inactiveStars}
       </div>
-      <div className="flex flex-col lg:flex-row lg:space-x-5 lg:mx-3.5">
+      <div className="flex flex-col lg:flex-row lg:space-x-5">
         <div className="lg:bg-white box-border lg:flex-1 lg:p-4 lg:shadow-xl lg:flex lg:flex-col lg:items-center">
           <div className="hidden relative w-full h-96 mb-2 lg:block">
             <Image
@@ -188,7 +189,9 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
             </h2>
             {itemObj.available_in.map(i => (
               <div key={i.id} className="flex flex-col mb-2 lg:mb-3">
-                <b className="text-grey-650 text-xs mb-0.5">{i.name}</b>
+                <address className="text-grey-650 text-xs mb-0.5">
+                  {i.name}
+                </address>
                 <span className="text-xs text-grey-300 underline">
                   {resolveDaySchedule(i.schedule)}
                 </span>
@@ -214,6 +217,10 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
             </SectionWrapper>
           </div>
         </div>
+      </div>
+      <div className="hidden bg-white mt-10 p-4 mb-2 lg:block">
+        <h2>Характеристики</h2>
+        <Characteristics characteristics={itemObj.characteristics} />
       </div>
     </div>
   );
