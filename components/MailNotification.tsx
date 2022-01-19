@@ -21,7 +21,7 @@ const MailNotification: FC = () => {
           Следите за последними новостями и акциями
         </h2>
         <div className="lg:max-w-sm">
-          <Input />
+          <Input type="email" placeholder="Email" />
         </div>
         <div className="mt-2 lg:max-w-sm">
           <Button variant="lg">Подписаться</Button>
