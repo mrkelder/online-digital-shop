@@ -10,6 +10,7 @@ import BurgerIcon from "public/img/burger.svg";
 import SearchIcon from "public/img/search.svg";
 import CrossIcon from "public/img/cross.svg";
 import { FirebaseContext } from "utils/firebase";
+import ArrowIcon from "public/img/arrow.svg";
 
 /**
  * @type {0} - menu is closed
@@ -40,12 +41,25 @@ function menuReducer(state: MenuState, action: MenuAction) {
   }
 }
 
+const functionalPages = [
+  { name: "На главную", link: "/" },
+  { name: "Корзина", link: "/cart" }
+];
+
+const staticPages = [
+  { name: "Доставка и оплата", link: "/" },
+  { name: "Гарантия", link: "/" },
+  { name: "Акции", link: "/" },
+  { name: "Магазины", link: "/" }
+];
+
 const MobileMenu: FC<{ categories: Category[]; isLoading: boolean }> = ({
   categories,
   isLoading
 }) => {
   const firebase = useContext(FirebaseContext);
   const [menuState, dispatch] = useReducer(menuReducer, DEFAULT_MENU_STATE);
+  const [navState, setNavState] = useState(false);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const [subCategoriesLoading, setSubCategoriesLoading] = useState(false);
 
@@ -73,6 +87,8 @@ const MobileMenu: FC<{ categories: Category[]; isLoading: boolean }> = ({
     changeState("open-sub-menu")();
   }
 
+  const toggleNav = () => setNavState(!navState);
+
   return (
     <div className="flex items-center h-14 px-3 w-full lg:hidden">
       <Link href="/">
@@ -93,11 +109,11 @@ const MobileMenu: FC<{ categories: Category[]; isLoading: boolean }> = ({
       <button className="text-grey-300 w-5 mr-4">
         <SearchIcon />
       </button>
-      <button className="text-grey-300 w-5">
+      <button className="text-grey-300 w-5" onClick={toggleNav}>
         <BurgerIcon />
       </button>
       <Dialog opened={menuState > 0} onClose={changeState("close")}>
-        <div className="absolute w-4/5 h-screen bg-white flex flex-col animate-slide">
+        <div className="absolute w-4/5 h-screen bg-white flex flex-col animate-slide-left">
           <div className="relative overflow-hidden h-full">
             <div className="bg-red text-white h-14 flex justify-center items-center relative">
               <button
@@ -128,6 +144,56 @@ const MobileMenu: FC<{ categories: Category[]; isLoading: boolean }> = ({
             />
           </div>
         </div>
+      </Dialog>
+      <Dialog opened={navState} onClose={toggleNav}>
+        <nav className="absolute w-4/5 h-screen right-0 bg-white flex flex-col animate-slide-right pt-4">
+          <div className="flex justify-end px-3.5">
+            {/* justify-between */}
+            {/* Account block */}
+            <button className="w-5 text-grey-600" onClick={toggleNav}>
+              <CrossIcon />
+            </button>
+          </div>
+          <div className="flex divide-x divide-grey-300 border-t border-b border-grey-100 py-2 my-2">
+            <button className="flex-1 text-left text-grey-400 text-sm pl-5">
+              Киев
+            </button>
+            <div className="group flex-1 relative">
+              <button className="text-left text-grey-400 text-sm px-5 flex items-center justify-between w-full">
+                RU
+                <span className="w-1.5 transform rotate-90 group-hover:-rotate-90">
+                  <ArrowIcon />
+                </span>
+              </button>
+              <button className="absolute w-full bg-white z-50 text-left text-grey-400 text-sm px-5 py-3 shadow-md top-8 hidden group-hover:block">
+                UA
+              </button>
+            </div>
+          </div>
+          <ul className="mx-3.5 mt-2 space-y-1">
+            {functionalPages.map(i => (
+              <li key={i.name} onClick={toggleNav}>
+                <Link href={i.link}>
+                  <a className="text-grey-650 text-lg">{i.name}</a>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <ul className="mt-3 py-4 bg-grey-75 border-t border-b border-grey-100 pl-10 space-y-2">
+            {staticPages.map(i => (
+              <li key={i.name} onClick={toggleNav}>
+                <Link href={i.link}>
+                  <a className="font-regular text-grey-650 text-lg">{i.name}</a>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="my-auto mb-0 py-2 px-3.5">
+            <a href="tel:+380991234567" className="font-light">
+              099 123 45 67
+            </a>
+          </div>
+        </nav>
       </Dialog>
     </div>
   );

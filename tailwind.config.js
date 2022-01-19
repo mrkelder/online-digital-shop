@@ -34,8 +34,12 @@ module.exports = {
         light: ["Vodafone Lt", "sans"]
       },
       keyframes: {
-        slide: {
+        "slide-left": {
           "0%": { transform: "translateX(-120%)" },
+          "100%": { transform: "translateX(0px)" }
+        },
+        "slide-right": {
+          "0%": { transform: "translateX(120%)" },
           "100%": { transform: "translateX(0px)" }
         },
         disappear: {
@@ -44,7 +48,8 @@ module.exports = {
         }
       },
       animation: {
-        slide: "slide .4s ease-in-out",
+        "slide-left": "slide-left .4s ease-in-out",
+        "slide-right": "slide-right .4s ease-in-out",
         disappear: "disappear 1s ease-in-out"
       }
     }
