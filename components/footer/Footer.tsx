@@ -119,7 +119,7 @@ const Footer: FC = () => {
           ))}
         </li>
         {staticLinks.map(i => (
-          <li key={i.name}>
+          <li className="hidden lg:block" key={i.name}>
             <h2 className="text-2xl font-bold mb-1">{i.name}</h2>
             <ul className="space-y-1">
               {i.items.map(item => (
