@@ -87,7 +87,7 @@ const DesktopMenu: FC = () => {
             <Catalog isOpened={isCatalogOpened} />
           </div>
           <div className="flex-1 mx-5">
-            <Input type="search" />
+            <Input type="search" underline placeholder="Поиск" />
           </div>
           <Cart items={3} />
         </div>
