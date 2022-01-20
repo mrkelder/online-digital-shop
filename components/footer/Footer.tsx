@@ -3,6 +3,8 @@ import YtIcon from "public/img/youtube.svg";
 import InstaIcon from "public/img/instagram.svg";
 import FbIcon from "public/img/facebook.svg";
 import TwIcon from "public/img/twitter.svg";
+import ContentWrapper from "components/ContentWrapper";
+import Link from "next/link";
 
 const socialMedias = [
   {
@@ -14,52 +16,107 @@ const socialMedias = [
   { link: "https://twitter.com/vodafone_ua", icon: <TwIcon /> }
 ];
 
+const staticLinks = [
+  {
+    name: "Интернет-магазин",
+    postiion: "first",
+    items: [
+      { name: "Про магазин", link: "/" },
+      { name: "Магазины", link: "/" },
+      { name: "Акции", link: "/" },
+      { name: "Контакты", link: "/" }
+    ]
+  },
+  {
+    name: "Помощь покупателю",
+    postiion: "between",
+    items: [
+      { name: "Доставка и оплата", link: "/" },
+      { name: "Возврат товара", link: "/" },
+      { name: "Гарантия", link: "/" }
+    ]
+  },
+  {
+    name: "Сервисы",
+    postiion: "last",
+    items: [
+      { name: "Кредит", link: "/" },
+      { name: "Тарифы", link: "/" }
+    ]
+  }
+];
+
 const Footer: FC = () => {
   return (
     <footer className="bg-grey-650 py-5 px-3 lg:px-12 text-white">
-      <ul className="grid grid-cols-1 space-y-5">
+      <ul className="grid grid-cols-1">
         <li>
-          <ul className="flex justify-between">
-            {socialMedias.map((i, index) => (
+          <ul className="flex flex-col space-y-5">
+            <li>
+              <ul className="flex justify-between">
+                {socialMedias.map((i, index) => (
+                  <li key={`social_${index}`}>
+                    <a
+                      href={i.link}
+                      className="w-8 block"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {i.icon}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+            <li>
               <a
-                key={`social_${index}`}
-                href={i.link}
-                className="w-8 block"
-                target="_blank"
-                rel="noreferrer"
+                href="tel:+380991234567"
+                className="text-white font-light text-2xl"
               >
-                {i.icon}
+                099 123 45 67
               </a>
-            ))}
+            </li>
+            <li>
+              <p className="text-sm">
+                ООО {'"'}ВФ РИТЕЙЛ{'"'}
+              </p>
+              <p className="text-sm">
+                Бесплатно с мобильных и стационарных по Украине
+              </p>
+              <p className="text-grey-300 text-sm">
+                График работы контактного центра
+              </p>
+            </li>
+            <li>
+              <strong className="text-2xl font-light font-bold">
+                Ежедневно
+                <br />
+                <time dateTime="8:00">8:00</time>
+                {" - "}
+                <time dateTime="23:00">23:00</time>
+              </strong>
+            </li>
           </ul>
         </li>
-        <li>
-          <a
-            href="tel:+380991234567"
-            className="text-white font-light text-2xl"
-          >
-            099 123 45 67
-          </a>
-        </li>
-        <li>
-          <p className="text-sm">
-            ООО {'"'}ВФ РИТЕЙЛ{'"'}
-          </p>
-          <p className="text-sm">
-            Бесплатно с мобильных и стационарных по Украине
-          </p>
-          <p className="text-grey-300 text-sm">
-            График работы контактного центра
-          </p>
-        </li>
-        <li>
-          <strong className="text-2xl font-light font-bold">
-            Ежедневно
-            <br />
-            <time dateTime="8:00">8:00</time>
-            {" - "}
-            <time dateTime="23:00">23:00</time>
-          </strong>
+        <li className="mt-3">
+          {staticLinks.map(i => (
+            <ContentWrapper
+              key={i.name}
+              text={i.name}
+              position={i.postiion as "first" | "last" | "between"}
+              theme="dark"
+            >
+              <div className="flex flex-col divide-y divide-grey-300">
+                {i.items.map(item => (
+                  <Link key={item.name} href={item.link}>
+                    <a className="bg-grey-500 py-1.5 text-base px-3">
+                      {item.name}
+                    </a>
+                  </Link>
+                ))}
+              </div>
+            </ContentWrapper>
+          ))}
         </li>
       </ul>
     </footer>
