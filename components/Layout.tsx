@@ -38,7 +38,7 @@ const Layout: FC = ({ children }) => {
         </span>
       </button>
       {memoizedHeader}
-      <main className="max-w-7xl mx-auto">{children}</main>
+      <main className="max-w-7xl mx-auto min-h-screen">{children}</main>
       {memoizedFooter}
     </>
   );
