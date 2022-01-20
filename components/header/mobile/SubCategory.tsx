@@ -12,6 +12,7 @@ const SubCategory: FC<{
   subCategories: SubCategory[];
 }> = ({ isOpened, closeSubMenu, closeMenu, subCategories, isLoading }) => {
   const { push } = useRouter();
+  // FIXME: fix tabIndex
 
   function changeLink(link: string) {
     return () => {

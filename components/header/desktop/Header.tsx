@@ -33,6 +33,8 @@ const DesktopMenu: FC = () => {
   }, [isCatalogOpened]);
 
   // TODO: close catalog when a user clicks empty space
+  // FIXME: Window.matchMedia()
+  // https://stackoverflow.com/questions/67266495/how-can-i-hide-a-component-in-react-depending-on-the-screen-size
 
   return (
     <div className="hidden lg:flex flex-col w-full">
