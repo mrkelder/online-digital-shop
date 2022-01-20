@@ -1,5 +1,6 @@
 import { FC, useContext, useEffect, useRef, useState } from "react";
 import { FirebaseContext } from "utils/firebase";
+import { useRouter } from "next/router";
 import Tab from "components/header/Tab";
 import SubCategory from "./SubCategory";
 
@@ -7,6 +8,7 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
   const display = isOpened ? "flex" : "hidden";
   const firebase = useContext(FirebaseContext);
   const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   const [chosenCategory, setChosenCategory] = useState("");
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
@@ -48,6 +50,13 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
     };
   }, []);
 
+  const navigateToCategoryPage = (id: string) => {
+    return () => {
+      router.push("/category", { query: `id=${id}` });
+      dispatchCloseEvent();
+    };
+  };
+
   const dispatchCloseEvent = () => {
     const event = new Event("close-catalog");
     window.dispatchEvent(event);
@@ -75,7 +84,8 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
             <Tab
               key={i.id}
               name={i.name}
-              onClick={chooseCategory(i.id)}
+              onMouseEnter={chooseCategory(i.id)}
+              onClick={navigateToCategoryPage(i.id)}
               focused={chosenCategory === i.id}
               showIcon
             />
