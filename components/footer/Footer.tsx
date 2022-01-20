@@ -48,17 +48,17 @@ const staticLinks = [
 
 const Footer: FC = () => {
   return (
-    <footer className="bg-grey-650 py-5 px-3 lg:px-12 text-white">
-      <ul className="grid grid-cols-1">
+    <footer className="bg-grey-650 py-5 px-3 lg:px-12 text-white lg:py-10">
+      <ul className="grid max-w-7xl mx-auto grid-cols-1 lg:grid-cols-4 lg:gap-x-10">
         <li>
-          <ul className="flex flex-col space-y-5">
+          <ul className="flex flex-col space-y-5 lg:pr-7 lg:space-y-3">
             <li>
               <ul className="flex justify-between">
                 {socialMedias.map((i, index) => (
                   <li key={`social_${index}`}>
                     <a
                       href={i.link}
-                      className="w-8 block"
+                      className="w-8 block lg:w-5"
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -98,7 +98,7 @@ const Footer: FC = () => {
             </li>
           </ul>
         </li>
-        <li className="mt-3">
+        <li className="mt-3 lg:hidden">
           {staticLinks.map(i => (
             <ContentWrapper
               key={i.name}
@@ -118,6 +118,20 @@ const Footer: FC = () => {
             </ContentWrapper>
           ))}
         </li>
+        {staticLinks.map(i => (
+          <li key={i.name}>
+            <h2 className="text-2xl font-bold mb-1">{i.name}</h2>
+            <ul className="space-y-1">
+              {i.items.map(item => (
+                <li key={item.name}>
+                  <Link href={item.link}>
+                    <a className="text-base hover:underline">{item.name}</a>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
       </ul>
     </footer>
   );
