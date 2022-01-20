@@ -17,6 +17,7 @@ import Head from "next/head";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, SwiperOptions } from "swiper";
 import { useState } from "react";
+import MailNotification from "components/MailNotification";
 import "swiper/css";
 import "swiper/css/free-mode";
 
@@ -236,6 +237,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
         <h2>Характеристики</h2>
         <Characteristics characteristics={itemObj.characteristics} />
       </div>
+      <MailNotification />
     </div>
   );
 };
