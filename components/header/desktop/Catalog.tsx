@@ -52,7 +52,7 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
 
   const navigateToCategoryPage = (id: string) => {
     return () => {
-      router.push("/category", { query: `id=${id}` });
+      router.push(`/category?id=${id}`);
       dispatchCloseEvent();
     };
   };
