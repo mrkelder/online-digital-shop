@@ -1,12 +1,14 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import ArrowIcon from "public/img/arrow.svg";
 import Header from "components/header/Header";
+import Footer from "components/footer/Footer";
 
 const Layout: FC = ({ children }) => {
   const [scroll, setScroll] = useState(0);
   const scrollTopStyle = scroll > 400 ? "flex" : "hidden";
 
   const memoizedHeader = useMemo(() => <Header />, []);
+  const memoizedFooter = useMemo(() => <Footer />, []);
 
   function scrollTop() {
     scrollTo({ top: 0, behavior: "smooth" });
@@ -37,7 +39,7 @@ const Layout: FC = ({ children }) => {
       </button>
       {memoizedHeader}
       <main className="max-w-7xl mx-auto">{children}</main>
-      <footer></footer>
+      {memoizedFooter}
     </>
   );
 };

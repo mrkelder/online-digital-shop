@@ -12,6 +12,7 @@ import { Autoplay, SwiperOptions } from "swiper";
 import "swiper/css";
 import "swiper/css/autoplay";
 import serializableShopDTO from "utils/dto/serializableShopDTO";
+import MailNotification from "components/MailNotification";
 
 interface Props {
   slides: ReadonlyArray<{ mobile: string; desktop: string }>;
@@ -95,6 +96,7 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
               <SwiperSlide key={`slide_${item.id}`}>
                 <div className="w-full flex justify-center">
                   <Card {...item} />
+                  {/* FIXME: above */}
                 </div>
               </SwiperSlide>
             ))}
@@ -119,6 +121,7 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
           )}
         </div>
       </section>
+      <MailNotification />
     </>
   );
 };

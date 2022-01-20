@@ -6,7 +6,7 @@ import DefaultPhoto from "public/img/default-photo.jpg";
 import Picture from "components/Picture";
 import activeStarIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
-import SectionWrapper from "components/product-page/SectionWrapper";
+import ContentWrapper from "components/ContentWrapper";
 import Characteristics from "components/product-page/Characteristics";
 import styles from "styles/item-page.module.css";
 import serializableShopDTO from "utils/dto/serializableShopDTO";
@@ -17,6 +17,7 @@ import Head from "next/head";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, SwiperOptions } from "swiper";
 import { useState } from "react";
+import MailNotification from "components/MailNotification";
 import "swiper/css";
 import "swiper/css/free-mode";
 
@@ -212,19 +213,19 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
             ))}
           </div>
           <div className="lg:hidden">
-            <SectionWrapper text="Описание" position="first">
+            <ContentWrapper text="Описание" position="first">
               <p className="text-base mx-3.5 my-2 text-grey-600">
                 {itemObj.description}
               </p>
-            </SectionWrapper>
+            </ContentWrapper>
             <span id="all-characteristics" />
-            <SectionWrapper
+            <ContentWrapper
               text="Характеристики"
               id="all-characteristics"
               openedByDefault
             >
               <Characteristics characteristics={itemObj.characteristics} />
-            </SectionWrapper>
+            </ContentWrapper>
           </div>
         </div>
       </div>
@@ -236,6 +237,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
         <h2>Характеристики</h2>
         <Characteristics characteristics={itemObj.characteristics} />
       </div>
+      <MailNotification />
     </div>
   );
 };
