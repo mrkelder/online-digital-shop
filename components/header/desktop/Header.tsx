@@ -14,7 +14,12 @@ const staticLinks = [
   { name: "Магазины", link: "/" }
 ];
 
-const DesktopMenu: FC = () => {
+interface Props {
+  catalogInfo: CatalogInfo;
+  isLoading: boolean;
+}
+
+const DesktopMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
   const [isCatalogOpened, setIsCatalogOpened] = useState(false);
 
   const toggleCatalog = () => {
@@ -32,7 +37,6 @@ const DesktopMenu: FC = () => {
     };
   }, [isCatalogOpened]);
 
-  // TODO: close catalog when a user clicks empty space
   // FIXME: Window.matchMedia()
   // https://stackoverflow.com/questions/67266495/how-can-i-hide-a-component-in-react-depending-on-the-screen-size
 
@@ -86,7 +90,7 @@ const DesktopMenu: FC = () => {
             >
               Каталог товаров
             </button>
-            <Catalog isOpened={isCatalogOpened} />
+            <Catalog isOpened={isCatalogOpened} {...{ catalogInfo }} />
           </div>
           <div className="flex-1 mx-5">
             <Input type="search" underline placeholder="Поиск" />

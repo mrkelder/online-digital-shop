@@ -7,16 +7,30 @@ import { FirebaseContext } from "utils/firebase";
 
 const Header: FC = () => {
   const firebase = useContext(FirebaseContext);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [catalogInfo, setCatalogInfo] = useState<CatalogInfo>({
+    categories: null,
+    subcategories: null
+  });
   const [categoriesLoading, setCategoriesLoading] = useState(false);
 
   useEffect(() => {
     async function fetch() {
+      let subcategoryIds: SubCategory["id"][] = [];
       setCategoriesLoading(true);
-      const data = await firebase.getAllDocumentsInCollection<Category>(
+      const categories = await firebase.getAllDocumentsInCollection<Category>(
         "categories"
       );
-      setCategories(data);
+
+      categories.forEach(i =>
+        i.subcategories.forEach(s => subcategoryIds.push(s))
+      );
+
+      const subcategories = await firebase.getDocumentsById<SubCategory>(
+        "subcategories",
+        subcategoryIds
+      );
+
+      setCatalogInfo({ categories, subcategories });
       setCategoriesLoading(false);
     }
 
@@ -25,8 +39,8 @@ const Header: FC = () => {
 
   return (
     <header className="flex items-center bg-white border-b border-grey-100 lg:border-b-0">
-      <MobileMenu {...{ categories }} isLoading={categoriesLoading} />
-      <DesktopMenu />
+      <MobileMenu {...{ catalogInfo }} isLoading={categoriesLoading} />
+      <DesktopMenu {...{ catalogInfo }} isLoading={categoriesLoading} />
     </header>
   );
 };

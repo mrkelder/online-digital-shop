@@ -17,11 +17,8 @@ import {
 } from "firebase/storage";
 
 class Firebase {
-  // TODO: fetch categories and subcategories once and cache them together
-  // FIXME: rename _cache to something more clarified
   private readonly db: Firestore;
   private readonly storage: FirebaseStorage;
-  readonly _cache: Map<string, SubCategory[]>;
 
   static firebaseConfig = {
     apiKey: "AIzaSyBrHoU08YA0Q7lBEAWyc9Ld4Fze0R_O8w4",
@@ -37,27 +34,6 @@ class Firebase {
     const app = initializeApp(Firebase.firebaseConfig);
     this.db = getFirestore();
     this.storage = getStorage(app);
-    this._cache = new Map();
-  }
-
-  async getSubCategories(categoryId: string) {
-    if (this._cache.has(categoryId)) {
-      return this._cache.get(categoryId) as SubCategory[];
-    } else {
-      let data: SubCategory[] = [];
-      const q = query(
-        collection(this.db, "subcategories"),
-        where("category", "==", categoryId)
-      );
-
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach(doc =>
-        data.push({ ...doc.data(), id: doc.id } as SubCategory)
-      );
-
-      this._cache.set(categoryId, data);
-      return data;
-    }
   }
 
   async getAllDocumentsInCollection<T>(collectionName: string) {

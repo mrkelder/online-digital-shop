@@ -2,15 +2,13 @@ import { FC } from "react";
 import { useRouter } from "next/router";
 import Tab from "components/header/Tab";
 import ArrowIcon from "public/img/arrow.svg";
-import Loading from "./Loading";
 
 const SubCategory: FC<{
-  isLoading: boolean;
   isOpened: boolean;
   closeSubMenu: () => void;
   closeMenu: () => void;
   subCategories: SubCategory[];
-}> = ({ isOpened, closeSubMenu, closeMenu, subCategories, isLoading }) => {
+}> = ({ isOpened, closeSubMenu, closeMenu, subCategories }) => {
   const { push } = useRouter();
   // FIXME: fix tabIndex
 
@@ -34,9 +32,12 @@ const SubCategory: FC<{
       </div>
       <div className="lex flex-col overflow-y-auto h-full flex-1 relative">
         {subCategories.map(i => (
-          <Tab key={i.id} name={i.name} onClick={changeLink("/")} />
+          <Tab
+            key={i.id}
+            name={i.name}
+            onClick={changeLink(`/subcategory?id=${i.id}`)}
+          />
         ))}
-        <Loading {...{ isLoading }} />
       </div>
     </div>
   );

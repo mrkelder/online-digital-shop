@@ -6,7 +6,12 @@ interface SubCategory {
 interface Category {
   id: string;
   name: string;
-  subcategory: SubCategory["id"];
+  subcategories: SubCategory["id"][];
+}
+
+interface CatalogInfo {
+  categories: Category[] | null;
+  subcategories: SubCategory[] | null;
 }
 
 interface Slide {
