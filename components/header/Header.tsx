@@ -2,6 +2,7 @@ import { FC, useContext, useEffect, useState } from "react";
 import MobileMenu from "./mobile/Header";
 import DesktopMenu from "./desktop/Header";
 import { FirebaseContext } from "utils/firebase";
+import categoriesToSubCategoryIds from "utils/dto/categoriesToSubCategoryIds";
 
 // TODO: substitude css layout hidding with rendering
 
@@ -15,19 +16,14 @@ const Header: FC = () => {
 
   useEffect(() => {
     async function fetch() {
-      let subcategoryIds: SubCategory["id"][] = [];
       setCategoriesLoading(true);
       const categories = await firebase.getAllDocumentsInCollection<Category>(
         "categories"
       );
 
-      categories.forEach(i =>
-        i.subcategories.forEach(s => subcategoryIds.push(s))
-      );
-
       const subcategories = await firebase.getDocumentsById<SubCategory>(
         "subcategories",
-        subcategoryIds
+        categoriesToSubCategoryIds(categories)
       );
 
       setCatalogInfo({ categories, subcategories });
