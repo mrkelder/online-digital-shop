@@ -1,4 +1,4 @@
-import { FC, useContext, useReducer, useState } from "react";
+import { FC, useReducer, useState } from "react";
 import Link from "next/link";
 import Tab from "components/header/Tab";
 import Dialog from "./Dialog";
@@ -9,8 +9,8 @@ import MenuIcon from "public/img/menu.svg";
 import BurgerIcon from "public/img/burger.svg";
 import SearchIcon from "public/img/search.svg";
 import CrossIcon from "public/img/cross.svg";
-import { FirebaseContext } from "utils/firebase";
 import ArrowIcon from "public/img/arrow.svg";
+import findSubCategories from "utils/findSubCategories";
 
 /**
  * @type {0} - menu is closed
@@ -53,28 +53,20 @@ const staticPages = [
   { name: "Магазины", link: "/" }
 ];
 
-const MobileMenu: FC<{ categories: Category[]; isLoading: boolean }> = ({
-  categories,
-  isLoading
-}) => {
-  const firebase = useContext(FirebaseContext);
+interface Props {
+  catalogInfo: CatalogInfo;
+  isLoading: boolean;
+}
+
+const MobileMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
   const [menuState, dispatch] = useReducer(menuReducer, DEFAULT_MENU_STATE);
   const [navState, setNavState] = useState(false);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
-  const [subCategoriesLoading, setSubCategoriesLoading] = useState(false);
 
-  async function switchSubCategories(category: string) {
-    const cache = firebase._cache;
-
-    if (cache.has(category)) {
-      setSubCategories(cache.get(category) as SubCategory[]);
-    } else {
-      setSubCategoriesLoading(true);
-      const data = await firebase.getSubCategories(category);
-      setSubCategoriesLoading(false);
-      setSubCategories(data);
-    }
-  }
+  const switchSubCategories = (categoryId: string) => {
+    const data = findSubCategories(catalogInfo, categoryId);
+    setSubCategories(data);
+  };
 
   function changeState(type: MenuActions) {
     return () => {
@@ -82,9 +74,11 @@ const MobileMenu: FC<{ categories: Category[]; isLoading: boolean }> = ({
     };
   }
 
-  async function TabClick(categoryId: string) {
-    switchSubCategories(categoryId);
-    changeState("open-sub-menu")();
+  function TabClick(categoryId: string) {
+    return () => {
+      switchSubCategories(categoryId);
+      changeState("open-sub-menu")();
+    };
   }
 
   const toggleNav = () => setNavState(!navState);
@@ -126,22 +120,24 @@ const MobileMenu: FC<{ categories: Category[]; isLoading: boolean }> = ({
             </div>
             <div className="flex flex-col overflow-y-auto h-full flex-1 relative">
               <Loading {...{ isLoading }} />
-              {categories.map(i => (
-                <Tab
-                  name={i.name}
-                  key={i.id}
-                  onClick={() => TabClick(i.id)}
-                  showIcon
-                />
-              ))}
+              {catalogInfo.categories &&
+                catalogInfo.categories.map(i => (
+                  <Tab
+                    name={i.name}
+                    key={i.id}
+                    onClick={TabClick(i.id)}
+                    showIcon
+                  />
+                ))}
             </div>
-            <SubCategory
-              isLoading={subCategoriesLoading}
-              isOpened={menuState === 2}
-              closeSubMenu={changeState("open-menu")}
-              closeMenu={changeState("close")}
-              {...{ subCategories }}
-            />
+            {subCategories && (
+              <SubCategory
+                isOpened={menuState === 2}
+                closeSubMenu={changeState("open-menu")}
+                closeMenu={changeState("close")}
+                {...{ subCategories }}
+              />
+            )}
           </div>
         </div>
       </Dialog>

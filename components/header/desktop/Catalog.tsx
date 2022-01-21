@@ -1,26 +1,20 @@
-import { FC, useContext, useEffect, useRef, useState } from "react";
-import { FirebaseContext } from "utils/firebase";
+import { FC, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import Tab from "components/header/Tab";
 import SubCategory from "./SubCategory";
+import findSubCategories from "utils/findSubCategories";
 
-const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
+interface Props {
+  isOpened: boolean;
+  catalogInfo: CatalogInfo;
+}
+
+const Catalog: FC<Props> = ({ isOpened, catalogInfo }) => {
   const display = isOpened ? "flex" : "hidden";
-  const firebase = useContext(FirebaseContext);
   const menuRef = useRef<HTMLDivElement>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const router = useRouter();
   const [chosenCategory, setChosenCategory] = useState("");
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
-
-  useEffect(() => {
-    async function fetch() {
-      const data = await firebase.getAllDocumentsInCollection<Category>(
-        "categories"
-      );
-      setCategories(data);
-    }
-
-    fetch();
-  }, [firebase]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,15 +42,22 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
     };
   }, []);
 
+  const navigateToCategoryPage = (id: string) => {
+    return () => {
+      router.push(`/category?id=${id}`);
+      dispatchCloseEvent();
+    };
+  };
+
   const dispatchCloseEvent = () => {
     const event = new Event("close-catalog");
     window.dispatchEvent(event);
   };
 
-  function chooseCategory(id: string) {
-    return async () => {
-      const data = await firebase.getSubCategories(id);
-      setChosenCategory(id);
+  function chooseCategory(categoryId: string) {
+    return () => {
+      setChosenCategory(categoryId);
+      const data = findSubCategories(catalogInfo, categoryId);
       setSubCategories(data);
     };
   }
@@ -71,15 +72,17 @@ const Catalog: FC<{ isOpened: boolean }> = ({ isOpened }) => {
         ref={menuRef}
       >
         <div className="col-span-1">
-          {categories.map(i => (
-            <Tab
-              key={i.id}
-              name={i.name}
-              onClick={chooseCategory(i.id)}
-              focused={chosenCategory === i.id}
-              showIcon
-            />
-          ))}
+          {catalogInfo.categories &&
+            catalogInfo.categories.map(i => (
+              <Tab
+                key={i.id}
+                name={i.name}
+                onMouseEnter={chooseCategory(i.id)}
+                onClick={navigateToCategoryPage(i.id)}
+                focused={chosenCategory === i.id}
+                showIcon
+              />
+            ))}
         </div>
         <div className="col-span-3 bg-grey-75 flex flex-col flex-wrap p-3 space-y-4">
           {subCategories.map(i => (
