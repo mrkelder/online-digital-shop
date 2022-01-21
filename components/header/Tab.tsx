@@ -3,19 +3,19 @@ import ArrowIcon from "public/img/arrow.svg";
 
 const Tab: FC<{
   onClick: () => void;
+  onMouseEnter?: () => void;
   showIcon?: boolean;
   name: string;
   focused?: boolean;
-}> = ({ onClick, showIcon, name, focused }) => {
-  const background = focused
-    ? "bg-grey-75"
-    : "bg-white hover:bg-grey-75 focus:bg-grey-75";
+}> = ({ onClick, showIcon, name, focused, onMouseEnter }) => {
+  const background = focused ? "bg-grey-75" : "bg-white focus:bg-grey-75";
   return (
     <button
       className={
         "flex py-3 px-5 items-center w-full transition-colors " + background
       }
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
     >
       <span className="mr-5 text-xs">icon</span>
       <p className="flex-1 text-left text-base lg:text-xl lg:font-light">

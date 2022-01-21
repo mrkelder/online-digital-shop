@@ -4,6 +4,8 @@ import Layout from "components/Layout";
 import Firebase from "utils/firebase";
 import { FirebaseContext } from "utils/firebase";
 
+// FIXME: order imports
+
 const firebase = new Firebase();
 
 function MyApp({ Component, pageProps }: AppProps) {
