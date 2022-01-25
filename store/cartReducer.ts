@@ -1,11 +1,16 @@
 import { Reducer } from "redux";
 import { CART } from "./localStorageNames";
 
+export type ReduxCartProduct = Pick<
+  Product,
+  "id" | "name" | "photo" | "price"
+> & { quantity: number };
+
 export interface CartState {
-  items: ReadonlyArray<{ id: Product["id"]; quantity: number }>;
+  items: ReadonlyArray<ReduxCartProduct>;
 }
 
-type AddItemAction = { type: "cart/addItem"; payload: Product["id"] };
+type AddItemAction = { type: "cart/addItem"; payload: ReduxCartProduct };
 
 type RemoveItemAction = { type: "cart/removeItem"; payload: Product["id"] };
 
@@ -30,11 +35,11 @@ const cartReducer: Reducer<CartState, CartActions> = (
   let newState = state;
   switch (action.type) {
     case "cart/addItem": {
-      const foundIndex = state.items.findIndex(i => i.id === action.payload);
+      const foundIndex = state.items.findIndex(i => i.id === action.payload.id);
       if (foundIndex !== -1) newState.items[foundIndex].quantity += 1;
       else {
         newState = {
-          items: [...state.items, { id: action.payload, quantity: 1 }]
+          items: [...state.items, action.payload]
         };
       }
 
@@ -48,10 +53,13 @@ const cartReducer: Reducer<CartState, CartActions> = (
         newState.items[foundIndex].quantity =
           payloadNumber >= 0 ? payloadNumber : 0;
       }
+
+      break;
     }
 
     case "cart/removeItem": {
       newState.items = state.items.filter(i => i.id !== action.payload);
+      break;
     }
 
     default:

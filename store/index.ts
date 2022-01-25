@@ -11,7 +11,7 @@ type ReduxStore = Store<
   CartActions
 >;
 
-interface StoreShape {
+interface StoreState {
   cart: CartState;
 }
 
@@ -22,7 +22,7 @@ const composedEnhancers = composeWithDevTools();
 export const epmtyStore: ReduxStore = createStore(rootReducer);
 
 export function storeInitiator(): ReduxStore {
-  const preloadedStore: StoreShape = { cart: { items: [] } };
+  const preloadedStore: StoreState = { cart: { items: [] } };
 
   try {
     const preloadedCartItems: CartState["items"] = JSON.parse(
