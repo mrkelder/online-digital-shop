@@ -5,6 +5,8 @@ import { RootStore } from "store";
 import { CartState } from "store/cartReducer";
 import Head from "next/head";
 import CartItem from "components/cart-page/CartItem";
+import { useMemo } from "react";
+import Button from "components/Button";
 
 // FIXME: make fetch look smooth
 
@@ -13,7 +15,10 @@ const CartPage: NextPage = () => {
     store => store.cart.items
   ) as CartState["items"];
 
-  const totalPrice = 0;
+  const totalPrice = useMemo(
+    () => storeItems.map(i => i.quantity * i.price).reduce((a, c) => a + c, 0),
+    [storeItems]
+  );
 
   return (
     <div className="py-3 px-3">
@@ -37,13 +42,19 @@ const CartPage: NextPage = () => {
             Корзина пуста
           </p>
         )}
-        <div className="flex flex-col w-full">
-          <ul className="space-y-4 py-4">
+        <div className="flex flex-col w-full lg:flex-row">
+          <ul className="space-y-4 py-4 flex-1">
             {storeItems.map(i => (
               <CartItem item={i} key={i.id} />
             ))}
           </ul>
-          <div>Купить и бла бла бла</div>
+          <div className="bg-grey-75 shadow-lg border border-grey-100 p-3 lg:mt-3.5 lg:ml-5 lg:w-96 lg:py-4 lg:px-6">
+            <div className="flex justify-between items-center mb-3 lg:mb-5">
+              <span className="lg:text-xl">Сумма заказа</span>
+              <b className="text-lg lg:text-2xl">{totalPrice} грн</b>
+            </div>
+            <Button variant="lg">Оформить заказ</Button>
+          </div>
         </div>
       </div>
     </div>
