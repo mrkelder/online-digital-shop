@@ -30,7 +30,7 @@ export function storeInitiator(): ReduxStore {
     );
 
     preloadedStore.cart.items = preloadedCartItems.map(i =>
-      i.quantity >= 0 ? i : { ...i, quantity: 0 }
+      i.quantity >= 1 ? i : { ...i, quantity: 1 }
     );
   } catch {
     localStorage.removeItem(CART);

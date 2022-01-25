@@ -51,7 +51,7 @@ const cartReducer: Reducer<CartState, CartActions> = (
       const payloadNumber = action.payload.quantity;
       if (foundIndex !== -1) {
         newState.items[foundIndex].quantity =
-          payloadNumber >= 0 ? payloadNumber : 0;
+          payloadNumber >= 1 ? payloadNumber : 1;
       }
 
       break;
@@ -67,7 +67,9 @@ const cartReducer: Reducer<CartState, CartActions> = (
   }
 
   localStorage.setItem(CART, JSON.stringify(newState.items));
-  return newState;
+  console.log(newState.items[0].quantity);
+
+  return { ...newState };
 };
 
 export default cartReducer;
