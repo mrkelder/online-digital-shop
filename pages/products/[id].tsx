@@ -9,7 +9,7 @@ import starIcon from "public/img/star.png";
 import ContentWrapper from "components/ContentWrapper";
 import Characteristics from "components/product-page/Characteristics";
 import styles from "styles/item-page.module.css";
-import serializableShopDTO from "utils/dto/serializableShopDTO";
+import serializeShop from "utils/dto/serializeShop";
 import LocationIcon from "public/img/geo-point.svg";
 import Link from "next/link";
 import ArrowIcon from "public/img/arrow.svg";
@@ -23,6 +23,7 @@ import "swiper/css/free-mode";
 import { useDispatch, useSelector } from "react-redux";
 import { CartActions, CartState } from "store/cartReducer";
 import { RootStore } from "store";
+import convertToReduxCartProduct from "utils/dto/convertToReduxCartProduct";
 
 interface Props {
   itemObj: Product;
@@ -78,7 +79,10 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   // TODO: prefetch all photos to prevent lagging while swithcing between photos
 
   const addItemToCart = () =>
-    dispatch({ type: "cart/addItem", payload: itemObj.id });
+    dispatch({
+      type: "cart/addItem",
+      payload: convertToReduxCartProduct(itemObj)
+    });
 
   const choosePhotoIndex = (index: number) => {
     return () => {
@@ -293,7 +297,7 @@ export const getStaticProps: GetStaticProps = async context => {
       "shops",
       result[0].available_in
     )) as FirebaseShop[]
-  ).map(i => serializableShopDTO(i));
+  ).map(i => serializeShop(i));
 
   const characteristics: Product["characteristics"] =
     result[0].characteristics.map(i => ({
