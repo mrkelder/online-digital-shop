@@ -67,9 +67,7 @@ const cartReducer: Reducer<CartState, CartActions> = (
   }
 
   localStorage.setItem(CART, JSON.stringify(newState.items));
-  console.log(newState.items[0].quantity);
-
-  return { ...newState };
+  return JSON.parse(JSON.stringify(newState));
 };
 
 export default cartReducer;
