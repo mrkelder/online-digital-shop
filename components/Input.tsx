@@ -26,7 +26,7 @@ const Input: FC<Props> = ({
         ? "border-red focus-within:border-red"
         : "border-grey-200 focus-within:border-grey-500"
     }`;
-    inputStyle = "";
+    inputStyle = "bg-transparent";
   }
 
   return (
