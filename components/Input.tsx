@@ -2,7 +2,7 @@ import type { FC, InputHTMLAttributes } from "react";
 
 interface CustomInputAttributes {
   error?: boolean;
-  type?: "text" | "password" | "search" | "email";
+  type?: "text" | "password" | "search" | "email" | "number";
   underline?: boolean;
   borderClass?: string;
   paddingClass?: string;
