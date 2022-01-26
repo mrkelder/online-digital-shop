@@ -5,12 +5,14 @@ import { RootStore } from "store";
 import { CartState } from "store/cartReducer";
 import Head from "next/head";
 import CartItem from "components/cart-page/CartItem";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import Button from "components/Button";
+import { useRouter } from "next/router";
 
 // FIXME: make fetch look smooth
 
 const CartPage: NextPage = () => {
+  const router = useRouter();
   const storeItems = useSelector<RootStore>(
     store => store.cart.items
   ) as CartState["items"];
@@ -19,6 +21,10 @@ const CartPage: NextPage = () => {
     () => storeItems.map(i => i.quantity * i.price).reduce((a, c) => a + c, 0),
     [storeItems]
   );
+
+  const linkToCheckout = useCallback(() => {
+    if (storeItems.length > 0) router.push("/checkout");
+  }, [storeItems, router]);
 
   return (
     <div className="py-3 px-3">
@@ -53,7 +59,9 @@ const CartPage: NextPage = () => {
               <span className="lg:text-xl">Сумма заказа</span>
               <b className="text-lg lg:text-2xl">{totalPrice} грн</b>
             </div>
-            <Button variant="lg">Оформить заказ</Button>
+            <Button variant="lg" onClick={linkToCheckout}>
+              Оформить заказ
+            </Button>
           </div>
         </div>
       </div>
