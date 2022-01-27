@@ -86,3 +86,7 @@ interface Characteristic {
   name: string;
   subCategory: SubCategory["id"];
 }
+
+type OptionsFlags<Type> = {
+  [Property in keyof Type]: boolean;
+};
