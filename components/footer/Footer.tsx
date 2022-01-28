@@ -32,7 +32,7 @@ const staticLinks = [
     items: [
       { name: "Доставка и оплата", link: "/shipping" },
       { name: "Возврат товара", link: "/" },
-      { name: "Гарантия", link: "/" }
+      { name: "Гарантия", link: "/guarantee" }
     ]
   },
   {

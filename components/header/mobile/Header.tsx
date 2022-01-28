@@ -48,7 +48,7 @@ const functionalPages = [
 
 const staticPages = [
   { name: "Доставка и оплата", link: "/shipping" },
-  { name: "Гарантия", link: "/" },
+  { name: "Гарантия", link: "/guarantee" },
   { name: "Магазины", link: "/" }
 ];
 
