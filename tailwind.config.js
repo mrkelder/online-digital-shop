@@ -18,7 +18,8 @@ module.exports = {
       },
       red: "#e60000",
       "red-focus": "#af0000",
-      transparent: "#0000"
+      transparent: "#0000",
+      success: "#22c55e"
     },
     extend: {
       width: {

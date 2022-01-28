@@ -9,6 +9,15 @@ import {
   validateFormData
 } from "utils/validation/checkout";
 import CheckoutInput from "components/checkout-page/CheckoutInput";
+import LoadingIcon from "public/img/loading.svg";
+import SuccessIcon from "public/img/success.svg";
+import FailureIcon from "public/img/failure.svg";
+import Link from "next/link";
+
+interface PaymentInfo {
+  paymentSent: boolean;
+  paymentSuccess: boolean | "none";
+}
 
 const DEFAULT_VALIDATION: CheckotInfo = {
   fullName: false,
@@ -30,10 +39,33 @@ const DEFAULT_FORM_DATA: FormData = {
   pin: ""
 };
 
+const DEFAULT_PAYMENT_INFO: PaymentInfo = {
+  paymentSent: false,
+  paymentSuccess: "none"
+};
+
+const RESULT_STYLE = "flex flex-col items-center space-y-2";
+
 const CheckoutPage: NextPage = () => {
-  const [validationErrors, setValidationErrors] =
-    useState<CheckotInfo>(DEFAULT_VALIDATION);
-  const [formData, setFormData] = useState<FormData>(DEFAULT_FORM_DATA);
+  const [validationErrors, setValidationErrors] = useState(DEFAULT_VALIDATION);
+  const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
+  const [paymentInfo, setPaymentInfo] = useState(DEFAULT_PAYMENT_INFO);
+
+  const { paymentSent, paymentSuccess } = paymentInfo;
+
+  let formStyle = "grid";
+  let paymentResultStyle = "hidden";
+  let paymentLoadingStyle = "hidden";
+  let paymentSuccessStyle = "hidden";
+  let paymentFailureStyle = "hidden";
+
+  if (paymentSent) {
+    formStyle = "hidden";
+    paymentResultStyle = "block";
+    paymentLoadingStyle = paymentSuccess === "none" ? RESULT_STYLE : "hidden";
+    paymentSuccessStyle = paymentSuccess === true ? RESULT_STYLE : "hidden";
+    paymentFailureStyle = paymentSuccess === false ? RESULT_STYLE : "hidden";
+  }
 
   const submitCheckout: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
@@ -44,7 +76,10 @@ const CheckoutPage: NextPage = () => {
       newValidationErrors[validation] = true;
       setValidationErrors(newValidationErrors);
     } else {
-      alert("Success");
+      setPaymentInfo({ paymentSuccess: "none", paymentSent: true });
+      setTimeout(() => {
+        setPaymentInfo({ paymentSent: true, paymentSuccess: true });
+      }, 3000);
     }
   };
 
@@ -90,7 +125,9 @@ const CheckoutPage: NextPage = () => {
       <h1>Оплата</h1>
 
       <form
-        className="my-2 space-y-3 gap-x-6 grid grid-cols-1 sm:grid-cols-2"
+        className={
+          "my-2 space-y-3 gap-x-6 grid-cols-1 sm:grid-cols-2 " + formStyle
+        }
         onSubmit={submitCheckout}
         onChange={formChange}
       >
@@ -104,7 +141,7 @@ const CheckoutPage: NextPage = () => {
                   value={formData.fullName}
                   name="fullName"
                   placeholder="Фамилия Имя"
-                  errorMessage="Форма должна содержать фамилию и имя"
+                  errorMessage="Форма может содержать русские, английские или украинские символы"
                 />
               ),
               [validationErrors.fullName, formData.fullName]
@@ -155,12 +192,37 @@ const CheckoutPage: NextPage = () => {
           <Button variant="lg">Оформить заказ</Button>
         </div>
       </form>
+
+      <div className={"pt-10 " + paymentResultStyle}>
+        <div className={paymentLoadingStyle}>
+          <div className="w-16 text-red animate-spin mx-auto">
+            <LoadingIcon />
+          </div>
+          <p>Выполняем оплату</p>
+        </div>
+
+        <div className={paymentSuccessStyle}>
+          <div className="w-16 text-success">
+            <SuccessIcon />
+          </div>
+          <p>Оплата прошла успешно!</p>
+          <Link href="/">
+            <a className="text-base underline">Перейти на главную</a>
+          </Link>
+        </div>
+
+        <div className={paymentFailureStyle}>
+          <div className="w-16 text-red">
+            <FailureIcon />
+          </div>
+          <p>Не удалось совершить оплату</p>
+          <Link href="/">
+            <a className="text-base underline">Перейти на главную</a>
+          </Link>
+        </div>
+      </div>
     </div>
   );
-};
-
-export const getStaticProps: GetStaticProps = async () => {
-  return { props: {} };
 };
 
 export default CheckoutPage;
