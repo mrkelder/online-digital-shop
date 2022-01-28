@@ -8,12 +8,10 @@ import Logo from "public/img/logo.svg";
 import ArrowIcon from "public/img/arrow.svg";
 import { useSelector } from "react-redux";
 import { RootStore } from "store";
-import { CartState } from "store/cartReducer";
 
 const staticLinks = [
-  { name: "Доставка и оплата", link: "/" },
+  { name: "Доставка и оплата", link: "/shipping" },
   { name: "Гарантия", link: "/" },
-  { name: "Акции", link: "/" },
   { name: "Магазины", link: "/" }
 ];
 

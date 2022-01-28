@@ -23,7 +23,6 @@ const staticLinks = [
     items: [
       { name: "Про магазин", link: "/" },
       { name: "Магазины", link: "/" },
-      { name: "Акции", link: "/" },
       { name: "Контакты", link: "/" }
     ]
   },
@@ -31,7 +30,7 @@ const staticLinks = [
     name: "Помощь покупателю",
     postiion: "between",
     items: [
-      { name: "Доставка и оплата", link: "/" },
+      { name: "Доставка и оплата", link: "/shipping" },
       { name: "Возврат товара", link: "/" },
       { name: "Гарантия", link: "/" }
     ]
