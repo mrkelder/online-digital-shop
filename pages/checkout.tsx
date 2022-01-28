@@ -1,8 +1,14 @@
 import Button from "components/Button";
 import Card from "components/checkout-page/Card";
-import { GetStaticProps, NextPage } from "next";
+import { NextPage } from "next";
 import Head from "next/head";
-import { ChangeEvent, FormEventHandler, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  FormEventHandler,
+  useMemo,
+  useState
+} from "react";
 import {
   CheckotInfo,
   FormData,
@@ -13,6 +19,8 @@ import LoadingIcon from "public/img/loading.svg";
 import SuccessIcon from "public/img/success.svg";
 import FailureIcon from "public/img/failure.svg";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { CartActions } from "store/cartReducer";
 
 interface PaymentInfo {
   paymentSent: boolean;
@@ -47,6 +55,7 @@ const DEFAULT_PAYMENT_INFO: PaymentInfo = {
 const RESULT_STYLE = "flex flex-col items-center space-y-2";
 
 const CheckoutPage: NextPage = () => {
+  const dispatch = useDispatch<Dispatch<CartActions>>();
   const [validationErrors, setValidationErrors] = useState(DEFAULT_VALIDATION);
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
   const [paymentInfo, setPaymentInfo] = useState(DEFAULT_PAYMENT_INFO);
@@ -78,6 +87,7 @@ const CheckoutPage: NextPage = () => {
     } else {
       setPaymentInfo({ paymentSuccess: "none", paymentSent: true });
       setTimeout(() => {
+        dispatch({ type: "cart/restore" });
         setPaymentInfo({ paymentSent: true, paymentSuccess: true });
       }, 3000);
     }

@@ -10,6 +10,8 @@ export interface CartState {
   items: ReadonlyArray<ReduxCartProduct>;
 }
 
+type RestoreAction = { type: "cart/restore" };
+
 type AddItemAction = { type: "cart/addItem"; payload: ReduxCartProduct };
 
 type RemoveItemAction = { type: "cart/removeItem"; payload: Product["id"] };
@@ -22,7 +24,8 @@ type ChangeQuantityAction = {
 export type CartActions =
   | AddItemAction
   | RemoveItemAction
-  | ChangeQuantityAction;
+  | ChangeQuantityAction
+  | RestoreAction;
 
 const DEFAULT_STATE: CartState = {
   items: []
@@ -61,6 +64,10 @@ const cartReducer: Reducer<CartState, CartActions> = (
       newState.items = state.items.filter(i => i.id !== action.payload);
       break;
     }
+
+    case "cart/restore":
+      newState.items = [];
+      break;
 
     default:
       return newState;
