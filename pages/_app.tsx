@@ -14,6 +14,8 @@ const firebase = new Firebase();
 function MyApp({ Component, pageProps }: AppProps) {
   const [store, setStore] = useState(epmtyStore);
 
+  // FIXME: replace localStorage with cookies
+
   useEffect(() => {
     const initiatedStore = storeInitiator();
     setStore(initiatedStore);
