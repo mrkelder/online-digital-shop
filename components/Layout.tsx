@@ -3,6 +3,8 @@ import ArrowIcon from "public/img/arrow.svg";
 import Header from "components/header/Header";
 import Footer from "components/footer/Footer";
 
+// FIXME: make layout robust so that you don't have to specify padding at **EACH** page
+
 const Layout: FC = ({ children }) => {
   const [scroll, setScroll] = useState(0);
   const scrollTopStyle = scroll > 400 ? "flex" : "hidden";
