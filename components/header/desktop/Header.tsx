@@ -6,6 +6,9 @@ import Link from "next/link";
 import GeoIcon from "public/img/geo-point.svg";
 import Logo from "public/img/logo.svg";
 import ArrowIcon from "public/img/arrow.svg";
+import { useSelector } from "react-redux";
+import { RootStore } from "store";
+import { CartState } from "store/cartReducer";
 
 const staticLinks = [
   { name: "Доставка и оплата", link: "/" },
@@ -21,6 +24,10 @@ interface Props {
 
 const DesktopMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
   const [isCatalogOpened, setIsCatalogOpened] = useState(false);
+
+  const itemsQuantity = useSelector<RootStore>(
+    store => store.cart.items.length
+  ) as number;
 
   const toggleCatalog = () => {
     setIsCatalogOpened(!isCatalogOpened);
@@ -95,7 +102,11 @@ const DesktopMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
           <div className="flex-1 mx-5">
             <Input type="search" underline placeholder="Поиск" />
           </div>
-          <Cart items={3} />
+          <Link href="/cart">
+            <a>
+              <Cart items={itemsQuantity} />
+            </a>
+          </Link>
         </div>
       </div>
     </div>

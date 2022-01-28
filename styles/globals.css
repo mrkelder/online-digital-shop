@@ -77,6 +77,12 @@ hr {
   border-color: #d6d6d6;
 }
 
+@layer components {
+  .box-shadow {
+    box-shadow: 0 0 6px 0px #62626282;
+  }
+}
+
 .swiper-pagination-bullet {
   width: 10px !important;
   height: 10px !important;

@@ -1,0 +1,3 @@
+.cart-item-amount-chooser {
+  @apply w-6 h-6 flex items-center justify-center bg-grey-100 lg:w-7 lg:h-7;
+}

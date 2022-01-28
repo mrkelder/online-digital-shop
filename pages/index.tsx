@@ -11,7 +11,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, SwiperOptions } from "swiper";
 import "swiper/css";
 import "swiper/css/autoplay";
-import serializableShopDTO from "utils/dto/serializableShopDTO";
+import serializeShop from "utils/dto/serializeShop";
 import MailNotification from "components/MailNotification";
 
 interface Props {
@@ -155,7 +155,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const cities = await firebase.getAllDocumentsInCollection<City>("cities");
 
   const geoInfo: GeoInfo = {
-    shops: shops.map(shop => serializableShopDTO(shop)),
+    shops: shops.map(shop => serializeShop(shop)),
     cities
   };
 
