@@ -49,7 +49,7 @@ const functionalPages = [
 const staticPages = [
   { name: "Доставка и оплата", link: "/shipping" },
   { name: "Гарантия", link: "/guarantee" },
-  { name: "Магазины", link: "/" }
+  { name: "Магазины", link: "/shops" }
 ];
 
 interface Props {

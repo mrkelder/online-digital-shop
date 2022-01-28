@@ -22,7 +22,7 @@ const staticLinks = [
     postiion: "first",
     items: [
       { name: "Про магазин", link: "/" },
-      { name: "Магазины", link: "/" },
+      { name: "Магазины", link: "/shops" },
       { name: "Контакты", link: "/" }
     ]
   },
