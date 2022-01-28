@@ -2,7 +2,7 @@ import type { FC, InputHTMLAttributes } from "react";
 
 interface CustomInputAttributes {
   error?: boolean;
-  type?: "text" | "password" | "search" | "email";
+  type?: "text" | "password" | "search" | "email" | "number";
   underline?: boolean;
   borderClass?: string;
   paddingClass?: string;
@@ -26,7 +26,7 @@ const Input: FC<Props> = ({
         ? "border-red focus-within:border-red"
         : "border-grey-200 focus-within:border-grey-500"
     }`;
-    inputStyle = "";
+    inputStyle = "bg-transparent";
   }
 
   return (
