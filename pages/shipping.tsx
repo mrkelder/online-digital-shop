@@ -5,7 +5,7 @@ import Head from "next/head";
 const TITLE = "Доставка и оплата";
 
 const ShippingPage: NextPage = () => (
-  <div className="py-2">
+  <div className="px-2 py-2 lg:max-w-full lg:mx-auto lg:px-12">
     <Head>
       <title>{TITLE}</title>
     </Head>
