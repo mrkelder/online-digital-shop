@@ -49,7 +49,7 @@ type FirebaseProduct = Omit<
   Omit<Product, "characteristics">,
   "key_characteristics"
 > & {
-  characteristics: Array<{ name: Characteristic["id"]; value: string }>;
+  characteristics: Array<{ name: Characteristic["id"]; value: number[] }>;
   key_characteristics: Array<Characteristic["id"]>;
   available_in: Array<Shop["id"]>;
 };
@@ -84,7 +84,8 @@ interface GeoInfo {
 interface Characteristic {
   id: string;
   name: string;
-  subCategory: SubCategory["id"];
+  subcategory: SubCategory["id"];
+  values: string[];
 }
 
 type OptionsFlags<Type> = {

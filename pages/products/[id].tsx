@@ -287,9 +287,9 @@ export const getStaticProps: GetStaticProps = async context => {
     characteristicsIds
   );
 
-  function findCharacteristicNameById(id: string) {
+  function findCharacteristicById(id: string) {
     const result = characteristicsObj.find(i => i.id === id) as Characteristic;
-    return result.name;
+    return result;
   }
 
   const available_in = (
@@ -301,9 +301,11 @@ export const getStaticProps: GetStaticProps = async context => {
 
   const characteristics: Product["characteristics"] =
     result[0].characteristics.map(i => ({
-      ...i,
       id: i.name,
-      name: findCharacteristicNameById(i.name)
+      name: findCharacteristicById(i.name).name,
+      value: findCharacteristicById(i.name)
+        .values.filter((_, index) => i.value.includes(index))
+        .join(", ")
     }));
 
   const key_characteristics: Product["key_characteristics"] =
