@@ -7,7 +7,9 @@ import {
   Firestore,
   query,
   where,
-  documentId
+  documentId,
+  WhereFilterOp,
+  FieldPath
 } from "firebase/firestore";
 import {
   FirebaseStorage,
@@ -15,6 +17,12 @@ import {
   ref,
   getDownloadURL
 } from "firebase/storage";
+
+interface QueryObject {
+  field: string | FieldPath;
+  condition: WhereFilterOp;
+  value: any[] | any;
+}
 
 class Firebase {
   private readonly db: Firestore;
@@ -46,10 +54,24 @@ class Firebase {
   }
 
   async getDocumentsById<T>(collectionName: string, ids: string[]) {
-    const q = query(
-      collection(this.db, collectionName),
-      where(documentId(), "in", ids)
+    const queryObj: QueryObject = {
+      field: documentId(),
+      condition: "in",
+      value: ids
+    };
+    return this.getDocumentsByQuery<T>(collectionName, queryObj);
+  }
+
+  async getDocumentsByQuery<T>(
+    directoryName: string,
+    queryObjetct: QueryObject
+  ) {
+    const w = where(
+      queryObjetct.field,
+      queryObjetct.condition,
+      queryObjetct.value
     );
+    const q = query(collection(this.db, directoryName), w);
     const queryResults = await getDocs(q);
     const parsedResults = queryResults.docs.map(
       doc =>
