@@ -6,6 +6,7 @@ import {
   ChangeEvent,
   Dispatch,
   FormEventHandler,
+  useEffect,
   useMemo,
   useState
 } from "react";
@@ -19,8 +20,10 @@ import LoadingIcon from "public/img/loading.svg";
 import SuccessIcon from "public/img/success.svg";
 import FailureIcon from "public/img/failure.svg";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CartActions } from "store/cartReducer";
+import { RootStore } from "store";
+import { useRouter } from "next/router";
 
 interface PaymentInfo {
   paymentSent: boolean;
@@ -55,6 +58,10 @@ const DEFAULT_PAYMENT_INFO: PaymentInfo = {
 const RESULT_STYLE = "flex flex-col items-center space-y-2";
 
 const CheckoutPage: NextPage = () => {
+  const router = useRouter();
+  const itemsQuantity = useSelector<RootStore>(
+    store => store.cart.items.length
+  ) as number;
   const dispatch = useDispatch<Dispatch<CartActions>>();
   const [validationErrors, setValidationErrors] = useState(DEFAULT_VALIDATION);
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
@@ -125,6 +132,10 @@ const CheckoutPage: NextPage = () => {
       validationErrors.pin
     ]
   );
+
+  useEffect(() => {
+    if (itemsQuantity === 0) router.push("/");
+  }, [itemsQuantity, router]);
 
   return (
     <div className="py-1.5 px-3 max-w-7xl mx-auto lg:px-12">
