@@ -2,13 +2,9 @@ import { FC, MouseEvent, TouchEvent } from "react";
 
 const Dialog: FC<{
   opened: boolean;
-  onClose: () => void;
+  onClose?: () => void;
 }> = ({ children, opened, onClose }) => {
   const variant = opened ? "block" : "hidden";
-
-  const closeDialog = () => {
-    onClose();
-  };
 
   const stopPropagation = (e: MouseEvent | TouchEvent) => {
     e.stopPropagation();
@@ -17,7 +13,7 @@ const Dialog: FC<{
   return (
     <div
       className={`fixed bg-grey-transparent w-screen h-screen top-0 left-0 z-50 ${variant}`}
-      onClick={closeDialog}
+      onClick={onClose}
     >
       <div onClick={stopPropagation}>{children}</div>
     </div>
