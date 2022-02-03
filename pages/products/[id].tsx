@@ -107,7 +107,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
 
       <Link
         href={{
-          pathname: "/subcategory",
+          pathname: "/catalog",
           query: { id: itemObj.subcategory }
         }}
       >

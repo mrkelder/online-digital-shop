@@ -35,7 +35,7 @@ const SubCategory: FC<{
           <Tab
             key={i.id}
             name={i.name}
-            onClick={changeLink(`/subcategory?id=${i.id}`)}
+            onClick={changeLink(`/catalog?id=${i.id}`)}
           />
         ))}
       </div>
