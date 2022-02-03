@@ -7,9 +7,7 @@ import {
   Firestore,
   query,
   where,
-  documentId,
-  WhereFilterOp,
-  FieldPath
+  documentId
 } from "firebase/firestore";
 import {
   FirebaseStorage,
