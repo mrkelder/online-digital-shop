@@ -91,3 +91,9 @@ interface Characteristic {
 type OptionsFlags<Type> = {
   [Property in keyof Type]: boolean;
 };
+
+interface QueryObject {
+  field: string | FieldPath;
+  condition: WhereFilterOp;
+  value: any[] | any;
+}

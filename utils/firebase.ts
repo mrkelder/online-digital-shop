@@ -18,12 +18,6 @@ import {
   getDownloadURL
 } from "firebase/storage";
 
-interface QueryObject {
-  field: string | FieldPath;
-  condition: WhereFilterOp;
-  value: any[] | any;
-}
-
 class Firebase {
   private readonly db: Firestore;
   private readonly storage: FirebaseStorage;
