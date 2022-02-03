@@ -59,11 +59,11 @@ const ContentWrapper: FC<Props> = ({
         className={`flex border-b ${shouldDisplayButtonBorder} py-2 px-3 w-full justify-between items-center`}
         onClick={toggleSection}
       >
-        <span className="text-xl text-light">{text}</span>
+        <span className="text-xl text-light text-left">{text}</span>
         <div
           className={`${bgColor(
             !isLight
-          )} w-6 h-6 flex items-center justify-center`}
+          )} w-6 h-6 ml-1 flex items-center justify-center`}
         >
           {icon}
         </div>
