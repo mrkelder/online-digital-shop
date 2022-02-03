@@ -1,6 +1,6 @@
 import { FC, MouseEvent, TouchEvent } from "react";
 
-const Dialog: FC<{
+const MobileDialog: FC<{
   opened: boolean;
   onClose?: () => void;
 }> = ({ children, opened, onClose }) => {
@@ -20,4 +20,4 @@ const Dialog: FC<{
   );
 };
 
-export default Dialog;
+export default MobileDialog;

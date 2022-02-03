@@ -1,7 +1,7 @@
 import { FC, useReducer, useState } from "react";
 import Link from "next/link";
 import Tab from "components/header/Tab";
-import Dialog from "../../MobileDialog";
+import MobileDialog from "../../MobileDialog";
 import SubCategory from "./SubCategory";
 import Loading from "./Loading";
 import Logo from "public/img/logo.svg";
@@ -106,7 +106,7 @@ const MobileMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
       <button className="text-grey-300 w-5" onClick={toggleNav}>
         <BurgerIcon />
       </button>
-      <Dialog opened={menuState > 0} onClose={changeState("close")}>
+      <MobileDialog opened={menuState > 0} onClose={changeState("close")}>
         <MobileSlideMenu>
           <div className="relative overflow-hidden h-full">
             <div className="bg-red text-white h-14 flex justify-center items-center relative">
@@ -140,8 +140,8 @@ const MobileMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
             )}
           </div>
         </MobileSlideMenu>
-      </Dialog>
-      <Dialog opened={navState} onClose={toggleNav}>
+      </MobileDialog>
+      <MobileDialog opened={navState} onClose={toggleNav}>
         <nav>
           <MobileSlideMenu variant="right">
             <div className="flex justify-end px-3.5">
@@ -194,7 +194,7 @@ const MobileMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
             </div>
           </MobileSlideMenu>
         </nav>
-      </Dialog>
+      </MobileDialog>
     </div>
   );
 };
