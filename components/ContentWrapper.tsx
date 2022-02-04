@@ -68,7 +68,7 @@ const ContentWrapper: FC<Props> = ({
           {icon}
         </div>
       </button>
-      {isOpened && children}
+      <div className={isOpened ? "block" : "hidden"}>{children}</div>
     </div>
   );
 };
