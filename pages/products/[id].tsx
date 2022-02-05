@@ -280,7 +280,7 @@ export const getStaticProps: GetStaticProps = async context => {
       notFound: true
     };
 
-  const characteristicsIds = result[0].characteristics.map(i => i.name);
+  const characteristicsIds = Object.keys(result[0].characteristics);
 
   const characteristicsObj = await firebase.getDocumentsById<Characteristic>(
     "characteristics",
@@ -299,14 +299,15 @@ export const getStaticProps: GetStaticProps = async context => {
     )) as FirebaseShop[]
   ).map(i => serializeShop(i));
 
-  const characteristics: Product["characteristics"] =
-    result[0].characteristics.map(i => ({
-      id: i.name,
-      name: findCharacteristicById(i.name).name,
-      value: findCharacteristicById(i.name)
-        .values.filter((_, index) => i.value.includes(index))
-        .join(", ")
-    }));
+  const characteristics: Product["characteristics"] = Object.entries(
+    result[0].characteristics
+  ).map(([id, value]) => ({
+    id,
+    name: findCharacteristicById(id).name,
+    value: findCharacteristicById(id)
+      .values.filter((_, index) => value.includes(index))
+      .join(", ")
+  }));
 
   const key_characteristics: Product["key_characteristics"] =
     result[0].key_characteristics.map(id =>
