@@ -49,7 +49,7 @@ type FirebaseProduct = Omit<
   Omit<Product, "characteristics">,
   "key_characteristics"
 > & {
-  characteristics: { [key: string]: number[] };
+  characteristics: { [key: string]: number };
   key_characteristics: Array<Characteristic["id"]>;
   available_in: Array<Shop["id"]>;
 };

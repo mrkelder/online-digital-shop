@@ -301,12 +301,10 @@ export const getStaticProps: GetStaticProps = async context => {
 
   const characteristics: Product["characteristics"] = Object.entries(
     result[0].characteristics
-  ).map(([id, value]) => ({
+  ).map(([id, valueIndex]) => ({
     id,
     name: findCharacteristicById(id).name,
-    value: findCharacteristicById(id)
-      .values.filter((_, index) => value.includes(index))
-      .join(", ")
+    value: findCharacteristicById(id).values[valueIndex]
   }));
 
   const key_characteristics: Product["key_characteristics"] =
