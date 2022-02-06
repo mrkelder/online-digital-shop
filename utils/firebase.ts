@@ -51,19 +51,18 @@ class Firebase {
       condition: "in",
       value: ids
     };
-    return this.getDocumentsByQuery<T>(collectionName, queryObj);
+    return this.getDocumentsByQuery<T>(collectionName, [queryObj]);
   }
 
   async getDocumentsByQuery<T>(
     directoryName: string,
-    queryObjetct: QueryObject
+    queryObjetctsArray: QueryObject[]
   ) {
-    const w = where(
-      queryObjetct.field,
-      queryObjetct.condition,
-      queryObjetct.value
-    );
-    const q = query(collection(this.db, directoryName), w);
+    const w = [];
+    for (const q of queryObjetctsArray) {
+      w.push(where(q.field, q.condition, q.value));
+    }
+    const q = query(collection(this.db, directoryName), ...w);
     const queryResults = await getDocs(q);
     const parsedResults = queryResults.docs.map(
       doc =>
