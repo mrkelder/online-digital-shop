@@ -24,6 +24,9 @@ interface Props {
   products: FirebaseProduct[];
   allProducts: FirebaseProduct[];
   characteristics: Characteristic[];
+  minPrice: number;
+  maxPrice: number;
+  queryPrice: { min: number; max: number };
 }
 
 type PriceFilterField = "min" | "max";
@@ -33,31 +36,36 @@ const TITLE = "Каталог";
 const CatalogPage: NextPage<Props> = ({
   products,
   characteristics,
-  allProducts
+  allProducts,
+  minPrice,
+  maxPrice,
+  queryPrice
 }) => {
   // TODO: when subcategory is not specefied
   // TODO: when there is no items
-
-  const SORTED_ARRAY = [...products].sort((a, b) => a.price - b.price);
-  const MIN = SORTED_ARRAY[0].price;
-  const MAX = SORTED_ARRAY[SORTED_ARRAY.length - 1].price;
 
   const router = useRouter();
   const characteristicsQuery = useRef<Set<string>>(new Set());
 
   const [catalog, setCatalog] = useState<FirebaseProduct[]>(products);
   const [areMobileFiltersOpened, setAreMobileFiltersOpened] = useState(false);
-  const [priceFilter, setPriceFilter] = useState({ min: MIN, max: MAX });
+  const [priceFilter, setPriceFilter] = useState({
+    min: queryPrice.min,
+    max: queryPrice.max
+  });
 
   useEffect(() => {
     async function handle() {
-      const items = await fetchCatalog(router.query, MIN, MAX);
-      if (items) setCatalog(items);
-      else setCatalog(allProducts);
+      const items = await fetchCatalog(
+        router.query,
+        minPrice,
+        maxPrice,
+        allProducts
+      );
+      setCatalog(items);
     }
-
     handle();
-  }, [router.query, MAX, MIN, allProducts]);
+  }, [router.query, maxPrice, minPrice, allProducts]);
 
   function submitCharacteristics() {
     const { route, query } = router;
@@ -76,8 +84,8 @@ const CatalogPage: NextPage<Props> = ({
         href: route,
         query: {
           ...query,
-          ...(MIN !== min && { min }),
-          ...(MAX !== max && { max }),
+          ...(minPrice !== min && { min }),
+          ...(maxPrice !== max && { max }),
           c: values.map(i => `${i.id}.${i.valueIndex}`)
         }
       },
@@ -104,13 +112,13 @@ const CatalogPage: NextPage<Props> = ({
   function changePriceValue(value: number, field: PriceFilterField) {
     switch (field) {
       case "min": {
-        if (value >= MIN && value < priceFilter.max)
+        if (value >= minPrice && value < priceFilter.max)
           changePriceFilter(value, "min");
         return;
       }
 
       case "max": {
-        if (value <= MAX && value > priceFilter.min)
+        if (value <= maxPrice && value > priceFilter.min)
           changePriceFilter(value, "max");
         return;
       }
@@ -123,7 +131,7 @@ const CatalogPage: NextPage<Props> = ({
 
   const changePriceFilter = (value: number, field: PriceFilterField) => {
     const newState = JSON.parse(JSON.stringify(priceFilter));
-    newState[field] = Math.max(Math.min(value, MAX), MIN);
+    newState[field] = Math.max(Math.min(value, maxPrice), minPrice);
     setPriceFilter(newState);
   };
 
@@ -158,8 +166,8 @@ const CatalogPage: NextPage<Props> = ({
           <div className="px-3.5 py-2">
             <p>Цена</p>
             <ReactSlider
-              min={MIN}
-              max={MAX}
+              min={minPrice}
+              max={maxPrice}
               className="bg-grey-200 rounded-full h-2 flex items-center my-2"
               value={[priceFilter.min, priceFilter.max]}
               renderThumb={props => (
@@ -253,12 +261,21 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
     value: id
   };
 
-  const products = await firebase.getDocumentsByQuery<FirebaseProduct>(
+  const allProducts = await firebase.getDocumentsByQuery<FirebaseProduct>(
     "products",
     [searchConfig]
   );
 
-  const allProducts = products;
+  allProducts.sort((a, b) => a.price - b.price);
+  const minPrice = allProducts[0].price;
+  const maxPrice = allProducts[allProducts.length - 1].price;
+
+  const products = await fetchCatalog(
+    context.query,
+    minPrice,
+    maxPrice,
+    allProducts
+  );
 
   const characteristics = await firebase.getDocumentsByQuery<Characteristic>(
     "characteristics",
@@ -266,7 +283,17 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
   );
 
   return {
-    props: { products, characteristics, allProducts }
+    props: {
+      products: products ? products : [],
+      characteristics,
+      allProducts,
+      minPrice,
+      maxPrice,
+      queryPrice: {
+        min: Number(context.query.min ?? minPrice),
+        max: Number(context.query.max ?? maxPrice)
+      }
+    }
   };
 };
 

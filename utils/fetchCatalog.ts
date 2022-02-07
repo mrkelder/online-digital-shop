@@ -50,9 +50,7 @@ function groupCharacteristicsByIds(
 }
 
 function getQueryPromises(
-  compoundCharacteristics: CompoundCharacteristic[],
-  min: number,
-  max: number
+  compoundCharacteristics: CompoundCharacteristic[]
 ): FirebaseProductPromiseArray[] {
   const quaries: FirebaseProductPromiseArray[] = [];
 
@@ -67,18 +65,6 @@ function getQueryPromises(
 
     quaries.push(query);
   }
-
-  const minPriceQuery = firebase.getDocumentsByQuery<FirebaseProduct>(
-    "products",
-    [{ field: "price", condition: ">=", value: min }]
-  );
-
-  const maxPriceQuery = firebase.getDocumentsByQuery<FirebaseProduct>(
-    "products",
-    [{ field: "price", condition: "<=", value: max }]
-  );
-
-  quaries.push(minPriceQuery, maxPriceQuery);
 
   return quaries;
 }
@@ -97,6 +83,14 @@ function groupProductsByIds(
   return fProducts;
 }
 
+function returnGroupedArrayOrAllItems(
+  data: FirebaseProduct[][],
+  allProducts: FirebaseProduct[]
+) {
+  if (data.length === 0) return allProducts;
+  return groupProductsByIds(data);
+}
+
 async function fetchCatalog(
   query: {
     c?: string[];
@@ -104,25 +98,27 @@ async function fetchCatalog(
     max?: number;
   },
   minPrice: number,
-  maxPrice: number
-): Promise<FirebaseProduct[] | false> {
+  maxPrice: number,
+  allProducts: FirebaseProduct[]
+): Promise<FirebaseProduct[]> {
   if (query.c || query.min || query.max) {
     const min = Number(query.min ?? minPrice);
     const max = Number(query.max ?? maxPrice);
 
     const characteristics = getCharacteristicsArray(query.c ?? []);
     const compoundCharacteristics = groupCharacteristicsByIds(characteristics);
-    const quaries = getQueryPromises(compoundCharacteristics, min, max);
+    const quaries = getQueryPromises(compoundCharacteristics);
 
     const data = await Promise.all(quaries);
 
-    const firebaseProducts = groupProductsByIds(data).filter(
-      i => i.price >= min && i.price <= max
-    );
+    const firebaseProducts = returnGroupedArrayOrAllItems(
+      data,
+      allProducts
+    ).filter(i => i.price >= min && i.price <= max);
     return firebaseProducts;
   }
 
-  return false;
+  return allProducts;
 }
 
 export default fetchCatalog;
