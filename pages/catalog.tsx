@@ -4,16 +4,25 @@ import MobileSlideMenu from "components/MobileSlideMenu";
 import Card from "components/product-card/Card";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { ChangeEvent, ChangeEventHandler, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  useEffect,
+  useRef,
+  useState
+} from "react";
 import Firebase from "utils/firebase";
 import CrossIcon from "public/img/cross.svg";
 import ContentWrapper from "components/ContentWrapper";
 import { useRouter } from "next/router";
 import ReactSlider from "react-slider";
 import Input from "components/Input";
+import type { CharacteristicQuery } from "utils/fetchCatalog";
+import fetchCatalog from "utils/fetchCatalog";
 
 interface Props {
   products: FirebaseProduct[];
+  allProducts: FirebaseProduct[];
   characteristics: Characteristic[];
 }
 
@@ -21,27 +30,64 @@ type PriceFilterField = "min" | "max";
 
 const TITLE = "Каталог";
 
-const CatalogPage: NextPage<Props> = ({ products, characteristics }) => {
+const CatalogPage: NextPage<Props> = ({
+  products,
+  characteristics,
+  allProducts
+}) => {
+  // TODO: when subcategory is not specefied
+  // TODO: when there is no items
+
+  const SORTED_ARRAY = [...products].sort((a, b) => a.price - b.price);
+  const MIN = SORTED_ARRAY[0].price;
+  const MAX = SORTED_ARRAY[SORTED_ARRAY.length - 1].price;
+
   const router = useRouter();
   const characteristicsQuery = useRef<Set<string>>(new Set());
+
+  const [catalog, setCatalog] = useState<FirebaseProduct[]>(products);
   const [areMobileFiltersOpened, setAreMobileFiltersOpened] = useState(false);
-  const [priceFilter, setPriceFilter] = useState({ min: 0, max: 100 });
+  const [priceFilter, setPriceFilter] = useState({ min: MIN, max: MAX });
+
+  useEffect(() => {
+    async function handle() {
+      const items = await fetchCatalog(router.query, MIN, MAX);
+      if (items) setCatalog(items);
+      else setCatalog(allProducts);
+      console.log(items);
+    }
+
+    handle();
+  }, [router.query, MAX, MIN, allProducts]);
 
   function submitCharacteristics() {
+    const { route, query } = router;
+    const { min, max } = priceFilter;
     const set = characteristicsQuery.current;
 
-    const values = Array.from(set).map(i => i);
-    // const values = Array.from(set).map(i => JSON.parse(i));
+    const values: ReadonlyArray<CharacteristicQuery> = Array.from(set).map(i =>
+      JSON.parse(i)
+    );
 
-    // const { route, query } = router;
+    delete query.max;
+    delete query.min;
 
-    // router.push({ href: route, query: { ...query, c: "..." } }, undefined, {
-    //   shallow: true
-    // });
+    router.push(
+      {
+        href: route,
+        query: {
+          ...query,
+          ...(MIN !== min && { min }),
+          ...(MAX !== max && { max }),
+          c: values.map(i => `${i.id}.${i.valueIndex}`)
+        }
+      },
+      undefined,
+      {
+        shallow: true
+      }
+    );
   }
-
-  const MIN = 0;
-  const MAX = 100;
 
   function priceInputHanlder(field: PriceFilterField) {
     return (e: ChangeEvent<HTMLInputElement>) => {
@@ -55,6 +101,7 @@ const CatalogPage: NextPage<Props> = ({ products, characteristics }) => {
     if (max !== priceFilter.max) changeValue(max, "max");
   }
 
+  // TODO: rename the below
   function changeValue(value: number, field: PriceFilterField) {
     switch (field) {
       case "min": {
@@ -112,6 +159,8 @@ const CatalogPage: NextPage<Props> = ({ products, characteristics }) => {
           <div className="px-3.5 py-2">
             <p>Цена</p>
             <ReactSlider
+              min={MIN}
+              max={MAX}
               className="bg-grey-200 rounded-full h-2 flex items-center my-2"
               value={[priceFilter.min, priceFilter.max]}
               renderThumb={props => (
@@ -178,7 +227,7 @@ const CatalogPage: NextPage<Props> = ({ products, characteristics }) => {
           <Button onClick={toggleMobileFilters}>Фильтры</Button>
         </div>
         <div className="grid grid-cols-1 self-center gap-10 sm:grid-cols-2">
-          {products.map(i => (
+          {catalog.map(i => (
             <Card
               key={i.id}
               rating={i.rating}
@@ -188,14 +237,9 @@ const CatalogPage: NextPage<Props> = ({ products, characteristics }) => {
               id={i.id}
             />
           ))}
+          {catalog.length === 0 && <b>Ничего не найдено</b>}
         </div>
       </div>
-
-      <style jsx>{`
-        .example-thumb {
-          background-color: black;
-        }
-      `}</style>
     </div>
   );
 };
@@ -212,16 +256,18 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
 
   const products = await firebase.getDocumentsByQuery<FirebaseProduct>(
     "products",
-    searchConfig
+    [searchConfig]
   );
+
+  const allProducts = products;
 
   const characteristics = await firebase.getDocumentsByQuery<Characteristic>(
     "characteristics",
-    searchConfig
+    [searchConfig]
   );
 
   return {
-    props: { products, characteristics }
+    props: { products, characteristics, allProducts }
   };
 };
 
