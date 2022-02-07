@@ -54,7 +54,6 @@ const CatalogPage: NextPage<Props> = ({
       const items = await fetchCatalog(router.query, MIN, MAX);
       if (items) setCatalog(items);
       else setCatalog(allProducts);
-      console.log(items);
     }
 
     handle();
@@ -91,18 +90,18 @@ const CatalogPage: NextPage<Props> = ({
 
   function priceInputHanlder(field: PriceFilterField) {
     return (e: ChangeEvent<HTMLInputElement>) => {
-      changeValue(Number(e.target.value), field);
+      changePriceValue(Number(e.target.value), field);
     };
   }
 
   function rangeHandler(values: [number, number]) {
     const [min, max] = values;
-    if (min !== priceFilter.min) changeValue(min, "min");
-    if (max !== priceFilter.max) changeValue(max, "max");
+    if (min !== priceFilter.min) changePriceValue(min, "min");
+    if (max !== priceFilter.max) changePriceValue(max, "max");
   }
 
   // TODO: rename the below
-  function changeValue(value: number, field: PriceFilterField) {
+  function changePriceValue(value: number, field: PriceFilterField) {
     switch (field) {
       case "min": {
         if (value >= MIN && value < priceFilter.max)
