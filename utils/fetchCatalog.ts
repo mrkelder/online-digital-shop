@@ -91,6 +91,14 @@ function returnGroupedArrayOrAllItems(
   return groupProductsByIds(data);
 }
 
+function skipAndLimit(
+  products: FirebaseProduct[],
+  skip: number,
+  limit: number
+) {
+  return products.slice(skip, limit);
+}
+
 async function fetchCatalog(
   query: {
     c?: string[];
@@ -99,7 +107,9 @@ async function fetchCatalog(
   },
   minPrice: number,
   maxPrice: number,
-  allProducts: FirebaseProduct[]
+  allProducts: FirebaseProduct[],
+  skip: number,
+  limit: number
 ): Promise<FirebaseProduct[]> {
   if (query.c || query.min || query.max) {
     const min = Number(query.min ?? minPrice);
@@ -115,10 +125,10 @@ async function fetchCatalog(
       data,
       allProducts
     ).filter(i => i.price >= min && i.price <= max);
-    return firebaseProducts;
+    return skipAndLimit(firebaseProducts, skip, limit);
   }
 
-  return allProducts;
+  return skipAndLimit(allProducts, skip, limit);
 }
 
 export default fetchCatalog;
