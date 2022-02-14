@@ -103,7 +103,7 @@ const Filters: FC<Props> = ({
 
   return (
     <>
-      <div className="px-3.5 py-2">
+      <div className="px-3.5 py-2 lg:pt-0 lg:mb-3">
         <p>Цена</p>
         <ReactSlider
           min={minPrice}
@@ -141,7 +141,7 @@ const Filters: FC<Props> = ({
           </div>
         </div>
       </div>
-      <div className="overflow-y-auto flex-1">
+      <div className="overflow-y-auto flex-1 lg:space-y-3 lg:mb-3">
         {characteristics.map(c => (
           <ContentWrapper text={c.name} key={c.id}>
             <ul className="px-3.5 my-1">

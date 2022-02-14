@@ -9,6 +9,7 @@ import Firebase from "utils/firebase";
 import { useRouter } from "next/router";
 import fetchCatalog, { CharacteristicQuery } from "utils/fetchCatalog";
 import Filters from "components/catalog-page/Filters";
+import CrossIcon from "public/img/cross.svg";
 
 interface Props {
   products: FirebaseProduct[];
@@ -81,6 +82,7 @@ const CatalogPage: NextPage<Props> = ({
 }) => {
   // FIXME: make window size available with redux
   // FIXME: when you reload page with chosen filters they don't visually appear as chosen on the reloaded page
+  // FIXME: filters can only show the items that are eligible to ALL criterias
   // TODO: when subcategory is not specefied
   // TODO: when there is no items
 
@@ -240,72 +242,97 @@ const CatalogPage: NextPage<Props> = ({
   }
 
   return (
-    <div>
+    <div className="py-4">
       <Head>
         <title>{TITLE}</title>
       </Head>
 
-      <MobileDialog
-        opened={areMobileFiltersOpened}
-        onClose={toggleMobileFilters}
-      >
-        <MobileSlideMenu>
-          <Filters
-            {...{
-              queryPrice,
-              minPrice,
-              maxPrice,
-              toggleMobileFilters,
-              characteristics
-            }}
-            filterEventName={CHANGE_FILTERS_EVENT_NAME}
-          />
-        </MobileSlideMenu>
-      </MobileDialog>
+      {innerWidth < 1024 && (
+        <MobileDialog
+          opened={areMobileFiltersOpened}
+          onClose={toggleMobileFilters}
+        >
+          <MobileSlideMenu>
+            <div className="border-b border-grey-100 text-grey-600 py-3 relative flex items-center justify-center">
+              <button
+                className="w-5 left-4 absolute"
+                onClick={toggleMobileFilters}
+              >
+                <CrossIcon />
+              </button>
+              <p className="font-bold font-light ">Фильтры</p>
+            </div>
+            <Filters
+              {...{
+                queryPrice,
+                minPrice,
+                maxPrice,
+                characteristics
+              }}
+              filterEventName={CHANGE_FILTERS_EVENT_NAME}
+            />
+          </MobileSlideMenu>
+        </MobileDialog>
+      )}
 
-      <h1 className="text-center">{TITLE}</h1>
-      <div className="flex flex-col ">
-        <div className="mx-auto w-56 my-3">
+      <h1 className="text-center lg:mb-4">{TITLE}</h1>
+      <div className="flex flex-col">
+        <div className="mx-auto w-56 my-3 lg:hidden">
           <Button onClick={toggleMobileFilters}>Фильтры</Button>
         </div>
-        <div className="flex flex-col items-center">
-          <div className="grid grid-cols-1 self-center gap-10 sm:grid-cols-2">
-            {catalog.map(i => (
-              <Card
-                key={i.id}
-                rating={i.rating}
-                price={i.price}
-                name={i.name}
-                photo={i.photo}
-                id={i.id}
+        <div className="flex justify-center lg:justify-between">
+          {innerWidth >= 1024 && (
+            <div>
+              <Filters
+                {...{
+                  queryPrice,
+                  minPrice,
+                  maxPrice,
+                  characteristics
+                }}
+                filterEventName={CHANGE_FILTERS_EVENT_NAME}
               />
-            ))}
-            {catalog.length === 0 && <b>Ничего не найдено</b>}
-          </div>
-          <div className="flex space-x-2 my-2 lg:my-6 lg:space-x-4">
-            {paggination.map((i, index) => (
-              <div key={`p_${index}`}>
-                {i === null ? (
-                  <button
-                    className="w-10 h-10 bg-white shadow-md lg:bg-grey-100 lg:w-12 lg:h-12"
-                    disabled
-                  >
-                    ...
-                  </button>
-                ) : (
-                  <button
-                    className={`w-10 h-10 shadow-md lg:w-12 lg:h-12 ${
-                      currentPage === i
-                        ? "bg-grey-100 lg:bg-red lg:text-white"
-                        : "bg-white lg:bg-grey-100"
-                    }`}
-                    onClick={pagginatePage(i)}
-                  >
-                    {i}
-                  </button>
-                )}
-              </div>
-            ))}
+            </div>
+          )}
+          <div className="flex flex-col items-center flex-1">
+            <div className="grid grid-cols-1 self-center gap-10 sm:grid-cols-2">
+              {catalog.map(i => (
+                <Card
+                  key={i.id}
+                  rating={i.rating}
+                  price={i.price}
+                  name={i.name}
+                  photo={i.photo}
+                  id={i.id}
+                />
+              ))}
+              {catalog.length === 0 && <b>Ничего не найдено</b>}
+            </div>
+            <div className="flex space-x-2 my-2 lg:my-6 lg:space-x-4">
+              {paggination.map((i, index) => (
+                <div key={`p_${index}`}>
+                  {i === null ? (
+                    <button
+                      className="w-10 h-10 bg-white shadow-md lg:bg-grey-100 lg:w-12 lg:h-12"
+                      disabled
+                    >
+                      ...
+                    </button>
+                  ) : (
+                    <button
+                      className={`w-10 h-10 shadow-md lg:w-12 lg:h-12 ${
+                        currentPage === i
+                          ? "bg-grey-100 lg:bg-red lg:text-white"
+                          : "bg-white lg:bg-grey-100"
+                      }`}
+                      onClick={pagginatePage(i)}
+                    >
+                      {i}
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
