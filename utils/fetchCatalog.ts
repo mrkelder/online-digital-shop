@@ -131,8 +131,6 @@ async function fetchCatalog(
       allProducts
     ).filter(i => i.price >= min && i.price <= max);
 
-    console.log(skipAndLimit(firebaseProducts, skip, limit).length);
-
     return {
       items: skipAndLimit(firebaseProducts, skip, limit),
       amountOfItems: firebaseProducts.length
