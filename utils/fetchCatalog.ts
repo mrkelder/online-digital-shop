@@ -11,6 +11,11 @@ type CompoundCharacteristic = Pick<CharacteristicQuery, "id"> & {
 
 type FirebaseProductPromiseArray = Promise<FirebaseProduct[]>;
 
+interface FetchCatalogReturnValue {
+  items: FirebaseProduct[];
+  amountOfItems: number;
+}
+
 const firebase = new Firebase();
 
 function characteristicFormatter(c: string): CharacteristicQuery {
@@ -110,7 +115,7 @@ async function fetchCatalog(
   allProducts: FirebaseProduct[],
   skip: number,
   limit: number
-): Promise<FirebaseProduct[]> {
+): Promise<FetchCatalogReturnValue> {
   if (query.c || query.min || query.max) {
     const min = Number(query.min ?? minPrice);
     const max = Number(query.max ?? maxPrice);
@@ -125,10 +130,19 @@ async function fetchCatalog(
       data,
       allProducts
     ).filter(i => i.price >= min && i.price <= max);
-    return skipAndLimit(firebaseProducts, skip, limit);
+
+    console.log(skipAndLimit(firebaseProducts, skip, limit).length);
+
+    return {
+      items: skipAndLimit(firebaseProducts, skip, limit),
+      amountOfItems: firebaseProducts.length
+    };
   }
 
-  return skipAndLimit(allProducts, skip, limit);
+  return {
+    items: skipAndLimit(allProducts, skip, limit),
+    amountOfItems: allProducts.length
+  };
 }
 
 export default fetchCatalog;
