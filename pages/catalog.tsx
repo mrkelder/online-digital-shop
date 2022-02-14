@@ -7,7 +7,7 @@ import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
 import Firebase from "utils/firebase";
 import { useRouter } from "next/router";
-import fetchCatalog from "utils/fetchCatalog";
+import fetchCatalog, { CharacteristicQuery } from "utils/fetchCatalog";
 import Filters from "components/catalog-page/Filters";
 
 interface Props {
@@ -23,12 +23,25 @@ interface Props {
 
 type PageNumberFromQuery = string | string[] | undefined | number;
 
+// FIXME: DRY
+interface ChangeFiltersEventDetail {
+  min: number;
+  max: number;
+  route: string;
+  values: ReadonlyArray<CharacteristicQuery>;
+}
+
 const TITLE = "Каталог";
 const ITEMS_PER_PAGE = 10;
 const FIRST_PAGE = 1;
 const DEFAULT_PAGE = FIRST_PAGE;
 const DEFAULT_SKIP = DEFAULT_PAGE - 1;
 const DEFAULT_LIMIT = DEFAULT_PAGE * ITEMS_PER_PAGE;
+const CHANGE_FILTERS_EVENT_NAME = "change-filters";
+
+function getAmountOfPages(amountOfProducts: number): number {
+  return Math.ceil(amountOfProducts / ITEMS_PER_PAGE);
+}
 
 function validatePage(page: PageNumberFromQuery): number {
   if (checkForNumberOrString(page)) {
@@ -67,12 +80,13 @@ const CatalogPage: NextPage<Props> = ({
   totalQuantitiyOfPages
 }) => {
   // FIXME: make window size available with redux
-  // FIXME: update paggination after applied filters ----------------------------------
+  // FIXME: when you reload page with chosen filters they don't visually appear as chosen on the reloaded page
   // TODO: when subcategory is not specefied
   // TODO: when there is no items
 
   const router = useRouter();
   const [areMobileFiltersOpened, setAreMobileFiltersOpened] = useState(false);
+  const [quantityOfPages, setQuantityOfPages] = useState(totalQuantitiyOfPages);
   const [currentPage, setCurrentPage] = useState(page);
   const [innerWidth, setInnerWidth] = useState(0);
   const [catalog, setCatalog] = useState<FirebaseProduct[]>(products);
@@ -82,19 +96,10 @@ const CatalogPage: NextPage<Props> = ({
     [areMobileFiltersOpened]
   );
 
-  const memoizedFilters = useCallback(
-    () => (
-      <Filters
-        {...{
-          queryPrice,
-          minPrice,
-          maxPrice,
-          toggleMobileFilters,
-          characteristics
-        }}
-      />
-    ),
-    [characteristics, maxPrice, minPrice, queryPrice, toggleMobileFilters]
+  const paggination = buildPagination(
+    currentPage,
+    quantityOfPages,
+    innerWidth < 1024 ? 5 : 7
   );
 
   useEffect(() => {
@@ -112,11 +117,47 @@ const CatalogPage: NextPage<Props> = ({
   }, []);
 
   useEffect(() => {
+    function handleFilterChange(event: CustomEvent<ChangeFiltersEventDetail>) {
+      const { query } = router;
+      const { route, min, max, values } = event.detail;
+      router.push(
+        {
+          href: route,
+          query: {
+            ...query,
+            ...(minPrice !== min && { min }),
+            ...(maxPrice !== max && { max }),
+            c: values.map(i => `${i.id}.${i.valueIndex}`),
+            page: FIRST_PAGE
+          }
+        },
+        undefined,
+        {
+          shallow: true
+        }
+      );
+      setCurrentPage(FIRST_PAGE);
+    }
+
+    addEventListener(
+      CHANGE_FILTERS_EVENT_NAME,
+      handleFilterChange as EventListener
+    );
+
+    return () => {
+      removeEventListener(
+        CHANGE_FILTERS_EVENT_NAME,
+        handleFilterChange as EventListener
+      );
+    };
+  }, [maxPrice, minPrice, router]);
+
+  useEffect(() => {
     async function handle() {
       const page = validatePage(router.query.page);
       const { skip, limit } = getSkipAndLimitValues(page);
 
-      const items = await fetchCatalog(
+      const { items, amountOfItems } = await fetchCatalog(
         router.query,
         minPrice,
         maxPrice,
@@ -125,6 +166,7 @@ const CatalogPage: NextPage<Props> = ({
         limit
       );
       setCatalog(items);
+      setQuantityOfPages(getAmountOfPages(amountOfItems));
     }
     handle();
   }, [router.query, maxPrice, minPrice, allProducts]);
@@ -134,7 +176,6 @@ const CatalogPage: NextPage<Props> = ({
     totalPages: number,
     maxPages: 5 | 7
   ) {
-    // TODO: rename the names
     // FIXME: make it look... better
     if (totalPages <= maxPages) {
       return [...Array(totalPages)].map((_, i) => i + 1);
@@ -198,12 +239,6 @@ const CatalogPage: NextPage<Props> = ({
     };
   }
 
-  const paggination = buildPagination(
-    currentPage,
-    totalQuantitiyOfPages,
-    innerWidth < 1024 ? 5 : 7
-  );
-
   return (
     <div>
       <Head>
@@ -214,7 +249,18 @@ const CatalogPage: NextPage<Props> = ({
         opened={areMobileFiltersOpened}
         onClose={toggleMobileFilters}
       >
-        <MobileSlideMenu>{memoizedFilters}</MobileSlideMenu>
+        <MobileSlideMenu>
+          <Filters
+            {...{
+              queryPrice,
+              minPrice,
+              maxPrice,
+              toggleMobileFilters,
+              characteristics
+            }}
+            filterEventName={CHANGE_FILTERS_EVENT_NAME}
+          />
+        </MobileSlideMenu>
       </MobileDialog>
 
       <h1 className="text-center">{TITLE}</h1>
@@ -288,7 +334,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
   const minPrice = allProducts[0].price;
   const maxPrice = allProducts[allProducts.length - 1].price;
 
-  const products = await fetchCatalog(
+  const { items, amountOfItems } = await fetchCatalog(
     context.query,
     minPrice,
     maxPrice,
@@ -304,7 +350,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
 
   return {
     props: {
-      products: products ? products : [],
+      products: items ? items : [],
       characteristics,
       allProducts,
       minPrice,
@@ -314,7 +360,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
         max: Number(max ?? maxPrice)
       },
       page: actualPage,
-      totalQuantitiyOfPages: Math.ceil(allProducts.length / ITEMS_PER_PAGE)
+      totalQuantitiyOfPages: getAmountOfPages(amountOfItems)
     }
   };
 };

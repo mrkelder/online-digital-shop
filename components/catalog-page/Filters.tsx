@@ -7,6 +7,14 @@ import ReactSlider from "react-slider";
 import Input from "components/Input";
 import { useRouter } from "next/router";
 
+// FIXME: DRY
+interface ChangeFiltersEventDetail {
+  min: number;
+  max: number;
+  route: string;
+  values: ReadonlyArray<CharacteristicQuery>;
+}
+
 type PriceFilterField = "min" | "max";
 
 interface Props {
@@ -15,6 +23,7 @@ interface Props {
   minPrice: number;
   toggleMobileFilters: () => void;
   characteristics: Characteristic[];
+  filterEventName: string;
 }
 
 const Filters: FC<Props> = ({
@@ -22,7 +31,8 @@ const Filters: FC<Props> = ({
   minPrice,
   maxPrice,
   toggleMobileFilters,
-  characteristics
+  characteristics,
+  filterEventName
 }) => {
   const router = useRouter();
   const characteristicsQuery = useRef<Set<string>>(new Set());
@@ -79,7 +89,6 @@ const Filters: FC<Props> = ({
     const { route, query } = router;
     const { min, max } = priceFilter;
     const set = characteristicsQuery.current;
-
     const values: ReadonlyArray<CharacteristicQuery> = Array.from(set).map(i =>
       JSON.parse(i)
     );
@@ -87,21 +96,12 @@ const Filters: FC<Props> = ({
     delete query.max;
     delete query.min;
 
-    router.push(
-      {
-        href: route,
-        query: {
-          ...query,
-          ...(minPrice !== min && { min }),
-          ...(maxPrice !== max && { max }),
-          c: values.map(i => `${i.id}.${i.valueIndex}`)
-        }
-      },
-      undefined,
-      {
-        shallow: true
-      }
-    );
+    const detail: ChangeFiltersEventDetail = { min, max, route, values };
+
+    const changeFiltersEvent = new CustomEvent(filterEventName, {
+      detail
+    });
+    dispatchEvent(changeFiltersEvent);
   }
 
   return (
