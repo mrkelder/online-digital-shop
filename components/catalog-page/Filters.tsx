@@ -1,5 +1,4 @@
 import { ChangeEvent, ChangeEventHandler, FC, useRef, useState } from "react";
-import CrossIcon from "public/img/cross.svg";
 import ContentWrapper from "components/ContentWrapper";
 import type { CharacteristicQuery } from "utils/fetchCatalog";
 import Button from "components/Button";
@@ -21,7 +20,6 @@ interface Props {
   queryPrice: { min: number; max: number };
   maxPrice: number;
   minPrice: number;
-  toggleMobileFilters: () => void;
   characteristics: Characteristic[];
   filterEventName: string;
 }
@@ -30,7 +28,6 @@ const Filters: FC<Props> = ({
   queryPrice,
   minPrice,
   maxPrice,
-  toggleMobileFilters,
   characteristics,
   filterEventName
 }) => {
@@ -106,12 +103,6 @@ const Filters: FC<Props> = ({
 
   return (
     <>
-      <div className="border-b border-grey-100 text-grey-600 py-3 relative flex items-center justify-center">
-        <button className="w-5 left-4 absolute" onClick={toggleMobileFilters}>
-          <CrossIcon />
-        </button>
-        <p className="font-bold font-light ">Фильтры</p>
-      </div>
       <div className="px-3.5 py-2">
         <p>Цена</p>
         <ReactSlider
