@@ -113,7 +113,7 @@ const Filters: FC<Props> = ({
           renderThumb={props => (
             <div
               {...props}
-              className="w-5 h-5 bg-grey-100 rounded-full box-shadow"
+              className="w-5 h-5 bg-grey-100 rounded-full box-shadow cursor-move"
             />
           )}
           onChange={rangeHandler}
@@ -121,7 +121,7 @@ const Filters: FC<Props> = ({
           minDistance={10}
         />
         <div className="flex justify-between">
-          <div className="w-12">
+          <div className="w-12 lg:w-16">
             <Input
               underline
               placeholder="Цена"
@@ -130,7 +130,7 @@ const Filters: FC<Props> = ({
               onChange={priceInputHanlder("min")}
             />
           </div>
-          <div className="w-12">
+          <div className="w-12 lg:w-16">
             <Input
               underline
               placeholder="Цена"
