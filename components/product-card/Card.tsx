@@ -7,7 +7,12 @@ import starIcon from "public/img/star.png";
 import Image from "next/image";
 import Picture from "components/Picture";
 
-const Card: FC<FirebaseProduct> = ({ rating, price, name, photo, id }) => {
+type Props = Pick<
+  FirebaseProduct,
+  "rating" | "price" | "name" | "photo" | "id"
+>;
+
+const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
   const link = `/products/${id}`;
 
   return (

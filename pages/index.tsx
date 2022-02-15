@@ -95,8 +95,13 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
             {reccommendedItems.map(item => (
               <SwiperSlide key={`slide_${item.id}`}>
                 <div className="w-full flex justify-center">
-                  <Card {...item} />
-                  {/* FIXME: above */}
+                  <Card
+                    id={item.id}
+                    name={item.name}
+                    price={item.price}
+                    photo={item.photo}
+                    rating={item.rating}
+                  />
                 </div>
               </SwiperSlide>
             ))}

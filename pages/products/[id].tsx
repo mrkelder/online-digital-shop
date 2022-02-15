@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { CartActions, CartState } from "store/cartReducer";
 import { RootStore } from "store";
 import convertToReduxCartProduct from "utils/dto/convertToReduxCartProduct";
+import firebaseProductToProduct from "utils/firebaseProductToProduct";
 
 interface Props {
   itemObj: Product;
@@ -107,7 +108,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
 
       <Link
         href={{
-          pathname: "/subcategory",
+          pathname: "/catalog",
           query: { id: itemObj.subcategory }
         }}
       >
@@ -280,43 +281,7 @@ export const getStaticProps: GetStaticProps = async context => {
       notFound: true
     };
 
-  const characteristicsIds = result[0].characteristics.map(i => i.name);
-
-  const characteristicsObj = await firebase.getDocumentsById<Characteristic>(
-    "characteristics",
-    characteristicsIds
-  );
-
-  function findCharacteristicNameById(id: string) {
-    const result = characteristicsObj.find(i => i.id === id) as Characteristic;
-    return result.name;
-  }
-
-  const available_in = (
-    (await firebase.getDocumentsById<FirebaseShop>(
-      "shops",
-      result[0].available_in
-    )) as FirebaseShop[]
-  ).map(i => serializeShop(i));
-
-  const characteristics: Product["characteristics"] =
-    result[0].characteristics.map(i => ({
-      ...i,
-      id: i.name,
-      name: findCharacteristicNameById(i.name)
-    }));
-
-  const key_characteristics: Product["key_characteristics"] =
-    result[0].key_characteristics.map(id =>
-      characteristics.find(c => c.id === id)
-    ) as ProductCharacteristic[];
-
-  const itemObj: Product = {
-    ...result[0],
-    characteristics,
-    key_characteristics,
-    available_in
-  };
+  const itemObj = await firebaseProductToProduct(result[0]);
 
   return {
     props: { itemObj },
