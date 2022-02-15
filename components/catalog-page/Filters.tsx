@@ -33,6 +33,7 @@ const Filters: FC<Props> = ({
 }) => {
   const router = useRouter();
   const characteristicsQuery = useRef<Set<string>>(new Set());
+  // FIXME: fix inputs, their onChange
   const [priceFilter, setPriceFilter] = useState({
     min: queryPrice.min,
     max: queryPrice.max
