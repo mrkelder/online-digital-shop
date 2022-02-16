@@ -83,7 +83,6 @@ const CatalogPage: NextPage<Props> = ({
   // FIXME: make window size available with redux
   // FIXME: when you reload page with chosen filters they don't visually appear as chosen on the reloaded page
   // FIXME: filters can only show the items that are eligible to ALL criterias
-  // TODO: when subcategory is not specefied
   // TODO: when there is no items
 
   const router = useRouter();
@@ -340,11 +339,20 @@ const CatalogPage: NextPage<Props> = ({
   );
 };
 
+const REDIRECT_CONFIG = {
+  redirect: {
+    destination: "/",
+    permanent: false
+  }
+};
+
 export const getServerSideProps: GetServerSideProps<Props> = async context => {
   const firebase = new Firebase();
   const { id, min, max, page } = context.query;
   const actualPage = validatePage(page);
   const { skip, limit } = getSkipAndLimitValues(page);
+
+  if (!id) return REDIRECT_CONFIG;
 
   const searchConfig: QueryObject = {
     field: "subcategory",
@@ -356,6 +364,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
     "products",
     [searchConfig]
   );
+
+  if (allProducts.length === 0) return REDIRECT_CONFIG;
 
   allProducts.sort((a, b) => a.price - b.price);
   const minPrice = allProducts[0].price;
