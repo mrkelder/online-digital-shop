@@ -29,9 +29,8 @@ const Catalog: FC<Props> = ({ isOpened, catalogInfo }) => {
 
   useEffect(() => {
     function handleClickOutside(e: Event) {
-      // FIXME: deal with e.path problem
-      const path = e.path || (e.composedPath && e.composedPath());
-      if (!path.includes(menuRef.current)) {
+      const path = e.composedPath && e.composedPath();
+      if (path && !path.includes(menuRef.current as EventTarget)) {
         dispatchCloseEvent();
       }
     }
