@@ -47,9 +47,9 @@ Please note that this stack **may change in the future**.
 _In the nearest future, the stack above might also include:_
 
 1. Either Stripe.js or pure payment handling
-2. Node.js (for handling payments)
-3. Framer Motion
-4. Shopify API
+2. MongoDB (replacing firebase firestore)
+3. Mongoose
+4. Docker
 
 ## Environment Variables
 
