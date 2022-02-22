@@ -83,7 +83,6 @@ const CatalogPage: NextPage<Props> = ({
   // FIXME: make window size available with redux
   // FIXME: when you reload page with chosen filters they don't visually appear as chosen on the reloaded page
   // FIXME: filters can only show the items that are eligible to ALL criterias
-  // TODO: when there is no items
 
   const router = useRouter();
   const [areMobileFiltersOpened, setAreMobileFiltersOpened] = useState(false);
