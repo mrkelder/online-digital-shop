@@ -16,7 +16,7 @@ const Slider: FC<{
   slides: ReadonlyArray<{ mobile: string; desktop: string }>;
 }> = ({ slides }) => {
   return (
-    <div className="my-2 relative flex justify-center w-full lg:my-0 lg:max-w-7xl lg:mx-auto">
+    <div className="slider my-2 relative max-w-md mx-auto flex justify-center w-full lg:my-0 lg:max-w-7xl lg:mx-auto">
       <Swiper {...swiperParams}>
         {slides.map((i, index) => (
           <SwiperSlide key={`slide_${index}`}>
@@ -24,6 +24,13 @@ const Slider: FC<{
           </SwiperSlide>
         ))}
       </Swiper>
+      <style jsx>{`
+        @media (min-width: 1024px) {
+          .slider {
+            min-height: 261px;
+          }
+        }
+      `}</style>
     </div>
   );
 };
