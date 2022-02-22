@@ -6,9 +6,10 @@ import Firebase from "utils/firebase";
 import GuaranteeIcon from "public/img/guarantee.svg";
 import LikeIcon from "public/img/like.svg";
 import TruckIcon from "public/img/truck.svg";
+import ArrowIcon from "public/img/arrow.svg";
 import Card from "components/product-card/Card";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, SwiperOptions } from "swiper";
+import { Autoplay, Navigation, SwiperOptions } from "swiper";
 import "swiper/css";
 import "swiper/css/autoplay";
 import serializeShop from "utils/dto/serializeShop";
@@ -46,10 +47,14 @@ const swiperBreakpoints = {
 };
 
 const swiperConfig: SwiperOptions = {
-  modules: [Autoplay],
+  modules: [Autoplay, Navigation],
   breakpoints: swiperBreakpoints,
   autoplay: {
     delay: 3500
+  },
+  navigation: {
+    prevEl: ".items_navigation_left",
+    nextEl: ".items_navigation_right"
   }
 };
 
@@ -90,7 +95,17 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
           </span>
         </strong>
 
-        <div className="w-full my-3">
+        <div className="flex items-center w-full my-3 relative">
+          <button className="items_navigation_left flex absolute z-10 items-center justify-center w-12 h-12 bg-white box-shadow rounded-full left-2">
+            <span className="w-2 text-grey-300">
+              <ArrowIcon />
+            </span>
+          </button>
+          <button className="items_navigation_right flex absolute z-10 items-center justify-center w-12 h-12 bg-white box-shadow rounded-full transform rotate-180 right-2">
+            <span className="w-2 text-grey-300">
+              <ArrowIcon />
+            </span>
+          </button>
           <Swiper {...swiperConfig}>
             {reccommendedItems.map(item => (
               <SwiperSlide key={`slide_${item.id}`}>
