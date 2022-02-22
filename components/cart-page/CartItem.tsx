@@ -36,8 +36,10 @@ const CartItem: FC<Props> = ({ item }) => {
   return (
     <li className="box-shadow bg-white py-2 px-1 flex ">
       <div className="relative w-16 h-16">
+        {/* FIXME: loader musn't be like that, just load the biggest image, next will do everything else for yourself */}
         <Image
           src={item.photo?.image1x as string}
+          loader={() => item.photo?.image1x as string}
           alt="Фото товара"
           layout="fill"
           objectFit="contain"

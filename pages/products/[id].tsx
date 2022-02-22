@@ -130,8 +130,10 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
       <div className="flex flex-col lg:flex-row lg:space-x-5">
         <div className="lg:bg-white box-border lg:flex-1 lg:p-4 lg:shadow-xl lg:flex lg:flex-col lg:items-center">
           <div className="hidden relative w-full h-96 mb-2 lg:block">
+            {/* FIXME: loader musn't be like that */}
             <Image
               src={itemObj.photos[chosenPhotoIndex].image2x as string}
+              loader={() => itemObj.photos[chosenPhotoIndex].image2x as string}
               layout="fill"
               alt="Фото товара"
               objectFit="contain"
