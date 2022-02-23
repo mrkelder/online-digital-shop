@@ -16,7 +16,7 @@ import ArrowIcon from "public/img/arrow.svg";
 import Head from "next/head";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, SwiperOptions } from "swiper";
-import { Dispatch, useState } from "react";
+import { Dispatch, useEffect, useState } from "react";
 import MailNotification from "components/MailNotification";
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -29,8 +29,6 @@ import firebaseProductToProduct from "utils/firebaseProductToProduct";
 interface Props {
   itemObj: Product;
 }
-
-// FIXME: make it shceme.org friendly (https://schema.org/price)
 
 const swiperConf: SwiperOptions = {
   modules: [FreeMode],
@@ -69,6 +67,8 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   const activeStars = createStars(activeStarIcon, itemObj.rating);
   const inactiveStars = createStars(starIcon, MAXIMUM_RATING - itemObj.rating);
   const [chosenPhotoIndex, setChosenPhotoIndex] = useState(0);
+  const [innerWidth, setInnerWidth] = useState(1024);
+  const isMobile = innerWidth < 1024;
   const items = useSelector<RootStore>(
     store => store.cart.items
   ) as CartState["items"];
@@ -78,6 +78,20 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   // FIXME: render conditionally
   // TODO: add side buttons for photo selector
   // TODO: prefetch all photos to prevent lagging while swithcing between photos
+
+  useEffect(() => {
+    function handleResize() {
+      setInnerWidth(window.innerWidth);
+    }
+
+    handleResize();
+
+    addEventListener("resize", handleResize);
+
+    return () => {
+      removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const addItemToCart = () =>
     dispatch({
@@ -149,9 +163,13 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                 >
                   <div className={styles["photo-slide"]}>
                     {photo ? (
-                      <Picture
-                        image1x={photo.image1x}
-                        image2x={photo.image2x}
+                      <Image
+                        src={photo.image2x}
+                        layout={isMobile ? "fill" : "intrinsic"}
+                        width={64}
+                        height={64}
+                        objectFit="contain"
+                        objectPosition="center"
                         alt="Фото товара"
                       />
                     ) : (
