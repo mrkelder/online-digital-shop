@@ -2,8 +2,14 @@ import { FC, useEffect, useMemo, useState } from "react";
 import ArrowIcon from "public/img/arrow.svg";
 import Header from "components/header/Header";
 import Footer from "components/footer/Footer";
+import Router from "next/router";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 
 // FIXME: make layout robust so that you don't have to specify padding at **EACH** page
+
+Router.events.on("routeChangeStart", () => NProgress.start());
+Router.events.on("routeChangeComplete", () => NProgress.done());
 
 const Layout: FC = ({ children }) => {
   const [scroll, setScroll] = useState(0);
