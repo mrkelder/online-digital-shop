@@ -5,7 +5,6 @@ import DefaultPhoto from "public/img/default-photo.jpg";
 import starActiveIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
 import Image from "next/image";
-import Picture from "components/Picture";
 
 type Props = Pick<
   FirebaseProduct,
@@ -20,7 +19,13 @@ const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
       <Link href={link}>
         <a className="relative h-44 mb-2 lg:h-64">
           {photo ? (
-            <Picture {...photo} alt="Фотография товара" />
+            // FIXME: Keep in mind, the photo won't probably work on server
+            <Image
+              src={photo.image2x}
+              alt="Фотография товара"
+              objectFit="contain"
+              layout="fill"
+            />
           ) : (
             <Image
               src={DefaultPhoto}
