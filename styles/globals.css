@@ -98,3 +98,17 @@ hr {
   border: 2px solid white !important;
   margin-bottom: 0 !important;
 }
+
+#nprogress .bar {
+  background: #e60000 !important;
+  box-shadow: none !important;
+}
+
+#nprogress .peg {
+  display: none !important;
+  box-shadow: none !important;
+}
+
+#nprogress .spinner-icon {
+  display: none;
+}
