@@ -113,8 +113,6 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   };
 
   const resolveDaySchedule = (schedule: Shop["schedule"]) => {
-    // FIXME: extract to utils
-    // FIXME: moment.js
     const date = new Date();
     const timetable = schedule[date.getDay()];
     if (timetable) return `Сегодня с ${timetable.from} по ${timetable.to}`;
