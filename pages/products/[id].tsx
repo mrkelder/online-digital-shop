@@ -13,7 +13,7 @@ import Link from "next/link";
 import ArrowIcon from "public/img/arrow.svg";
 import Head from "next/head";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode, SwiperOptions } from "swiper";
+import { FreeMode, Navigation, SwiperOptions } from "swiper";
 import { Dispatch, useEffect, useState } from "react";
 import MailNotification from "components/MailNotification";
 import "swiper/css";
@@ -24,15 +24,23 @@ import { RootStore } from "store";
 import convertToReduxCartProduct from "utils/dto/convertToReduxCartProduct";
 import firebaseProductToProduct from "utils/firebaseProductToProduct";
 import Script from "next/script";
+import ArrowButton from "components/ArrowButton";
 
 interface Props {
   itemObj: Product;
 }
 
+const SWIPER_LEFT_NAVIGATION = "photos_navigation_left";
+const SWIPER_RIGHT_NAVIGATION = "photos_navigation_right";
+
 const swiperConf: SwiperOptions = {
-  modules: [FreeMode],
+  modules: [FreeMode, Navigation],
   freeMode: true,
   slidesPerView: 2.4,
+  navigation: {
+    prevEl: `.${SWIPER_LEFT_NAVIGATION}`,
+    nextEl: `.${SWIPER_RIGHT_NAVIGATION}`
+  },
   breakpoints: {
     320: {
       slidesPerView: 1.2
@@ -198,7 +206,18 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
               objectPosition="50%"
             />
           </div>
-          <div className="mb-2 w-full px-3.5 overflow-hidden lg:w-1/2">
+          <div className="flex items-center relative mb-2 w-full px-3.5 overflow-hidden lg:w-1/2">
+            <ArrowButton
+              size={6}
+              buttonClassName={SWIPER_LEFT_NAVIGATION}
+              arrowIconSize={1.5}
+            />
+            <ArrowButton
+              side="right"
+              buttonClassName={SWIPER_RIGHT_NAVIGATION}
+              size={6}
+              arrowIconSize={1.5}
+            />
             <Swiper {...swiperConf}>
               {itemObj.photos.map((photo, index) => (
                 <SwiperSlide
