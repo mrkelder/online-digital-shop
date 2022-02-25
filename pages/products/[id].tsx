@@ -3,13 +3,11 @@ import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import Image from "next/image";
 import Firebase from "utils/firebase";
 import DefaultPhoto from "public/img/default-photo.jpg";
-import Picture from "components/Picture";
 import activeStarIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
 import ContentWrapper from "components/ContentWrapper";
 import Characteristics from "components/product-page/Characteristics";
 import styles from "styles/item-page.module.css";
-import serializeShop from "utils/dto/serializeShop";
 import LocationIcon from "public/img/geo-point.svg";
 import Link from "next/link";
 import ArrowIcon from "public/img/arrow.svg";
@@ -25,6 +23,7 @@ import { CartActions, CartState } from "store/cartReducer";
 import { RootStore } from "store";
 import convertToReduxCartProduct from "utils/dto/convertToReduxCartProduct";
 import firebaseProductToProduct from "utils/firebaseProductToProduct";
+import Script from "next/script";
 
 interface Props {
   itemObj: Product;
@@ -115,10 +114,55 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   };
 
   return (
-    <div>
+    <div itemScope itemType="https://schema.org/OfferForPurchase">
       <Head>
         <title>{itemObj.name}</title>
+        <meta name="keywords" content={itemObj.name} />
+        <meta name="description" content={itemObj.description} />
+        <meta name="author" content="New London" />
       </Head>
+
+      <Script id="product-structured-data" type="application/ld+json">{`
+      {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": "${itemObj.name}",
+        "image": ["${itemObj.photo?.image2x}"],
+        "description": "${itemObj.description}",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "itemReviewed": {
+            "@type": "Thing",
+            "name": "${itemObj.name}"
+          },
+          "bestRating": "5",
+          "worstRating": "0",
+          "ratingCount": "1",
+          "ratingValue": "${itemObj.rating.toString()}"
+        },
+        "price": "${itemObj.price.toString()}",
+        "priceCurrency": "UAH",
+        "availability": "${itemObj.available ? "In Stock" : "Out of stock"}"
+      }
+      `}</Script>
+
+      <div itemProp="aggregateRating" itemScope>
+        <meta itemProp="ratingValue" content={itemObj.rating.toString()} />
+        <meta itemProp="bestRating" content="5" />
+        <meta itemProp="worstRating" content="0" />
+        <meta itemProp="ratingCount" content="1" />
+        <meta itemProp="itemReviewed" content={itemObj.name} />
+      </div>
+
+      <meta itemProp="price" content={itemObj.price.toString()} />
+      <meta itemProp="priceCurrency" content="UAH" />
+
+      <meta
+        itemProp="availability"
+        content={itemObj.available ? "In Stock" : "Out of stock"}
+      />
+
+      <meta itemProp="image" content={itemObj.photo?.image2x} />
 
       <Link
         href={{
