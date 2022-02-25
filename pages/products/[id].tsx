@@ -12,9 +12,10 @@ import LocationIcon from "public/img/geo-point.svg";
 import Link from "next/link";
 import ArrowIcon from "public/img/arrow.svg";
 import Head from "next/head";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper as SwiperComponent, SwiperSlide } from "swiper/react";
 import { FreeMode, Navigation, SwiperOptions } from "swiper";
-import { Dispatch, useEffect, useState } from "react";
+import type Swiper from "swiper";
+import { Dispatch, useEffect, useRef, useState } from "react";
 import MailNotification from "components/MailNotification";
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -70,6 +71,7 @@ function createStars(starIcon: StaticImageData, quantity: number) {
 
 const ProductPage: NextPage<Props> = ({ itemObj }) => {
   const MAXIMUM_RATING = 5;
+  const swiperInstance = useRef<null | Swiper>(null);
   const dispatch = useDispatch<Dispatch<CartActions>>();
   const activeStars = createStars(activeStarIcon, itemObj.rating);
   const inactiveStars = createStars(starIcon, MAXIMUM_RATING - itemObj.rating);
@@ -97,6 +99,15 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
       removeEventListener("resize", handleResize);
     };
   }, []);
+
+  function switchCurrentSlideToFocused(index: number) {
+    return () => {
+      const instance = swiperInstance.current;
+      if (instance) {
+        instance.slideTo(index);
+      }
+    };
+  }
 
   const addItemToCart = () =>
     dispatch({
@@ -207,19 +218,17 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
               buttonClassName={SWIPER_LEFT_NAVIGATION}
               arrowIconSize={1.5}
             />
-            <ArrowButton
-              side="right"
-              buttonClassName={SWIPER_RIGHT_NAVIGATION}
-              size={6}
-              arrowIconSize={1.5}
-            />
-            <Swiper {...swiperConf}>
+            <SwiperComponent
+              {...swiperConf}
+              onSwiper={s => (swiperInstance.current = s)}
+            >
               {itemObj.photos.map((photo, index) => (
-                <SwiperSlide
-                  key={`slide_${index}`}
-                  onClick={choosePhotoIndex(index)}
-                >
-                  <div className={styles["photo-slide"]}>
+                <SwiperSlide key={`slide_${index}`}>
+                  <button
+                    className={styles["photo-slide"]}
+                    onClick={choosePhotoIndex(index)}
+                    onFocus={switchCurrentSlideToFocused(index)}
+                  >
                     {photo ? (
                       <Image
                         src={photo.image2x}
@@ -239,10 +248,16 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                         objectPosition="50%"
                       />
                     )}
-                  </div>
+                  </button>
                 </SwiperSlide>
               ))}
-            </Swiper>
+            </SwiperComponent>
+            <ArrowButton
+              side="right"
+              buttonClassName={SWIPER_RIGHT_NAVIGATION}
+              size={6}
+              arrowIconSize={1.5}
+            />
           </div>
         </div>
         <div className="box-border lg:flex-1 lg:bg-white lg:shadow-xl lg:p-4">
