@@ -121,6 +121,9 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
     };
   };
 
+  const currentPhotoStyling = (index: number) =>
+    (chosenPhotoIndex === index ? "opacity-50" : "opacity-100") + " transition";
+
   const resolveDaySchedule = (schedule: Shop["schedule"]) => {
     const date = new Date();
     const timetable = schedule[date.getDay()];
@@ -231,6 +234,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                   >
                     {photo ? (
                       <Image
+                        className={currentPhotoStyling(index)}
                         src={photo.image2x}
                         layout={isMobile ? "fill" : "intrinsic"}
                         width={64}
