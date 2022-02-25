@@ -83,8 +83,6 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
     ? { color: "grey", text: "В корзине" }
     : { color: "red", text: "Купить" };
   // FIXME: render conditionally
-  // TODO: add side buttons for photo selector
-  // TODO: prefetch all photos to prevent lagging while swithcing between photos
 
   useEffect(() => {
     function handleResize() {
@@ -193,15 +191,14 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
       </div>
       <div className="flex flex-col lg:flex-row lg:space-x-5">
         <div className="lg:bg-white box-border lg:flex-1 lg:p-4 lg:shadow-xl lg:flex lg:flex-col lg:items-center">
-          <div className="hidden relative w-full h-96 mb-2 lg:block">
-            {/* FIXME: loader musn't be like that */}
+          <div className="hidden relative w-full h-96 mb-5 lg:block">
             <Image
               src={itemObj.photos[chosenPhotoIndex].image2x as string}
-              loader={() => itemObj.photos[chosenPhotoIndex].image2x as string}
               layout="fill"
               alt="Фото товара"
               objectFit="contain"
               objectPosition="50%"
+              priority
             />
           </div>
           <div className="flex items-center relative mb-2 w-full px-3.5 overflow-hidden lg:w-1/2">
