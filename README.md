@@ -58,6 +58,16 @@ To start the application properly you have to specify the following options in *
 - NEXT_PUBLIC_MAPS_API_KEY - Google Maps API key
 - NEXT_PUBLIC_MAPS_ID - Google Maps Id (for styling purposes)
 
+### Firebase Data
+
+- NEXT_PUBLIC_API_KEY
+- NEXT_PUBLIC_AUTH_DOMAIN
+- NEXT_PUBLIC_PROJECT_ID
+- NEXT_PUBLIC_STORAGE_BUCKET
+- NEXT_PUBLIC_MESSAGING_SENDER_ID
+- NEXT_PUBLIC_APP_ID
+- NEXT_PUBLIC_MEASUREMENT_ID
+
 ## Commits Naming
 
 Here are a few git commits naming conventions. Every commit has to start with one of these:
