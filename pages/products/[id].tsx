@@ -122,7 +122,8 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   };
 
   const currentPhotoStyling = (index: number) =>
-    (chosenPhotoIndex === index ? "opacity-50" : "opacity-100") + " transition";
+    (chosenPhotoIndex === index ? "lg:opacity-50" : "lg:opacity-100") +
+    " transition";
 
   const resolveDaySchedule = (schedule: Shop["schedule"]) => {
     const date = new Date();
@@ -237,8 +238,8 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                         className={currentPhotoStyling(index)}
                         src={photo.image2x}
                         layout={isMobile ? "fill" : "intrinsic"}
-                        width={64}
-                        height={64}
+                        width={isMobile ? undefined : 64}
+                        height={isMobile ? undefined : 64}
                         objectFit="contain"
                         objectPosition="center"
                         alt="Фото товара"
