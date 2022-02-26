@@ -273,7 +273,7 @@ const CatalogPage: NextPage<Props> = ({
         </MobileDialog>
       )}
 
-      <h1 className="text-center lg:mb-4">{TITLE}</h1>
+      <h1 className="text-center">{TITLE}</h1>
       <div className="flex flex-col">
         <div className="mx-auto w-56 my-3 lg:hidden">
           <Button onClick={toggleMobileFilters}>Фильтры</Button>

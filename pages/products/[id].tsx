@@ -189,7 +189,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
           query: { id: itemObj.subcategory }
         }}
       >
-        <a className="mx-3.5 mt-1 flex items-center text-grey-400 text-sm lg:mx-0">
+        <a className="mt-1 flex items-center text-grey-400 text-sm lg:mx-0">
           {" "}
           <span className="w-1 inline-block mr-1">
             <ArrowIcon />
@@ -197,14 +197,12 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
           На страницу подкатегорий
         </a>
       </Link>
-      <h1 className="text-xl font-bold text-grey-400 my-1 mx-3.5 lg:mx-0">
-        {itemObj.name}
-      </h1>
-      <div className="flex mb-2 mx-3.5 lg:mx-0">
+      <h1 className="text-xl font-bold text-grey-400">{itemObj.name}</h1>
+      <div className="flex mb-2 lg:mx-0">
         {activeStars}
         {inactiveStars}
       </div>
-      <div className="flex flex-col lg:flex-row lg:space-x-5">
+      <div className="flex flex-col mb-2 lg:flex-row lg:space-x-5">
         <div className="lg:bg-white box-border lg:flex-1 lg:p-4 lg:shadow-xl lg:flex lg:flex-col lg:items-center">
           <div className="hidden relative w-full h-96 mb-5 lg:block">
             <Image
@@ -216,7 +214,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
               priority
             />
           </div>
-          <div className="flex items-center relative mb-2 w-full px-3.5 overflow-hidden lg:w-1/2">
+          <div className="flex items-center relative mb-2 w-full overflow-hidden lg:w-1/2">
             <ArrowButton
               size={6}
               buttonClassName={SWIPER_LEFT_NAVIGATION}
@@ -268,10 +266,10 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
           </div>
         </div>
         <div className="box-border lg:flex-1 lg:bg-white lg:shadow-xl lg:p-4">
-          <p className="text-red text-2xl mb-1 text-light mx-3.5 lg:text-grey-500 lg:mx-0 lg:text-3xl lg:mb-2.5">
+          <p className="text-red text-2xl mb-1 text-light lg:text-grey-500 lg:mx-0 lg:text-3xl lg:mb-2.5">
             {itemObj.price} грн
           </p>
-          <div className="mx-3.5 lg:hidden">
+          <div className="lg:hidden">
             <Button
               variant="lg"
               disabled={!itemObj.available}
@@ -295,13 +293,13 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
             className={
               itemObj.available
                 ? "hidden"
-                : "inline" + " mx-3.5 mt-1 text-grey-300 lg:mx-0"
+                : "inline" + " mt-1 text-grey-300 lg:mx-0"
             }
           >
             Нет в наличии
           </b>
           <hr className="hidden mt-2 lg:block" />
-          <h2 className="text-base font-regular mt-2 text-grey-650 mx-3.5 lg:text-lg">
+          <h2 className="text-base font-regular mt-2 text-grey-650 lg:text-lg">
             Ключевые особенности
           </h2>
           <table className={styles["table"]}>
@@ -317,11 +315,11 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
           <hr className="hidden mb-2 lg:block" />
           <a
             href="#all-characteristics"
-            className="text-sm underline font-regular mt-2 mb-10 text-grey-650 mx-3.5 lg:hidden"
+            className="text-sm underline font-regular mt-2 mb-10 text-grey-650 lg:hidden"
           >
             Показать все характеристики
           </a>
-          <div className="my-3 mx-3.5 lg:my-1">
+          <div className="my-3 lg:my-1">
             <h2 className="text-grey-650 font-regular text-lg mb-1 flex items-center lg:text-lg lg:mb-2">
               Доступные магазины{" "}
               <span className="inline-block w-2.5 ml-1 text-red">
@@ -341,7 +339,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
           </div>
           <div className="lg:hidden">
             <ContentWrapper text="Описание" position="first">
-              <p className="text-base mx-3.5 my-2 text-grey-600">
+              <p className="text-base my-2 mx-3 text-grey-600">
                 {itemObj.description}
               </p>
             </ContentWrapper>

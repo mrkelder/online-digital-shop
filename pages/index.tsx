@@ -67,6 +67,7 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
       <Head>
         <title>New London</title>
       </Head>
+
       <section>
         <Slider {...{ slides }} />
 
