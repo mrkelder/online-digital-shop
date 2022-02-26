@@ -8,7 +8,7 @@ const GuaranteePage: NextPage = () => (
     <Head>
       <title>{TITLE}</title>
     </Head>
-    <h1 className="mb-2">{TITLE}</h1>
+    <h1>{TITLE}</h1>
     <div className="space-y-4">
       <p>
         Весь представленный товар официально поставляется в Украину и

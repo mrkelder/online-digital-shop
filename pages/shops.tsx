@@ -15,7 +15,7 @@ const ShopsPage: NextPage<Props> = ({ geoInfo }) => (
     <Head>
       <title>{TITLE}</title>
     </Head>
-    <h1 className="mb-2">{TITLE}</h1>
+    <h1>{TITLE}</h1>
     <ShopMap {...{ geoInfo }} />
   </div>
 );

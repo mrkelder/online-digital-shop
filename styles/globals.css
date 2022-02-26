@@ -33,7 +33,7 @@ h6 {
 }
 
 h1 {
-  @apply text-3xl lg:text-4xl;
+  @apply my-2 text-3xl lg:my-4 lg:text-4xl;
 }
 
 h2 {

@@ -197,9 +197,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
           На страницу подкатегорий
         </a>
       </Link>
-      <h1 className="text-xl font-bold text-grey-400 my-1 lg:mx-0">
-        {itemObj.name}
-      </h1>
+      <h1 className="text-xl font-bold text-grey-400">{itemObj.name}</h1>
       <div className="flex mb-2 lg:mx-0">
         {activeStars}
         {inactiveStars}

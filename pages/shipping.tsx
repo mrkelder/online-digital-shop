@@ -10,7 +10,7 @@ const ShippingPage: NextPage = () => (
       <title>{TITLE}</title>
     </Head>
 
-    <h1 className="mb-2">{TITLE}</h1>
+    <h1>{TITLE}</h1>
     <h2>Доставка</h2>
     <div className="mt-3 space-y-5">
       <TextBlock title="Самовывоз">
