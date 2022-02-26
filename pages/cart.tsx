@@ -29,7 +29,7 @@ const CartPage: NextPage = () => {
   }, [storeItems, router]);
 
   return (
-    <div className="py-3 px-3">
+    <div>
       <Head>
         <title>Корзина</title>
       </Head>
@@ -38,7 +38,7 @@ const CartPage: NextPage = () => {
         <a className="underline lg:text-base">Продолжить покупки</a>
       </Link>
       <div className="flex flex-col items-center">
-        <h1 className="mt-2 lg:mt-4 lg:mb-2">Корзина</h1>
+        <h1>Корзина</h1>
         <p className="text-grey-300 text-base">
           {storeItems.length} товаров на сумму{" "}
           <span className="text-grey-650 font-bold text-base">
