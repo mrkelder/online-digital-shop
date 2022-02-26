@@ -6,7 +6,6 @@ import Firebase from "utils/firebase";
 import GuaranteeIcon from "public/img/guarantee.svg";
 import LikeIcon from "public/img/like.svg";
 import TruckIcon from "public/img/truck.svg";
-import ArrowIcon from "public/img/arrow.svg";
 import Card from "components/product-card/Card";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, SwiperOptions } from "swiper";
@@ -14,6 +13,7 @@ import "swiper/css";
 import "swiper/css/autoplay";
 import serializeShop from "utils/dto/serializeShop";
 import MailNotification from "components/MailNotification";
+import ArrowButton from "components/ArrowButton";
 
 interface Props {
   slides: ReadonlyArray<{ mobile: string; desktop: string }>;
@@ -96,16 +96,8 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
         </strong>
 
         <div className="flex items-center w-full my-3 relative">
-          <button className="items_navigation_left flex absolute z-10 items-center justify-center w-12 h-12 bg-white box-shadow rounded-full left-2">
-            <span className="w-2 text-grey-300">
-              <ArrowIcon />
-            </span>
-          </button>
-          <button className="items_navigation_right flex absolute z-10 items-center justify-center w-12 h-12 bg-white box-shadow rounded-full transform rotate-180 right-2">
-            <span className="w-2 text-grey-300">
-              <ArrowIcon />
-            </span>
-          </button>
+          <ArrowButton buttonClassName="items_navigation_left" />
+          <ArrowButton buttonClassName="items_navigation_right" side="right" />
           <Swiper {...swiperConfig}>
             {reccommendedItems.map(item => (
               <SwiperSlide key={`slide_${item.id}`}>
