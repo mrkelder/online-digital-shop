@@ -1,5 +1,5 @@
 import Button from "components/Button";
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
 import Firebase from "utils/firebase";
 import DefaultPhoto from "public/img/default-photo.jpg";
@@ -366,9 +366,8 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   );
 };
 
-const firebase = new Firebase();
-
-export const getStaticProps: GetStaticProps = async context => {
+export const getServerSideProps: GetServerSideProps = async context => {
+  const firebase = new Firebase();
   const result = await firebase.getDocumentsById<FirebaseProduct>("products", [
     context.params?.id as string
   ]);
@@ -381,21 +380,7 @@ export const getStaticProps: GetStaticProps = async context => {
   const itemObj = await firebaseProductToProduct(result[0]);
 
   return {
-    props: { itemObj },
-    revalidate: 10
-  };
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const products = await firebase.getAllDocumentsInCollection<Product>(
-    "products"
-  );
-
-  const paths = products.map(i => ({ params: { id: i.id } }));
-
-  return {
-    paths,
-    fallback: "blocking"
+    props: { itemObj }
   };
 };
 
