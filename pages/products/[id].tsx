@@ -243,6 +243,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                         objectFit="contain"
                         objectPosition="center"
                         alt="Фото товара"
+                        priority
                       />
                     ) : (
                       <Image
@@ -251,6 +252,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                         alt="Фото товара"
                         objectFit="cover"
                         objectPosition="50%"
+                        priority
                       />
                     )}
                   </button>
