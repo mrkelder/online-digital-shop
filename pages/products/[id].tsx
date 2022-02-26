@@ -1,22 +1,21 @@
 import Button from "components/Button";
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
 import Firebase from "utils/firebase";
 import DefaultPhoto from "public/img/default-photo.jpg";
-import Picture from "components/Picture";
 import activeStarIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
 import ContentWrapper from "components/ContentWrapper";
 import Characteristics from "components/product-page/Characteristics";
 import styles from "styles/item-page.module.css";
-import serializeShop from "utils/dto/serializeShop";
 import LocationIcon from "public/img/geo-point.svg";
 import Link from "next/link";
 import ArrowIcon from "public/img/arrow.svg";
 import Head from "next/head";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode, SwiperOptions } from "swiper";
-import { Dispatch, useState } from "react";
+import { Swiper as SwiperComponent, SwiperSlide } from "swiper/react";
+import { FreeMode, Navigation, SwiperOptions } from "swiper";
+import type Swiper from "swiper";
+import { Dispatch, useEffect, useRef, useState } from "react";
 import MailNotification from "components/MailNotification";
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -25,17 +24,24 @@ import { CartActions, CartState } from "store/cartReducer";
 import { RootStore } from "store";
 import convertToReduxCartProduct from "utils/dto/convertToReduxCartProduct";
 import firebaseProductToProduct from "utils/firebaseProductToProduct";
+import Script from "next/script";
+import ArrowButton from "components/ArrowButton";
 
 interface Props {
   itemObj: Product;
 }
 
-// FIXME: make it shceme.org friendly (https://schema.org/price)
+const SWIPER_LEFT_NAVIGATION = "photos_navigation_left";
+const SWIPER_RIGHT_NAVIGATION = "photos_navigation_right";
 
 const swiperConf: SwiperOptions = {
-  modules: [FreeMode],
+  modules: [FreeMode, Navigation],
   freeMode: true,
   slidesPerView: 2.4,
+  navigation: {
+    prevEl: `.${SWIPER_LEFT_NAVIGATION}`,
+    nextEl: `.${SWIPER_RIGHT_NAVIGATION}`
+  },
   breakpoints: {
     320: {
       slidesPerView: 1.2
@@ -65,10 +71,13 @@ function createStars(starIcon: StaticImageData, quantity: number) {
 
 const ProductPage: NextPage<Props> = ({ itemObj }) => {
   const MAXIMUM_RATING = 5;
+  const swiperInstance = useRef<null | Swiper>(null);
   const dispatch = useDispatch<Dispatch<CartActions>>();
   const activeStars = createStars(activeStarIcon, itemObj.rating);
   const inactiveStars = createStars(starIcon, MAXIMUM_RATING - itemObj.rating);
   const [chosenPhotoIndex, setChosenPhotoIndex] = useState(0);
+  const [innerWidth, setInnerWidth] = useState(1024);
+  const isMobile = innerWidth < 1024;
   const items = useSelector<RootStore>(
     store => store.cart.items
   ) as CartState["items"];
@@ -76,8 +85,29 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
     ? { color: "grey", text: "В корзине" }
     : { color: "red", text: "Купить" };
   // FIXME: render conditionally
-  // TODO: add side buttons for photo selector
-  // TODO: prefetch all photos to prevent lagging while swithcing between photos
+
+  useEffect(() => {
+    function handleResize() {
+      setInnerWidth(window.innerWidth);
+    }
+
+    handleResize();
+
+    addEventListener("resize", handleResize);
+
+    return () => {
+      removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  function switchCurrentSlideToFocused(index: number) {
+    return () => {
+      const instance = swiperInstance.current;
+      if (instance) {
+        instance.slideTo(index);
+      }
+    };
+  }
 
   const addItemToCart = () =>
     dispatch({
@@ -91,9 +121,10 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
     };
   };
 
+  const currentPhotoStyling = (index: number) =>
+    (chosenPhotoIndex === index ? "opacity-50" : "opacity-100") + " transition";
+
   const resolveDaySchedule = (schedule: Shop["schedule"]) => {
-    // FIXME: extract to utils
-    // FIXME: moment.js
     const date = new Date();
     const timetable = schedule[date.getDay()];
     if (timetable) return `Сегодня с ${timetable.from} по ${timetable.to}`;
@@ -101,10 +132,55 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   };
 
   return (
-    <div>
+    <div itemScope itemType="https://schema.org/OfferForPurchase">
       <Head>
         <title>{itemObj.name}</title>
+        <meta name="keywords" content={itemObj.name} />
+        <meta name="description" content={itemObj.description} />
+        <meta name="author" content="New London" />
       </Head>
+
+      <Script id="product-structured-data" type="application/ld+json">{`
+      {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": "${itemObj.name}",
+        "image": ["${itemObj.photo?.image2x}"],
+        "description": "${itemObj.description}",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "itemReviewed": {
+            "@type": "Thing",
+            "name": "${itemObj.name}"
+          },
+          "bestRating": "5",
+          "worstRating": "0",
+          "ratingCount": "1",
+          "ratingValue": "${itemObj.rating.toString()}"
+        },
+        "price": "${itemObj.price.toString()}",
+        "priceCurrency": "UAH",
+        "availability": "${itemObj.available ? "In Stock" : "Out of stock"}"
+      }
+      `}</Script>
+
+      <div itemProp="aggregateRating" itemScope>
+        <meta itemProp="ratingValue" content={itemObj.rating.toString()} />
+        <meta itemProp="bestRating" content="5" />
+        <meta itemProp="worstRating" content="0" />
+        <meta itemProp="ratingCount" content="1" />
+        <meta itemProp="itemReviewed" content={itemObj.name} />
+      </div>
+
+      <meta itemProp="price" content={itemObj.price.toString()} />
+      <meta itemProp="priceCurrency" content="UAH" />
+
+      <meta
+        itemProp="availability"
+        content={itemObj.available ? "In Stock" : "Out of stock"}
+      />
+
+      <meta itemProp="image" content={itemObj.photo?.image2x} />
 
       <Link
         href={{
@@ -129,29 +205,42 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
       </div>
       <div className="flex flex-col lg:flex-row lg:space-x-5">
         <div className="lg:bg-white box-border lg:flex-1 lg:p-4 lg:shadow-xl lg:flex lg:flex-col lg:items-center">
-          <div className="hidden relative w-full h-96 mb-2 lg:block">
-            {/* FIXME: loader musn't be like that */}
+          <div className="hidden relative w-full h-96 mb-5 lg:block">
             <Image
               src={itemObj.photos[chosenPhotoIndex].image2x as string}
-              loader={() => itemObj.photos[chosenPhotoIndex].image2x as string}
               layout="fill"
               alt="Фото товара"
               objectFit="contain"
               objectPosition="50%"
+              priority
             />
           </div>
-          <div className="mb-2 w-full px-3.5 overflow-hidden lg:w-1/2">
-            <Swiper {...swiperConf}>
+          <div className="flex items-center relative mb-2 w-full px-3.5 overflow-hidden lg:w-1/2">
+            <ArrowButton
+              size={6}
+              buttonClassName={SWIPER_LEFT_NAVIGATION}
+              arrowIconSize={1.5}
+            />
+            <SwiperComponent
+              {...swiperConf}
+              onSwiper={s => (swiperInstance.current = s)}
+            >
               {itemObj.photos.map((photo, index) => (
-                <SwiperSlide
-                  key={`slide_${index}`}
-                  onClick={choosePhotoIndex(index)}
-                >
-                  <div className={styles["photo-slide"]}>
+                <SwiperSlide key={`slide_${index}`}>
+                  <button
+                    className={styles["photo-slide"]}
+                    onClick={choosePhotoIndex(index)}
+                    onFocus={switchCurrentSlideToFocused(index)}
+                  >
                     {photo ? (
-                      <Picture
-                        image1x={photo.image1x}
-                        image2x={photo.image2x}
+                      <Image
+                        className={currentPhotoStyling(index)}
+                        src={photo.image2x}
+                        layout={isMobile ? "fill" : "intrinsic"}
+                        width={64}
+                        height={64}
+                        objectFit="contain"
+                        objectPosition="center"
                         alt="Фото товара"
                       />
                     ) : (
@@ -163,10 +252,16 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                         objectPosition="50%"
                       />
                     )}
-                  </div>
+                  </button>
                 </SwiperSlide>
               ))}
-            </Swiper>
+            </SwiperComponent>
+            <ArrowButton
+              side="right"
+              buttonClassName={SWIPER_RIGHT_NAVIGATION}
+              size={6}
+              arrowIconSize={1.5}
+            />
           </div>
         </div>
         <div className="box-border lg:flex-1 lg:bg-white lg:shadow-xl lg:p-4">
@@ -271,9 +366,8 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   );
 };
 
-const firebase = new Firebase();
-
-export const getStaticProps: GetStaticProps = async context => {
+export const getServerSideProps: GetServerSideProps = async context => {
+  const firebase = new Firebase();
   const result = await firebase.getDocumentsById<FirebaseProduct>("products", [
     context.params?.id as string
   ]);
@@ -286,21 +380,7 @@ export const getStaticProps: GetStaticProps = async context => {
   const itemObj = await firebaseProductToProduct(result[0]);
 
   return {
-    props: { itemObj },
-    revalidate: 10
-  };
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const products = await firebase.getAllDocumentsInCollection<Product>(
-    "products"
-  );
-
-  const paths = products.map(i => ({ params: { id: i.id } }));
-
-  return {
-    paths,
-    fallback: "blocking"
+    props: { itemObj }
   };
 };
 

@@ -23,5 +23,5 @@
 }
 
 .photo-slide {
-  @apply relative bg-white border border-grey-100 p-2.5 lg:border-none;
+  @apply mx-auto relative bg-white border h-52 border-grey-100 lg:w-16 lg:h-16 lg:border-none;
 }
