@@ -11,7 +11,7 @@ interface Props {
 const TITLE = "Магазины";
 
 const ShopsPage: NextPage<Props> = ({ geoInfo }) => (
-  <div className="px-2 py-2 lg:max-w-full lg:mx-auto lg:px-12">
+  <div className="lg:max-w-full lg:mx-auto lg:px-12">
     <Head>
       <title>{TITLE}</title>
     </Head>

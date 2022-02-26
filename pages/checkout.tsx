@@ -138,7 +138,7 @@ const CheckoutPage: NextPage = () => {
   }, [itemsQuantity, router]);
 
   return (
-    <div className="py-1.5 px-3 max-w-7xl mx-auto lg:px-12">
+    <div className="max-w-7xl mx-auto lg:px-12">
       <Head>
         <title>Оплата</title>
       </Head>

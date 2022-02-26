@@ -29,7 +29,7 @@ const CartPage: NextPage = () => {
   }, [storeItems, router]);
 
   return (
-    <div className="py-3 px-3">
+    <div>
       <Head>
         <title>Корзина</title>
       </Head>
