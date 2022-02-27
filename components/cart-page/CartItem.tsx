@@ -15,6 +15,14 @@ interface Props {
 const CartItem: FC<Props> = ({ item }) => {
   const dispatch = useDispatch<Dispatch<CartActions>>();
 
+  function validatePrice(price: number): string {
+    const MAX_VALID_PRICE = 999999;
+    if (price > MAX_VALID_PRICE) {
+      return "+" + MAX_VALID_PRICE;
+    }
+    return price.toString();
+  }
+
   const removeItem = () => {
     dispatch({ type: "cart/removeItem", payload: item.id });
   };
@@ -45,13 +53,13 @@ const CartItem: FC<Props> = ({ item }) => {
           priority
         />
       </div>
-      <div className="flex-1 flex flex-col px-2 relative lg:flex-row lg:items-center lg:justify-between">
-        <div className="pr-4">
+      <div className="flex-1 flex flex-col px-2 relative lg:flex-row lg:items-center">
+        <div className="pr-4 lg:w-2/4">
           <Link href={`/products/${item.id}`}>
             <a className="text-sm lg:text-lg">{item.name}</a>
           </Link>
         </div>
-        <div className="flex justify-between items-center mt-3.5 lg:mt-0 lg:mr-10 lg:ml-auto">
+        <div className="flex justify-between items-center mt-3.5 lg:mt-0 lg:mr-10 lg:ml-auto lg:w-2/4">
           <div className="flex items-center lg:mr-16">
             <button
               className={styles["cart-item-amount-chooser"]}
@@ -67,12 +75,12 @@ const CartItem: FC<Props> = ({ item }) => {
               +
             </button>
           </div>
-          <p className="text-red text-sm lg:text-grey-300 lg:text-2xl">
-            {item.price * item.quantity} грн
+          <p className="text-red text-sm lg:text-grey-300 lg:text-xl">
+            {validatePrice(item.price * item.quantity)} грн
           </p>
         </div>
         <button
-          className="w-3 text-red absolute right-1.5 top-1 lg:relative lg:w-4"
+          className="w-3 text-red absolute right-1.5 top-1 lg:top-auto lg:right-3 lg:w-4"
           onClick={removeItem}
         >
           <CrossIcon />
