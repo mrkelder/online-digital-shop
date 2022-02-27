@@ -23,6 +23,14 @@ const CartItem: FC<Props> = ({ item }) => {
     return price.toString();
   }
 
+  function validateQuantity(quantity: number): string {
+    const MAX_VALID_QUANTITY = 9999;
+    if (quantity > MAX_VALID_QUANTITY) {
+      return "+" + MAX_VALID_QUANTITY;
+    }
+    return quantity.toString();
+  }
+
   const removeItem = () => {
     dispatch({ type: "cart/removeItem", payload: item.id });
   };
@@ -67,7 +75,7 @@ const CartItem: FC<Props> = ({ item }) => {
             >
               -
             </button>
-            <p className="px-2 text-base">{item.quantity}</p>
+            <p className="px-2 text-base">{validateQuantity(item.quantity)}</p>
             <button
               className={styles["cart-item-amount-chooser"]}
               onClick={incItemQuantity}
