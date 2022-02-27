@@ -15,6 +15,22 @@ interface Props {
 const CartItem: FC<Props> = ({ item }) => {
   const dispatch = useDispatch<Dispatch<CartActions>>();
 
+  function validatePrice(price: number): string {
+    const MAX_VALID_PRICE = 999999;
+    if (price > MAX_VALID_PRICE) {
+      return "+" + MAX_VALID_PRICE;
+    }
+    return price.toString();
+  }
+
+  function validateQuantity(quantity: number): string {
+    const MAX_VALID_QUANTITY = 9999;
+    if (quantity > MAX_VALID_QUANTITY) {
+      return "+" + MAX_VALID_QUANTITY;
+    }
+    return quantity.toString();
+  }
+
   const removeItem = () => {
     dispatch({ type: "cart/removeItem", payload: item.id });
   };
@@ -36,23 +52,22 @@ const CartItem: FC<Props> = ({ item }) => {
   return (
     <li className="box-shadow bg-white py-2 px-1 flex ">
       <div className="relative w-16 h-16">
-        {/* FIXME: loader musn't be like that, just load the biggest image, next will do everything else for yourself */}
         <Image
-          src={item.photo?.image1x as string}
-          loader={() => item.photo?.image1x as string}
+          src={item.photo?.image2x as string}
           alt="Фото товара"
           layout="fill"
           objectFit="contain"
           objectPosition="50%"
+          priority
         />
       </div>
-      <div className="flex-1 flex flex-col px-2 relative lg:flex-row lg:items-center lg:justify-between">
-        <div className="pr-4">
+      <div className="flex-1 flex flex-col px-2 relative lg:flex-row lg:items-center">
+        <div className="pr-4 lg:w-2/4">
           <Link href={`/products/${item.id}`}>
             <a className="text-sm lg:text-lg">{item.name}</a>
           </Link>
         </div>
-        <div className="flex justify-between items-center mt-3.5 lg:mt-0 lg:mr-10 lg:ml-auto">
+        <div className="flex justify-between items-center mt-3.5 lg:mt-0 lg:mr-10 lg:ml-auto lg:w-2/4">
           <div className="flex items-center lg:mr-16">
             <button
               className={styles["cart-item-amount-chooser"]}
@@ -60,7 +75,7 @@ const CartItem: FC<Props> = ({ item }) => {
             >
               -
             </button>
-            <p className="px-2 text-base">{item.quantity}</p>
+            <p className="px-2 text-base">{validateQuantity(item.quantity)}</p>
             <button
               className={styles["cart-item-amount-chooser"]}
               onClick={incItemQuantity}
@@ -68,12 +83,12 @@ const CartItem: FC<Props> = ({ item }) => {
               +
             </button>
           </div>
-          <p className="text-red text-sm lg:text-grey-300 lg:text-2xl">
-            {item.price * item.quantity} грн
+          <p className="text-red text-sm lg:text-grey-300 lg:text-xl">
+            {validatePrice(item.price * item.quantity)} грн
           </p>
         </div>
         <button
-          className="w-3 text-red absolute right-1.5 top-1 lg:relative lg:w-4"
+          className="w-3 text-red absolute right-1.5 top-1 lg:top-auto lg:right-3 lg:w-4"
           onClick={removeItem}
         >
           <CrossIcon />
