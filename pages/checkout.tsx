@@ -1,6 +1,6 @@
 import Button from "components/Button";
 import Card from "components/checkout-page/Card";
-import { NextPage } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
 import Head from "next/head";
 import {
   ChangeEvent,
@@ -24,6 +24,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { CartActions } from "store/cartReducer";
 import { RootStore } from "store";
 import { useRouter } from "next/router";
+import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
+import Cookie from "utils/cookie/cookie";
 
 interface PaymentInfo {
   paymentSent: boolean;
@@ -57,6 +59,8 @@ const DEFAULT_PAYMENT_INFO: PaymentInfo = {
 
 const RESULT_STYLE = "flex flex-col items-center space-y-2";
 
+const cookie = new Cookie();
+
 const CheckoutPage: NextPage = () => {
   const router = useRouter();
   const itemsQuantity = useSelector<RootStore>(
@@ -66,6 +70,8 @@ const CheckoutPage: NextPage = () => {
   const [validationErrors, setValidationErrors] = useState(DEFAULT_VALIDATION);
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
   const [paymentInfo, setPaymentInfo] = useState(DEFAULT_PAYMENT_INFO);
+  const [loadedLocalStorage, setLoadedLocalStorage] = useState(false);
+  // TODO: create a separeate hook
 
   const { paymentSent, paymentSuccess } = paymentInfo;
 
@@ -87,7 +93,7 @@ const CheckoutPage: NextPage = () => {
     e.preventDefault();
     const validation = validateFormData(formData);
 
-    if (validation) {
+    if (validation && !loadedLocalStorage) {
       const newValidationErrors = { ...validationErrors };
       newValidationErrors[validation] = true;
       setValidationErrors(newValidationErrors);
@@ -134,8 +140,20 @@ const CheckoutPage: NextPage = () => {
   );
 
   useEffect(() => {
-    if (itemsQuantity === 0) router.push("/");
-  }, [itemsQuantity, router]);
+    const cookieAmountOfItemsInCart = Number(
+      cookie.readCookie(AMOUNT_OF_ITEMS_IN_CART)
+    );
+
+    const cookieIsNaN = isNaN(cookieAmountOfItemsInCart);
+    const cookieAndLocalStorageAreNotEqual =
+      cookieAmountOfItemsInCart !== itemsQuantity;
+
+    const shouldBeRedirected = cookieIsNaN || cookieAndLocalStorageAreNotEqual;
+    const decision = loadedLocalStorage && shouldBeRedirected;
+
+    if (decision) router.push("/");
+    else setLoadedLocalStorage(true);
+  }, [itemsQuantity, router, loadedLocalStorage]);
 
   return (
     <div className="max-w-7xl mx-auto lg:px-12">
@@ -244,6 +262,39 @@ const CheckoutPage: NextPage = () => {
       </div>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async context => {
+  function deleteCookieAndReturnRedirect(
+    res: GetServerSidePropsContext["res"]
+  ) {
+    res.setHeader(
+      "Set-Cookie",
+      cookie.returnDeleteCookieConf(AMOUNT_OF_ITEMS_IN_CART)
+    );
+
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false
+      }
+    };
+  }
+
+  try {
+    const cookie = context.req.cookies[AMOUNT_OF_ITEMS_IN_CART];
+    const parsedCookie = Number(cookie);
+
+    if (!isNaN(parsedCookie) && parsedCookie > 0) {
+      return {
+        props: { ok: true }
+      };
+    } else {
+      return deleteCookieAndReturnRedirect(context.res);
+    }
+  } catch {
+    return deleteCookieAndReturnRedirect(context.res);
+  }
 };
 
 export default CheckoutPage;
