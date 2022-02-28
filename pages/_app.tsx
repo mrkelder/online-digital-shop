@@ -6,6 +6,7 @@ import { FirebaseContext } from "utils/firebase";
 import { Provider } from "react-redux";
 import { storeInitiator, epmtyStore } from "store/index";
 import { useEffect, useState } from "react";
+import cookieInitiator from "utils/cookie/cookieInitiator";
 
 // FIXME: order imports
 
@@ -18,6 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     const initiatedStore = storeInitiator();
+    cookieInitiator(initiatedStore);
     setStore(initiatedStore);
   }, []);
 

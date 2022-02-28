@@ -4,7 +4,7 @@ import { CartState, CartActions } from "./cartReducer";
 import cartReducer from "./cartReducer";
 import { CART } from "./localStorageNames";
 
-type ReduxStore = Store<
+export type ReduxStore = Store<
   EmptyObject & {
     cart: CartState;
   },
