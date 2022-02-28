@@ -4,6 +4,10 @@ class LocalStorage {
   // TODO: JEST
 
   public setItem(fieldName: string, name: unknown): void {
+    if (typeof fieldName !== "string") {
+      throw new Error("LocalStorage: filed name is invalid");
+    }
+
     if (LocalStorage._isLocalStorageAvailbale()) {
       this._setItem(fieldName, JSON.stringify(name));
     }
