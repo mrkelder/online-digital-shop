@@ -2,7 +2,8 @@ import { combineReducers, createStore, Store, EmptyObject } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { CartState, CartActions } from "./cartReducer";
 import cartReducer from "./cartReducer";
-import { CART } from "./localStorageNames";
+import { CART } from "../utils/localStorage/localStorageNames";
+import LocalStorage from "utils/localStorage/localStorage";
 
 export type ReduxStore = Store<
   EmptyObject & {
@@ -22,18 +23,19 @@ const composedEnhancers = composeWithDevTools();
 export const epmtyStore: ReduxStore = createStore(rootReducer);
 
 export function storeInitiator(): ReduxStore {
+  const localStoragClass = new LocalStorage();
   const preloadedStore: StoreState = { cart: { items: [] } };
 
   try {
     const preloadedCartItems: CartState["items"] = JSON.parse(
-      localStorage.getItem(CART) ?? "[]"
+      localStoragClass.getItem(CART) ?? "[]"
     );
 
     preloadedStore.cart.items = preloadedCartItems.map(i =>
       i.quantity >= 1 ? i : { ...i, quantity: 1 }
     );
   } catch {
-    localStorage.removeItem(CART);
+    localStoragClass.removeItem(CART);
   }
 
   const store = createStore(rootReducer, preloadedStore, composedEnhancers);

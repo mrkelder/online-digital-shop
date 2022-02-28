@@ -1,7 +1,8 @@
 import { Reducer } from "redux";
 import Cookie from "utils/cookie/cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
-import { CART } from "./localStorageNames";
+import LocalStorage from "utils/localStorage/localStorage";
+import { CART } from "../utils/localStorage/localStorageNames";
 
 export type ReduxCartProduct = Pick<
   Product,
@@ -34,6 +35,7 @@ const DEFAULT_STATE: CartState = {
 };
 
 const cookie = new Cookie();
+const localStoragClass = new LocalStorage();
 
 const cartReducer: Reducer<CartState, CartActions> = (
   state = DEFAULT_STATE,
@@ -78,7 +80,7 @@ const cartReducer: Reducer<CartState, CartActions> = (
   }
 
   cookie.setCookie(AMOUNT_OF_ITEMS_IN_CART, newState.items.length.toString());
-  localStorage.setItem(CART, JSON.stringify(newState.items));
+  localStoragClass.setItem(CART, newState.items);
   return JSON.parse(JSON.stringify(newState));
 };
 
