@@ -9,8 +9,6 @@ import { useCallback, useMemo } from "react";
 import Button from "components/Button";
 import { useRouter } from "next/router";
 
-// FIXME: make fetch look smooth
-
 const CartPage: NextPage = () => {
   const router = useRouter();
   const storeItems = useSelector<RootStore>(
@@ -61,6 +59,7 @@ const CartPage: NextPage = () => {
               "bg-grey-75 shadow-lg border border-grey-100 p-3 lg:mt-3.5 lg:ml-5 lg:w-96 lg:py-4 lg:px-6 " +
               priceBlockStyle
             }
+            style={{ height: "min-content" }}
           >
             <div className="flex justify-between items-center mb-3 lg:mb-5">
               <span className="lg:text-xl">Сумма заказа</span>
