@@ -20,7 +20,7 @@ interface Props {
   isLoading: boolean;
 }
 
-const DesktopMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
+const DesktopMenu: FC<Props> = ({ catalogInfo }) => {
   const [isCatalogOpened, setIsCatalogOpened] = useState(false);
 
   const itemsQuantity = useSelector<RootStore>(
@@ -42,11 +42,8 @@ const DesktopMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
     };
   }, [isCatalogOpened]);
 
-  // FIXME: Window.matchMedia()
-  // https://stackoverflow.com/questions/67266495/how-can-i-hide-a-component-in-react-depending-on-the-screen-size
-
   return (
-    <div className="hidden lg:flex flex-col w-full">
+    <div className="flex flex-col w-full">
       <div className="bg-grey-400 text-white w-full px-12">
         <nav className="flex justify-between h-7 max-w-7xl mx-auto">
           <div className="flex items-center space-x-7">

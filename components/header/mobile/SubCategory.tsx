@@ -10,7 +10,7 @@ const SubCategory: FC<{
   subCategories: SubCategory[];
 }> = ({ isOpened, closeSubMenu, closeMenu, subCategories }) => {
   const { push } = useRouter();
-  // FIXME: fix tabIndex
+  const tabIndex = isOpened ? 0 : -1;
 
   function changeLink(link: string) {
     return () => {
@@ -25,7 +25,11 @@ const SubCategory: FC<{
       className={`absolute top-0 left-0 w-full h-screen bg-white z-20 transition-transform transform ${translate}`}
     >
       <div className="bg-red text-white h-14 flex justify-center items-center relative">
-        <button className="w-3 absolute left-4" onClick={closeSubMenu}>
+        <button
+          className="w-3 absolute left-4"
+          onClick={closeSubMenu}
+          tabIndex={tabIndex}
+        >
           <ArrowIcon />
         </button>
         <span className="font-light text-lg">Каталог</span>
@@ -36,6 +40,7 @@ const SubCategory: FC<{
             key={i.id}
             name={i.name}
             onClick={changeLink(`/catalog?id=${i.id}`)}
+            tabIndex={tabIndex}
           />
         ))}
       </div>

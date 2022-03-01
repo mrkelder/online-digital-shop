@@ -62,6 +62,9 @@ const MobileMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
   const [menuState, dispatch] = useReducer(menuReducer, DEFAULT_MENU_STATE);
   const [navState, setNavState] = useState(false);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const tabIndex = menuState === 1 ? 0 : -1;
+
+  // TODO: add icons instead of "icon"
 
   const switchSubCategories = (categoryId: string) => {
     const data = findSubCategories(catalogInfo, categoryId);
@@ -84,7 +87,7 @@ const MobileMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
   const toggleNav = () => setNavState(!navState);
 
   return (
-    <div className="flex items-center h-14 px-3 w-full lg:hidden">
+    <div className="flex items-center h-14 px-3 w-full">
       <Link href="/">
         <a className="text-red w-8">
           <Logo />
@@ -93,6 +96,7 @@ const MobileMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
       <button
         className="flex items-center ml-3 text-red"
         onClick={changeState("open-menu")}
+        tabIndex={tabIndex}
       >
         <span className="w-3 mr-1">
           <MenuIcon />
@@ -126,6 +130,7 @@ const MobileMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
                     name={i.name}
                     key={i.id}
                     onClick={TabClick(i.id)}
+                    tabIndex={tabIndex}
                     showIcon
                   />
                 ))}
