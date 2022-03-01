@@ -84,7 +84,7 @@ const MobileMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
   const toggleNav = () => setNavState(!navState);
 
   return (
-    <div className="flex items-center h-14 px-3 w-full lg:hidden">
+    <div className="flex items-center h-14 px-3 w-full">
       <Link href="/">
         <a className="text-red w-8">
           <Logo />
