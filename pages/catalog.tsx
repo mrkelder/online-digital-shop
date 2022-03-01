@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import fetchCatalog, { CharacteristicQuery } from "utils/fetchCatalog";
 import Filters from "components/catalog-page/Filters";
 import CrossIcon from "public/img/cross.svg";
+import useMatchMedia from "hooks/useMatchMedia";
 
 interface Props {
   products: FirebaseProduct[];
@@ -33,7 +34,7 @@ interface ChangeFiltersEventDetail {
 }
 
 const TITLE = "Каталог";
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 3;
 const FIRST_PAGE = 1;
 const DEFAULT_PAGE = FIRST_PAGE;
 const DEFAULT_SKIP = DEFAULT_PAGE - 1;
@@ -88,8 +89,8 @@ const CatalogPage: NextPage<Props> = ({
   const [areMobileFiltersOpened, setAreMobileFiltersOpened] = useState(false);
   const [quantityOfPages, setQuantityOfPages] = useState(totalQuantitiyOfPages);
   const [currentPage, setCurrentPage] = useState(page);
-  const [innerWidth, setInnerWidth] = useState(0);
   const [catalog, setCatalog] = useState<FirebaseProduct[]>(products);
+  const { isMobile } = useMatchMedia();
 
   const toggleMobileFilters = useCallback(
     () => setAreMobileFiltersOpened(!areMobileFiltersOpened),
@@ -99,22 +100,8 @@ const CatalogPage: NextPage<Props> = ({
   const paggination = buildPagination(
     currentPage,
     quantityOfPages,
-    innerWidth < 1024 ? 5 : 7
+    isMobile ? 5 : 7
   );
-
-  useEffect(() => {
-    function handleResize() {
-      setInnerWidth(window.innerWidth);
-    }
-
-    handleResize();
-
-    addEventListener("resize", handleResize);
-
-    return () => {
-      removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   useEffect(() => {
     function handleFilterChange(event: CustomEvent<ChangeFiltersEventDetail>) {
@@ -245,7 +232,7 @@ const CatalogPage: NextPage<Props> = ({
         <title>{TITLE}</title>
       </Head>
 
-      {innerWidth < 1024 && (
+      {isMobile && (
         <MobileDialog
           opened={areMobileFiltersOpened}
           onClose={toggleMobileFilters}
@@ -279,7 +266,7 @@ const CatalogPage: NextPage<Props> = ({
           <Button onClick={toggleMobileFilters}>Фильтры</Button>
         </div>
         <div className="flex justify-center lg:justify-between">
-          {innerWidth >= 1024 && (
+          {!isMobile && (
             <div>
               <Filters
                 {...{
