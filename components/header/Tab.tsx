@@ -1,13 +1,23 @@
 import { FC } from "react";
 import ArrowIcon from "public/img/arrow.svg";
 
-const Tab: FC<{
+interface Props {
   onClick: () => void;
   onMouseEnter?: () => void;
   showIcon?: boolean;
   name: string;
   focused?: boolean;
-}> = ({ onClick, showIcon, name, focused, onMouseEnter }) => {
+  tabIndex?: number;
+}
+
+const Tab: FC<Props> = ({
+  onClick,
+  showIcon,
+  name,
+  focused,
+  onMouseEnter,
+  tabIndex
+}) => {
   const background = focused ? "bg-grey-75" : "bg-white focus:bg-grey-75";
   return (
     <button
@@ -16,6 +26,7 @@ const Tab: FC<{
       }
       onClick={onClick}
       onMouseEnter={onMouseEnter}
+      tabIndex={tabIndex}
     >
       <span className="mr-5 text-xs">icon</span>
       <p className="flex-1 text-left text-base lg:text-xl lg:font-light">
@@ -31,7 +42,8 @@ const Tab: FC<{
 };
 
 Tab.defaultProps = {
-  name: "Текст"
+  name: "Текст",
+  tabIndex: -1
 };
 
 export default Tab;
