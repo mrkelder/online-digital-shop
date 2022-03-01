@@ -32,6 +32,17 @@ const Slider: FC<{
       </div>
 
       <style jsx>{`
+        .slider {
+          /* 1.145 is a proper coefficient for the right height */
+          min-height: calc(100vw * 1.145);
+        }
+
+        @media (min-width: 473px) {
+          .slider {
+            min-height: 546px;
+          }
+        }
+
         @media (min-width: 1024px) {
           .slider {
             min-height: 261px;
