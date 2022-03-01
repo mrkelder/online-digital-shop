@@ -62,6 +62,8 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
   const geoInfoCondition =
     geoInfo.cities.length !== 0 && geoInfo.shops.length !== 0;
 
+  const isRecommenedItemsEmpty = reccommendedItems.length !== 0;
+
   return (
     <>
       <Head>
@@ -90,15 +92,23 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
 
       <section className="flex flex-col items-center">
         <strong className="font-light text-2xl mt-5 mx-5 text-center lg:text-4xl lg:mt-4 lg:mb-3">
+          {/* TODO: extract to a separate file */}
           Лучшие предложения на{" "}
           <span className="text-red text-2xl font-light lg:text-4xl">
             сегодня
           </span>
         </strong>
 
+        {!isRecommenedItemsEmpty && (
+          <b className="mx-auto">Лучших предложений пока нет</b>
+        )}
+
         <div className="flex items-center w-full my-3 relative">
-          <ArrowButton buttonClassName="items_navigation_left" />
-          <ArrowButton buttonClassName="items_navigation_right" side="right" />
+          {/* TODO: extract to a separate file */}
+
+          {isRecommenedItemsEmpty && (
+            <ArrowButton buttonClassName="items_navigation_left" />
+          )}
           <Swiper {...swiperConfig}>
             {reccommendedItems.map(item => (
               <SwiperSlide key={`slide_${item.id}`}>
@@ -114,6 +124,12 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
               </SwiperSlide>
             ))}
           </Swiper>
+          {isRecommenedItemsEmpty && (
+            <ArrowButton
+              buttonClassName="items_navigation_right"
+              side="right"
+            />
+          )}
         </div>
       </section>
       <section className="flex flex-col items-center my-2">
