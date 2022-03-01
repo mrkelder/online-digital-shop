@@ -1,5 +1,6 @@
 import { FC, useEffect, useRef } from "react";
 import { Loader, LoaderOptions } from "@googlemaps/js-api-loader";
+import useMatchMedia from "hooks/useMatchMedia";
 
 interface Props {
   allShopsInCurrentCity: Shop[];
@@ -14,11 +15,10 @@ const GMap: FC<Props> = ({ allShopsInCurrentCity, currentShop }) => {
     }>
   >([]);
   const mapRef = useRef<google.maps.Map | null>(null);
+  const { isMobile, isLoaded } = useMatchMedia();
   const GOOGLE_ELEMENT_NAME = "google-map-el";
 
   useEffect(() => {
-    const isMobile = window.innerWidth < 1024;
-
     async function createMap() {
       const { lng, lat } = currentShop.geo;
 
@@ -51,8 +51,8 @@ const GMap: FC<Props> = ({ allShopsInCurrentCity, currentShop }) => {
       }
     }
 
-    createMap();
-  }, [currentShop, allShopsInCurrentCity]);
+    if (isLoaded) createMap();
+  }, [currentShop, allShopsInCurrentCity, isLoaded, isMobile]);
 
   function removeMarkers() {
     markersRef.current.forEach(markerObj => {

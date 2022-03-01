@@ -26,6 +26,7 @@ import convertToReduxCartProduct from "utils/dto/convertToReduxCartProduct";
 import firebaseProductToProduct from "utils/firebaseProductToProduct";
 import Script from "next/script";
 import ArrowButton from "components/ArrowButton";
+import useMatchMedia from "hooks/useMatchMedia";
 
 interface Props {
   itemObj: Product;
@@ -76,8 +77,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   const activeStars = createStars(activeStarIcon, itemObj.rating);
   const inactiveStars = createStars(starIcon, MAXIMUM_RATING - itemObj.rating);
   const [chosenPhotoIndex, setChosenPhotoIndex] = useState(0);
-  const [innerWidth, setInnerWidth] = useState(1024);
-  const isMobile = innerWidth < 1024;
+  const { isMobile } = useMatchMedia();
   const items = useSelector<RootStore>(
     store => store.cart.items
   ) as CartState["items"];
@@ -85,20 +85,6 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
     ? { color: "grey", text: "В корзине" }
     : { color: "red", text: "Купить" };
   // FIXME: render conditionally
-
-  useEffect(() => {
-    function handleResize() {
-      setInnerWidth(window.innerWidth);
-    }
-
-    handleResize();
-
-    addEventListener("resize", handleResize);
-
-    return () => {
-      removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   function switchCurrentSlideToFocused(index: number) {
     return () => {
