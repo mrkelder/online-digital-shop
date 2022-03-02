@@ -1,9 +1,10 @@
 import { FC } from "react";
 
-import Head from "next/head";
 import Script from "next/script";
 
 import ldJsonItemProduct from "utils/ldJsonMeta/ldJsonItemProduct";
+
+import MetaHead from "../MetaHead";
 
 interface Props {
   itemObj: Product;
@@ -12,12 +13,11 @@ interface Props {
 const ItemPageMeta: FC<Props> = ({ itemObj }) => {
   return (
     <>
-      <Head>
-        <title>{itemObj.name}</title>
-        <meta name="keywords" content={itemObj.name} />
-        <meta name="description" content={itemObj.description} />
-        <meta name="author" content="New London" />
-      </Head>
+      <MetaHead
+        title={itemObj.name}
+        keywords={itemObj.description}
+        description={itemObj.description}
+      />
 
       <Script id="product-structured-data" type="application/ld+json">
         {ldJsonItemProduct(itemObj)}
