@@ -1,10 +1,8 @@
 import { Dispatch, useRef, useState } from "react";
 
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import Script from "next/script";
 import { useDispatch, useSelector } from "react-redux";
 import { FreeMode, Navigation, SwiperOptions } from "swiper";
 import type Swiper from "swiper";
@@ -14,6 +12,7 @@ import ArrowButton from "components/ArrowButton";
 import Button from "components/Button";
 import ContentWrapper from "components/ContentWrapper";
 import MailNotification from "components/MailNotification";
+import ItemPageMeta from "components/meta/itemPageMeta";
 import Characteristics from "components/product-page/Characteristics";
 import useMatchMedia from "hooks/useMatchMedia";
 import ArrowIcon from "public/img/arrow.svg";
@@ -123,54 +122,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
 
   return (
     <div itemScope itemType="https://schema.org/OfferForPurchase">
-      <Head>
-        <title>{itemObj.name}</title>
-        <meta name="keywords" content={itemObj.name} />
-        <meta name="description" content={itemObj.description} />
-        <meta name="author" content="New London" />
-      </Head>
-
-      <Script id="product-structured-data" type="application/ld+json">{`
-      {
-        "@context": "https://schema.org/",
-        "@type": "Product",
-        "name": "${itemObj.name}",
-        "image": ["${itemObj.photo?.image2x}"],
-        "description": "${itemObj.description}",
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "itemReviewed": {
-            "@type": "Thing",
-            "name": "${itemObj.name}"
-          },
-          "bestRating": "5",
-          "worstRating": "0",
-          "ratingCount": "1",
-          "ratingValue": "${itemObj.rating.toString()}"
-        },
-        "price": "${itemObj.price.toString()}",
-        "priceCurrency": "UAH",
-        "availability": "${itemObj.available ? "In Stock" : "Out of stock"}"
-      }
-      `}</Script>
-
-      <div itemProp="aggregateRating" itemScope>
-        <meta itemProp="ratingValue" content={itemObj.rating.toString()} />
-        <meta itemProp="bestRating" content="5" />
-        <meta itemProp="worstRating" content="0" />
-        <meta itemProp="ratingCount" content="1" />
-        <meta itemProp="itemReviewed" content={itemObj.name} />
-      </div>
-
-      <meta itemProp="price" content={itemObj.price.toString()} />
-      <meta itemProp="priceCurrency" content="UAH" />
-
-      <meta
-        itemProp="availability"
-        content={itemObj.available ? "In Stock" : "Out of stock"}
-      />
-
-      <meta itemProp="image" content={itemObj.photo?.image2x} />
+      <ItemPageMeta itemObj={itemObj} />
 
       <Link
         href={{
