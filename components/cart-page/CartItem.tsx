@@ -50,7 +50,11 @@ const CartItem: FC<Props> = ({ item }) => {
   };
 
   return (
-    <li className="box-shadow bg-white py-2 px-1 flex ">
+    <li
+      className="box-shadow bg-white py-2 px-1 flex"
+      itemScope
+      itemType="https://schema.org/OfferForPurchase"
+    >
       <div className="relative w-16 h-16">
         <Image
           src={item.photo?.image2x as string}
@@ -64,7 +68,9 @@ const CartItem: FC<Props> = ({ item }) => {
       <div className="flex-1 flex flex-col px-2 relative lg:flex-row lg:items-center">
         <div className="pr-4 lg:w-2/4">
           <Link href={`/products/${item.id}`}>
-            <a className="text-sm lg:text-lg">{item.name}</a>
+            <a className="text-sm lg:text-lg" itemProp="url">
+              {item.name}
+            </a>
           </Link>
         </div>
         <div className="flex justify-between items-center mt-3.5 lg:mt-0 lg:mr-10 lg:ml-auto lg:w-2/4">
