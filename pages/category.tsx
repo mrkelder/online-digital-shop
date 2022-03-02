@@ -1,8 +1,9 @@
 import { GetServerSideProps, NextPage } from "next";
-import categoriesToSubCategoryIds from "utils/dto/categoriesToSubCategoryIds";
-import Firebase from "utils/firebase";
 import Head from "next/head";
 import Link from "next/link";
+
+import categoriesToSubCategoryIds from "utils/dto/categoriesToSubCategoryIds";
+import Firebase from "utils/firebase";
 
 interface Props {
   category: Category;

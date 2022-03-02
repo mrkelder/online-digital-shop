@@ -1,5 +1,7 @@
 import { FC, useEffect, useRef } from "react";
+
 import { Loader, LoaderOptions } from "@googlemaps/js-api-loader";
+
 import useMatchMedia from "hooks/useMatchMedia";
 
 interface Props {

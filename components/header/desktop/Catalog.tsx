@@ -1,8 +1,11 @@
 import { FC, useEffect, useRef, useState } from "react";
+
 import { useRouter } from "next/router";
+
 import Tab from "components/header/Tab";
-import SubCategory from "./SubCategory";
 import findSubCategories from "utils/findSubCategories";
+
+import SubCategory from "./SubCategory";
 
 interface Props {
   isOpened: boolean;

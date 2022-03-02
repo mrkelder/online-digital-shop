@@ -1,7 +1,3 @@
-import Button from "components/Button";
-import Card from "components/checkout-page/Card";
-import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
-import Head from "next/head";
 import {
   ChangeEvent,
   Dispatch,
@@ -10,22 +6,28 @@ import {
   useMemo,
   useState
 } from "react";
+
+import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
+import Head from "next/head";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+
+import Button from "components/Button";
+import Card from "components/checkout-page/Card";
+import CheckoutInput from "components/checkout-page/CheckoutInput";
+import FailureIcon from "public/img/failure.svg";
+import LoadingIcon from "public/img/loading.svg";
+import SuccessIcon from "public/img/success.svg";
+import { RootStore } from "store";
+import { CartActions } from "store/cartReducer";
+import Cookie from "utils/cookie/cookie";
+import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
 import {
   CheckotInfo,
   FormData,
   validateFormData
 } from "utils/validation/checkout";
-import CheckoutInput from "components/checkout-page/CheckoutInput";
-import LoadingIcon from "public/img/loading.svg";
-import SuccessIcon from "public/img/success.svg";
-import FailureIcon from "public/img/failure.svg";
-import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { CartActions } from "store/cartReducer";
-import { RootStore } from "store";
-import { useRouter } from "next/router";
-import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
-import Cookie from "utils/cookie/cookie";
 
 interface PaymentInfo {
   paymentSent: boolean;

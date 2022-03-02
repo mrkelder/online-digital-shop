@@ -1,9 +1,11 @@
 import { FC, useEffect, useMemo, useState } from "react";
-import ArrowIcon from "public/img/arrow.svg";
-import Header from "components/header/Header";
-import Footer from "components/footer/Footer";
+
 import Router from "next/router";
 import NProgress from "nprogress";
+
+import Footer from "components/footer/Footer";
+import Header from "components/header/Header";
+import ArrowIcon from "public/img/arrow.svg";
 import "nprogress/nprogress.css";
 
 // FIXME: make layout robust so that you don't have to specify padding at **EACH** page

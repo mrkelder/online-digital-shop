@@ -1,6 +1,7 @@
-import TextBlock from "components/TextBlock";
 import { NextPage } from "next";
 import Head from "next/head";
+
+import TextBlock from "components/TextBlock";
 
 const TITLE = "Доставка и оплата";
 

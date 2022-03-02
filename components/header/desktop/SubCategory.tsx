@@ -1,4 +1,5 @@
 import { FC } from "react";
+
 import Link from "next/link";
 
 const SubCategory: FC<{ subCategory: SubCategory }> = ({ subCategory }) => {

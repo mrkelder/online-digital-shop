@@ -1,4 +1,5 @@
 import { ReduxStore } from "store";
+
 import Cookie from "./cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "./cookieNames";
 

@@ -1,17 +1,20 @@
 import { FC, useReducer, useState } from "react";
+
 import Link from "next/link";
+
 import Tab from "components/header/Tab";
-import MobileDialog from "../../MobileDialog";
-import SubCategory from "./SubCategory";
-import Loading from "./Loading";
+import MobileSlideMenu from "components/MobileSlideMenu";
+import ArrowIcon from "public/img/arrow.svg";
+import BurgerIcon from "public/img/burger.svg";
+import CrossIcon from "public/img/cross.svg";
 import Logo from "public/img/logo.svg";
 import MenuIcon from "public/img/menu.svg";
-import BurgerIcon from "public/img/burger.svg";
 import SearchIcon from "public/img/search.svg";
-import CrossIcon from "public/img/cross.svg";
-import ArrowIcon from "public/img/arrow.svg";
 import findSubCategories from "utils/findSubCategories";
-import MobileSlideMenu from "components/MobileSlideMenu";
+
+import MobileDialog from "../../MobileDialog";
+import Loading from "./Loading";
+import SubCategory from "./SubCategory";
 
 /**
  * @type {0} - menu is closed
