@@ -4,8 +4,8 @@ import Head from "next/head";
 
 interface Props {
   title: string;
-  keywords: string;
-  description: string;
+  keywords?: string;
+  description?: string;
   author?: string;
 }
 
