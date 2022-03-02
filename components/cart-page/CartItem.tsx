@@ -8,8 +8,6 @@ import CrossIcon from "public/img/cross.svg";
 import { CartActions, ReduxCartProduct } from "store/cartReducer";
 import styles from "styles/cart-item.module.css";
 
-// FIXME: price can be too big to fit in the block
-
 interface Props {
   item: ReduxCartProduct;
 }
