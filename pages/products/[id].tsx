@@ -12,7 +12,7 @@ import ArrowButton from "components/ArrowButton";
 import Button from "components/Button";
 import ContentWrapper from "components/ContentWrapper";
 import MailNotification from "components/MailNotification";
-import ItemPageMeta from "components/meta/itemPageMeta";
+import ItemPageMeta from "components/meta/ItemPageMeta";
 import Characteristics from "components/product-page/Characteristics";
 import useMatchMedia from "hooks/useMatchMedia";
 import ArrowIcon from "public/img/arrow.svg";
