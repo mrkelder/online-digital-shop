@@ -1,10 +1,14 @@
 import { ChangeEvent, ChangeEventHandler, FC, useRef, useState } from "react";
-import ContentWrapper from "components/ContentWrapper";
-import type { CharacteristicQuery } from "utils/fetchCatalog";
-import Button from "components/Button";
-import ReactSlider from "react-slider";
-import Input from "components/Input";
+
 import { useRouter } from "next/router";
+import ReactSlider from "react-slider";
+
+import Button from "components/Button";
+import ContentWrapper from "components/ContentWrapper";
+import Input from "components/Input";
+import type { CharacteristicQuery } from "utils/fetchCatalog";
+
+
 
 // FIXME: DRY
 interface ChangeFiltersEventDetail {

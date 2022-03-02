@@ -1,8 +1,10 @@
 import { FC } from "react";
+
+import Image from "next/image";
+
+import Input from "components/Input";
 import msIcon from "public/img/mastercard.png";
 import visaIcon from "public/img/visa.png";
-import Image from "next/image";
-import Input from "components/Input";
 import { FormData } from "utils/validation/checkout";
 
 interface Props {

@@ -1,8 +1,11 @@
 import { FC } from "react";
-import Input from "./Input";
-import newsletterIcon from "public/img/newsletter.webp";
+
 import Image from "next/image";
+
+import newsletterIcon from "public/img/newsletter.webp";
+
 import Button from "./Button";
+import Input from "./Input";
 
 const MailNotification: FC = () => {
   return (

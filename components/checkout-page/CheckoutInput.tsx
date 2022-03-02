@@ -1,5 +1,6 @@
-import Input from "components/Input";
 import { FC } from "react";
+
+import Input from "components/Input";
 import { FormData } from "utils/validation/checkout";
 
 interface Props {

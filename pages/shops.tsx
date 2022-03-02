@@ -1,6 +1,7 @@
-import ShopMap from "components/map/ShopMap";
 import { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
+
+import ShopMap from "components/map/ShopMap";
 import serializeShop from "utils/dto/serializeShop";
 import Firebase from "utils/firebase";
 

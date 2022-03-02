@@ -1,12 +1,12 @@
+import { Dispatch, FC } from "react";
+
 import Image from "next/image";
 import Link from "next/link";
-import { Dispatch, FC } from "react";
 import { useDispatch } from "react-redux";
+
+import CrossIcon from "public/img/cross.svg";
 import { CartActions, ReduxCartProduct } from "store/cartReducer";
 import styles from "styles/cart-item.module.css";
-import CrossIcon from "public/img/cross.svg";
-
-// FIXME: price can be too big to fit in the block
 
 interface Props {
   item: ReduxCartProduct;

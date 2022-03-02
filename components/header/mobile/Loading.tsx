@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from "react";
+
 import LoadingIcon from "public/img/loading.svg";
 
 const Loading: FC<{ isLoading: boolean }> = ({ isLoading }) => {

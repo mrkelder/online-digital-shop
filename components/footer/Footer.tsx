@@ -1,10 +1,13 @@
 import { FC } from "react";
-import YtIcon from "public/img/youtube.svg";
-import InstaIcon from "public/img/instagram.svg";
-import FbIcon from "public/img/facebook.svg";
-import TwIcon from "public/img/twitter.svg";
-import ContentWrapper from "components/ContentWrapper";
+
 import Link from "next/link";
+
+import ContentWrapper from "components/ContentWrapper";
+import FbIcon from "public/img/facebook.svg";
+import InstaIcon from "public/img/instagram.svg";
+import TwIcon from "public/img/twitter.svg";
+import YtIcon from "public/img/youtube.svg";
+
 
 const socialMedias = [
   {

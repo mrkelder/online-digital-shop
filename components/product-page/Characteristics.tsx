@@ -1,4 +1,5 @@
 import { FC } from "react";
+
 import styles from "styles/item-page.module.css";
 
 const Characteristics: FC<{ characteristics: Product["characteristics"] }> = ({

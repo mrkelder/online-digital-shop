@@ -1,7 +1,9 @@
 import { Reducer } from "redux";
+
 import Cookie from "utils/cookie/cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
 import LocalStorage from "utils/localStorage/localStorage";
+
 import { CART } from "../utils/localStorage/localStorageNames";
 
 export type ReduxCartProduct = Pick<

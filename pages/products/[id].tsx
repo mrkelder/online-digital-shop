@@ -1,32 +1,35 @@
-import Button from "components/Button";
+import { Dispatch, useRef, useState } from "react";
+
 import { GetServerSideProps, NextPage } from "next";
-import Image from "next/image";
-import Firebase from "utils/firebase";
-import DefaultPhoto from "public/img/default-photo.jpg";
-import activeStarIcon from "public/img/star-active.png";
-import starIcon from "public/img/star.png";
-import ContentWrapper from "components/ContentWrapper";
-import Characteristics from "components/product-page/Characteristics";
-import styles from "styles/item-page.module.css";
-import LocationIcon from "public/img/geo-point.svg";
-import Link from "next/link";
-import ArrowIcon from "public/img/arrow.svg";
 import Head from "next/head";
-import { Swiper as SwiperComponent, SwiperSlide } from "swiper/react";
+import Image from "next/image";
+import Link from "next/link";
+import Script from "next/script";
+import { useDispatch, useSelector } from "react-redux";
 import { FreeMode, Navigation, SwiperOptions } from "swiper";
 import type Swiper from "swiper";
-import { Dispatch, useEffect, useRef, useState } from "react";
+import { Swiper as SwiperComponent, SwiperSlide } from "swiper/react";
+
+import ArrowButton from "components/ArrowButton";
+import Button from "components/Button";
+import ContentWrapper from "components/ContentWrapper";
 import MailNotification from "components/MailNotification";
+import Characteristics from "components/product-page/Characteristics";
+import useMatchMedia from "hooks/useMatchMedia";
+import ArrowIcon from "public/img/arrow.svg";
+import DefaultPhoto from "public/img/default-photo.jpg";
+import LocationIcon from "public/img/geo-point.svg";
+import activeStarIcon from "public/img/star-active.png";
+import starIcon from "public/img/star.png";
+import { RootStore } from "store";
+import { CartActions, CartState } from "store/cartReducer";
+import styles from "styles/item-page.module.css";
+import convertToReduxCartProduct from "utils/dto/convertToReduxCartProduct";
+import Firebase from "utils/firebase";
+import firebaseProductToProduct from "utils/firebaseProductToProduct";
+
 import "swiper/css";
 import "swiper/css/free-mode";
-import { useDispatch, useSelector } from "react-redux";
-import { CartActions, CartState } from "store/cartReducer";
-import { RootStore } from "store";
-import convertToReduxCartProduct from "utils/dto/convertToReduxCartProduct";
-import firebaseProductToProduct from "utils/firebaseProductToProduct";
-import Script from "next/script";
-import ArrowButton from "components/ArrowButton";
-import useMatchMedia from "hooks/useMatchMedia";
 
 interface Props {
   itemObj: Product;

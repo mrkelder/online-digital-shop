@@ -8,8 +8,10 @@ import {
   useCallback,
   useEffect
 } from "react";
-import GMap from "./GMap";
+
 import styles from "styles/map.module.css";
+
+import GMap from "./GMap";
 import Shop from "./Shop";
 
 interface SearchInfo {

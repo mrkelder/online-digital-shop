@@ -1,4 +1,5 @@
 import { FC } from "react";
+
 import CartIcon from "public/img/cart.svg";
 
 const Cart: FC<{ items?: number }> = ({ items }) => {

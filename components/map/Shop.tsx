@@ -1,4 +1,5 @@
 import { FC } from "react";
+
 import ArrowIcon from "public/img/arrow.svg";
 
 interface Props {

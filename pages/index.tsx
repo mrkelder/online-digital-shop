@@ -1,19 +1,20 @@
-import Slider from "components/Slider";
-import ShopMap from "components/map/ShopMap";
-import Head from "next/head";
 import type { GetServerSideProps, NextPage } from "next";
-import Firebase from "utils/firebase";
+import Head from "next/head";
+import { Autoplay, Navigation, SwiperOptions } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+import "swiper/css";
+import "swiper/css/autoplay";
+import ArrowButton from "components/ArrowButton";
+import MailNotification from "components/MailNotification";
+import ShopMap from "components/map/ShopMap";
+import Card from "components/product-card/Card";
+import Slider from "components/Slider";
 import GuaranteeIcon from "public/img/guarantee.svg";
 import LikeIcon from "public/img/like.svg";
 import TruckIcon from "public/img/truck.svg";
-import Card from "components/product-card/Card";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, SwiperOptions } from "swiper";
-import "swiper/css";
-import "swiper/css/autoplay";
 import serializeShop from "utils/dto/serializeShop";
-import MailNotification from "components/MailNotification";
-import ArrowButton from "components/ArrowButton";
+import Firebase from "utils/firebase";
 
 interface Props {
   slides: ReadonlyArray<{ mobile: string; desktop: string }>;
