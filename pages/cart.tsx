@@ -1,13 +1,16 @@
+import { useCallback, useMemo } from "react";
+
 import { NextPage } from "next";
+import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
+
+import Button from "components/Button";
+import CartItem from "components/cart-page/CartItem";
 import { RootStore } from "store";
 import { CartState } from "store/cartReducer";
-import Head from "next/head";
-import CartItem from "components/cart-page/CartItem";
-import { useCallback, useMemo } from "react";
-import Button from "components/Button";
-import { useRouter } from "next/router";
+
 
 const CartPage: NextPage = () => {
   const router = useRouter();

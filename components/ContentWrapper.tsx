@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+
 import CrossIcon from "public/img/cross.svg";
 
 interface Props {

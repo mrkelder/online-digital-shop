@@ -1,13 +1,16 @@
 import { FC, useEffect, useState } from "react";
-import Input from "components/Input";
-import Cart from "./Cart";
-import Catalog from "./Catalog";
+
 import Link from "next/link";
+import { useSelector } from "react-redux";
+
+import Input from "components/Input";
+import ArrowIcon from "public/img/arrow.svg";
 import GeoIcon from "public/img/geo-point.svg";
 import Logo from "public/img/logo.svg";
-import ArrowIcon from "public/img/arrow.svg";
-import { useSelector } from "react-redux";
 import { RootStore } from "store";
+
+import Cart from "./Cart";
+import Catalog from "./Catalog";
 
 const staticLinks = [
   { name: "Доставка и оплата", link: "/shipping" },

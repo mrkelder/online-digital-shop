@@ -1,10 +1,13 @@
-import Link from "next/link";
 import { FC } from "react";
+
+import Image from "next/image";
+import Link from "next/link";
+
 import Button from "components/Button";
 import DefaultPhoto from "public/img/default-photo.jpg";
 import starActiveIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
-import Image from "next/image";
+
 
 type Props = Pick<
   FirebaseProduct,

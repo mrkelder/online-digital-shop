@@ -1,9 +1,11 @@
 import { FC, useContext, useEffect, useState } from "react";
-import MobileMenu from "./mobile/Header";
-import DesktopMenu from "./desktop/Header";
-import { FirebaseContext } from "utils/firebase";
-import categoriesToSubCategoryIds from "utils/dto/categoriesToSubCategoryIds";
+
 import useMatchMedia from "hooks/useMatchMedia";
+import categoriesToSubCategoryIds from "utils/dto/categoriesToSubCategoryIds";
+import { FirebaseContext } from "utils/firebase";
+
+import DesktopMenu from "./desktop/Header";
+import MobileMenu from "./mobile/Header";
 
 const Header: FC = () => {
   const firebase = useContext(FirebaseContext);

@@ -1,6 +1,8 @@
 import { FC } from "react";
-import { Swiper, SwiperProps, SwiperSlide } from "swiper/react";
+
 import { Autoplay, Pagination } from "swiper";
+import { Swiper, SwiperProps, SwiperSlide } from "swiper/react";
+
 import Picture from "components/Picture";
 import "swiper/css/pagination";
 import "swiper/css";
