@@ -9,6 +9,7 @@ import {
   useEffect
 } from "react";
 
+import useMatchMedia from "hooks/useMatchMedia";
 import styles from "styles/map.module.css";
 
 import GMap from "./GMap";
@@ -60,10 +61,13 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
   );
   const [showShops, setShowShops] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-
+  const { isMobile, isLoaded } = useMatchMedia();
   const { searchResults, chosenCityId } = searchInfo;
   const resultShops = geoInfo.shops.filter(i => i.city === chosenCityId);
   const shopListStyle = showShops ? "flex" : "hidden";
+  const shouldDisplayMobileShops = isMobile !== null && isMobile && isLoaded;
+
+  console.log(shouldDisplayMobileShops);
 
   const memoizedGMap = useMemo(
     () => (
@@ -198,7 +202,9 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
             />
             <div className={styles["city-list"]}>{cityList}</div>
           </form>
-          <div className="overflow-y-auto h-full">{shopList}</div>
+          {!shouldDisplayMobileShops && (
+            <div className="overflow-y-auto h-full">{shopList}</div>
+          )}
         </div>
         <div className="flex-1">{memoizedGMap}</div>
       </div>
@@ -208,7 +214,7 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
           shopListStyle
         }
       >
-        {shopList}
+        {shouldDisplayMobileShops && shopList}
       </div>
       <div className={styles["bottom-map-pannel"]}>
         <button
