@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import Link from "next/link";
 
+import MetaHead from "components/meta/MetaHead";
 import categoriesToSubCategoryIds from "utils/dto/categoriesToSubCategoryIds";
 import Firebase from "utils/firebase";
 
@@ -13,9 +13,8 @@ interface Props {
 const CategoryPage: NextPage<Props> = ({ category, subcategories }) => {
   return (
     <div>
-      <Head>
-        <title>{category.name}</title>
-      </Head>
+      <MetaHead title={category.name} />
+
       <h1>{category.name}</h1>
       <ul>
         {subcategories.map(i => (
