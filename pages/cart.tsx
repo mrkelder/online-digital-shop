@@ -1,16 +1,15 @@
 import { useCallback, useMemo } from "react";
 
 import { NextPage } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 
 import Button from "components/Button";
 import CartItem from "components/cart-page/CartItem";
+import CartPageMeta from "components/meta/CartPageMeta";
 import { RootStore } from "store";
 import { CartState } from "store/cartReducer";
-
 
 const CartPage: NextPage = () => {
   const router = useRouter();
@@ -31,9 +30,7 @@ const CartPage: NextPage = () => {
 
   return (
     <div>
-      <Head>
-        <title>Корзина</title>
-      </Head>
+      <CartPageMeta />
 
       <Link href="/catalog">
         <a className="underline lg:text-base">Продолжить покупки</a>

@@ -1,13 +1,11 @@
 import type { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import { Autoplay, Navigation, SwiperOptions } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import "swiper/css";
-import "swiper/css/autoplay";
 import ArrowButton from "components/ArrowButton";
 import MailNotification from "components/MailNotification";
 import ShopMap from "components/map/ShopMap";
+import MetaHead from "components/meta/MetaHead";
 import Card from "components/product-card/Card";
 import Slider from "components/Slider";
 import GuaranteeIcon from "public/img/guarantee.svg";
@@ -15,6 +13,9 @@ import LikeIcon from "public/img/like.svg";
 import TruckIcon from "public/img/truck.svg";
 import serializeShop from "utils/dto/serializeShop";
 import Firebase from "utils/firebase";
+
+import "swiper/css";
+import "swiper/css/autoplay";
 
 interface Props {
   slides: ReadonlyArray<{ mobile: string; desktop: string }>;
@@ -67,9 +68,7 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
 
   return (
     <>
-      <Head>
-        <title>New London</title>
-      </Head>
+      <MetaHead />
 
       <section>
         <Slider {...{ slides }} />

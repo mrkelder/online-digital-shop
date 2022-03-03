@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Button from "components/Button";
 import Card from "components/checkout-page/Card";
 import CheckoutInput from "components/checkout-page/CheckoutInput";
+import MetaHead from "components/meta/MetaHead";
 import FailureIcon from "public/img/failure.svg";
 import LoadingIcon from "public/img/loading.svg";
 import SuccessIcon from "public/img/success.svg";
@@ -60,6 +61,7 @@ const DEFAULT_PAYMENT_INFO: PaymentInfo = {
 };
 
 const RESULT_STYLE = "flex flex-col items-center space-y-2";
+const TITLE = "Оплата";
 
 const cookie = new Cookie();
 
@@ -159,11 +161,9 @@ const CheckoutPage: NextPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto lg:px-12">
-      <Head>
-        <title>Оплата</title>
-      </Head>
+      <MetaHead title={TITLE} />
 
-      <h1>Оплата</h1>
+      <h1>{TITLE}</h1>
 
       <form
         className={

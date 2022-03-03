@@ -8,22 +8,22 @@ interface Props {
   isSelected: boolean;
 }
 
-function getDayName(day: number) {
+function getDayName(day: number, isMeta = false) {
   switch (day) {
     case 0:
-      return "Воскресенье";
+      return isMeta ? "Su" : "Воскресенье";
     case 1:
-      return "Понедельник";
+      return isMeta ? "Mo" : "Понедельник";
     case 2:
-      return "Вторник";
+      return isMeta ? "Tu" : "Вторник";
     case 3:
-      return "Среда";
+      return isMeta ? "We" : "Среда";
     case 4:
-      return "Четверг";
+      return isMeta ? "Th" : "Четверг";
     case 5:
-      return "Пятница";
+      return isMeta ? "Fr" : "Пятница";
     case 6:
-      return "Суббота";
+      return isMeta ? "Sa" : "Суббота";
     default:
       throw new Error();
   }
@@ -40,10 +40,22 @@ const Shop: FC<Props> = ({ onClick, shopObj, isSelected }) => {
     <button
       {...{ onClick }}
       className={"flex flex-col px-4 py-2 w-full " + buttonStyle}
+      itemScope
+      itemType="https://schema.org/Store"
     >
+      <meta itemProp="currenciesAccepted" content="UAH" />
+      <meta itemProp="priceRange" content="$$" />
+      <div itemProp="geo">
+        <meta itemProp="latitude" content={shopObj.geo.lat.toString()} />
+        <meta itemProp="longitude" content={shopObj.geo.lng.toString()} />
+      </div>
+
       <div className="flex justify-between items-center w-full">
         <div className="flex flex-col items-start w-4/5">
-          <p className="mb-1 text-grey-600 font-regular text-lg w-full text-left">
+          <p
+            className="mb-1 text-grey-600 font-regular text-lg w-full text-left"
+            itemProp="name"
+          >
             {shopObj.name}
           </p>
           {!isSelected && (
@@ -82,9 +94,19 @@ const Shop: FC<Props> = ({ onClick, shopObj, isSelected }) => {
                 <>
                   <time dateTime={i?.from}>{i?.from}</time> -{" "}
                   <time dateTime={today?.to}>{i?.to}</time>
+                  <meta
+                    itemProp="openingHours"
+                    content={`${getDayName(index, true)}, ${i?.from}-${i?.to}`}
+                  />
                 </>
               ) : (
-                <>выходной</>
+                <>
+                  выходной
+                  <meta
+                    itemProp="openingHours"
+                    content={`${getDayName(index, true)}, Weekend`}
+                  />
+                </>
               )}
             </span>
           </div>

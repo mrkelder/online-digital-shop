@@ -8,7 +8,6 @@ import DefaultPhoto from "public/img/default-photo.jpg";
 import starActiveIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
 
-
 type Props = Pick<
   FirebaseProduct,
   "rating" | "price" | "name" | "photo" | "id"
@@ -18,9 +17,13 @@ const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
   const link = `/products/${id}`;
 
   return (
-    <div className="flex flex-col shadow-lg bg-white w-60 px-3 py-5 text-grey-300 lg:w-80 lg:px-5 lg:py-6">
+    <div
+      className="flex flex-col shadow-lg bg-white w-60 px-3 py-5 text-grey-300 lg:w-80 lg:px-5 lg:py-6"
+      itemScope
+      itemType="https://schema.org/OfferForPurchase"
+    >
       <Link href={link}>
-        <a className="relative h-44 mb-2 lg:h-64">
+        <a className="relative h-44 mb-2 lg:h-64" itemProp="url">
           {photo ? (
             // FIXME: Keep in mind, the photo won't probably work on server
             <Image
@@ -42,7 +45,9 @@ const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
 
       <div className="relative inline h-12 overflow-hidden lg:h-14 ">
         <Link href={link}>
-          <a className="text-sm lg:text-lg">{name}</a>
+          <a className="text-sm lg:text-lg" itemProp="url">
+            {name}
+          </a>
         </Link>
         <div className="absolute w-full h-3 bottom-0 left-0 white-shadow lg:h-4" />
       </div>
@@ -63,7 +68,7 @@ const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
       <span className="text-red my-1 lg:text-xl lg:mt-0">{price} грн</span>
 
       <Link href={link}>
-        <a className="mt-1">
+        <a className="mt-1" itemProp="url">
           <Button>Детальнее</Button>
         </a>
       </Link>
