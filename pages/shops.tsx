@@ -1,7 +1,7 @@
 import { GetStaticProps, NextPage } from "next";
-import Head from "next/head";
 
 import ShopMap from "components/map/ShopMap";
+import MetaHead from "components/meta/MetaHead";
 import serializeShop from "utils/dto/serializeShop";
 import Firebase from "utils/firebase";
 
@@ -13,9 +13,12 @@ const TITLE = "Магазины";
 
 const ShopsPage: NextPage<Props> = ({ geoInfo }) => (
   <div className="lg:max-w-full lg:mx-auto lg:px-12">
-    <Head>
-      <title>{TITLE}</title>
-    </Head>
+    <MetaHead
+      title={TITLE}
+      keywords="Карта магазинов, местоположение магазинов, магазины New London"
+      description="Наши магазины расположены по всей территории Украины и способны осуществлять доставку"
+    />
+
     <h1>{TITLE}</h1>
     <ShopMap {...{ geoInfo }} />
   </div>

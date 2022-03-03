@@ -1,15 +1,17 @@
 import { NextPage } from "next";
-import Head from "next/head";
 
+import MetaHead from "components/meta/MetaHead";
 import TextBlock from "components/TextBlock";
 
 const TITLE = "Доставка и оплата";
 
 const ShippingPage: NextPage = () => (
   <div className="lg:max-w-full lg:mx-auto lg:px-12">
-    <Head>
-      <title>{TITLE}</title>
-    </Head>
+    <MetaHead
+      title={TITLE}
+      keywords="Доставка, доставка по Украине, оплата, оплата картой"
+      description="Доставка осуществляется по всей территории Украины. Способами оплаты могут послужить как наличный, так и безналичный расчет"
+    />
 
     <h1>{TITLE}</h1>
     <h2>Доставка</h2>
