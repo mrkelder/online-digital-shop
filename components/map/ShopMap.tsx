@@ -67,8 +67,6 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
   const shopListStyle = showShops ? "flex" : "hidden";
   const shouldDisplayMobileShops = isMobile !== null && isMobile && isLoaded;
 
-  console.log(shouldDisplayMobileShops);
-
   const memoizedGMap = useMemo(
     () => (
       <GMap
