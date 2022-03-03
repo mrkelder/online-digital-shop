@@ -3,23 +3,23 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     colors: {
-      white: "#fff",
+      white: "var(--white)",
       grey: {
-        50: "#FAFAFA",
-        75: "#F5F5F5",
-        100: "#D6D6D6",
-        200: "#afafaf",
-        300: "#666",
-        400: "#4a4d4e",
-        500: "#3C3F40",
-        600: "#333",
-        650: "#303233",
-        transparent: "#333333a6"
+        50: "var(--grey-50)",
+        75: "var(--grey-75)",
+        100: "var(--grey-100)",
+        200: "var(--grey-200)",
+        300: "var(--grey-300)",
+        400: "var(--grey-400)",
+        500: "var(--grey-500)",
+        600: "var(--grey-600)",
+        650: "var(--grey-650)",
+        transparent: "var(--grey-transparent)"
       },
-      red: "#e60000",
-      "red-focus": "#af0000",
-      transparent: "#0000",
-      success: "#22c55e"
+      red: "var(--red)",
+      "red-focus": "var(--red-focus)",
+      transparent: "var(--transparent)",
+      success: "var(--success)"
     },
     extend: {
       width: {
