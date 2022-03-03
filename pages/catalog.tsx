@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import { useRouter } from "next/router";
 
 import Button from "components/Button";
 import Filters from "components/catalog-page/Filters";
+import MetaHead from "components/meta/MetaHead";
 import MobileDialog from "components/MobileDialog";
 import MobileSlideMenu from "components/MobileSlideMenu";
 import Card from "components/product-card/Card";
@@ -230,9 +230,7 @@ const CatalogPage: NextPage<Props> = ({
 
   return (
     <div className="py-4">
-      <Head>
-        <title>{TITLE}</title>
-      </Head>
+      <MetaHead title={TITLE} />
 
       {isMobile && (
         <MobileDialog
