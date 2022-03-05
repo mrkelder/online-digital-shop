@@ -1,10 +1,9 @@
 import { FC } from "react";
 
-import Script from "next/script";
-
 import ldJsonItemProduct from "utils/ldJsonMeta/ldJsonItemProduct";
 
 import MetaHead from "../MetaHead";
+import MetaScript from "../MetaScript";
 
 interface Props {
   itemObj: Product;
@@ -19,9 +18,9 @@ const ItemPageMeta: FC<Props> = ({ itemObj }) => {
         description={itemObj.description}
       />
 
-      <Script id="product-structured-data" type="application/ld+json">
+      <MetaScript id="product-structured-data">
         {ldJsonItemProduct(itemObj)}
-      </Script>
+      </MetaScript>
 
       <div itemProp="aggregateRating" itemScope>
         <meta itemProp="ratingValue" content={itemObj.rating.toString()} />
