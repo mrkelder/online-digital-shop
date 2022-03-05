@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 
 import Button from "components/Button";
 import CartItem from "components/cart-page/CartItem";
-import CartPageMeta from "components/meta/CartPageMeta";
+import MetaHead from "components/meta/MetaHead";
 import { RootStore } from "store";
 import { CartState } from "store/cartReducer";
 
@@ -30,7 +30,7 @@ const CartPage: NextPage = () => {
 
   return (
     <div>
-      <CartPageMeta />
+      <MetaHead title="Корзина" noindex />
 
       <Link href="/catalog">
         <a className="underline lg:text-base">Продолжить покупки</a>

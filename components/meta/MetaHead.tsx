@@ -8,6 +8,7 @@ interface Props {
   description?: string;
   author?: string;
   image?: string;
+  noindex?: boolean;
 }
 
 const SITE_NAME = "New London";
@@ -17,7 +18,8 @@ const MetaHead: FC<Props> = ({
   keywords,
   description,
   author,
-  image
+  image,
+  noindex
 }) => {
   return (
     <Head>
@@ -38,6 +40,8 @@ const MetaHead: FC<Props> = ({
       <meta name="twitter:image" content={image} />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:image:alt" content="Логотип" />
+
+      {noindex && <meta name="robots" content="noindex" />}
     </Head>
   );
 };
@@ -49,7 +53,8 @@ MetaHead.defaultProps = {
   description:
     "Бытовая техника, мобильные телефоны, телевизоры, кондиционеры, холодильники, мониторы, ноутбуки с доставкой",
   author: SITE_NAME,
-  image: "/logo_cover.png"
+  image: "/logo_cover.png",
+  noindex: false
 };
 
 export default MetaHead;

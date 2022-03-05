@@ -230,7 +230,7 @@ const CatalogPage: NextPage<Props> = ({
 
   return (
     <div className="py-4">
-      <MetaHead title={TITLE} />
+      <MetaHead title={TITLE} noindex />
 
       {isMobile && (
         <MobileDialog

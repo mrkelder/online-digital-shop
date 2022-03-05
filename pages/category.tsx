@@ -13,7 +13,7 @@ interface Props {
 const CategoryPage: NextPage<Props> = ({ category, subcategories }) => {
   return (
     <div>
-      <MetaHead title={category.name} />
+      <MetaHead title={category.name} noindex />
 
       <h1>{category.name}</h1>
       <ul>
