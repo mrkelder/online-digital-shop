@@ -1,16 +1,12 @@
 import { NextPage } from "next";
 
-import MetaHead from "components/meta/MetaHead";
+import GuaranteeMeta from "components/meta/GuaranteeMeta";
 
 const TITLE = "Гарантия";
 
 const GuaranteePage: NextPage = () => (
   <div className="slg:max-w-full lg:mx-auto lg:px-12">
-    <MetaHead
-      title={TITLE}
-      keywords="Гарантии, гарантия"
-      description="Магазин New London предоставляет гарантию своим покупателям на все товары и услуги"
-    />
+    <GuaranteeMeta />
 
     <h1>{TITLE}</h1>
     <div className="space-y-4">

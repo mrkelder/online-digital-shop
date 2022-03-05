@@ -161,7 +161,7 @@ const CheckoutPage: NextPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto lg:px-12">
-      <MetaHead title={TITLE} />
+      <MetaHead title={TITLE} noindex />
 
       <h1>{TITLE}</h1>
 
