@@ -36,7 +36,7 @@ interface ChangeFiltersEventDetail {
 }
 
 const TITLE = "Каталог";
-const ITEMS_PER_PAGE = 3;
+const ITEMS_PER_PAGE = 10;
 const FIRST_PAGE = 1;
 const DEFAULT_PAGE = FIRST_PAGE;
 const DEFAULT_SKIP = DEFAULT_PAGE - 1;
