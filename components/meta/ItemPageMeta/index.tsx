@@ -11,7 +11,7 @@ interface Props {
 
 const ItemPageMeta: FC<Props> = ({ itemObj }) => {
   return (
-    <>
+    <div itemScope itemType="https://schema.org/Product">
       <MetaHead
         title={itemObj.name}
         keywords={itemObj.description}
@@ -22,24 +22,49 @@ const ItemPageMeta: FC<Props> = ({ itemObj }) => {
         {ldJsonItemProduct(itemObj)}
       </MetaScript>
 
-      <div itemProp="aggregateRating" itemScope>
-        <meta itemProp="ratingValue" content={itemObj.rating.toString()} />
-        <meta itemProp="bestRating" content="5" />
-        <meta itemProp="worstRating" content="0" />
-        <meta itemProp="ratingCount" content="1" />
-        <meta itemProp="itemReviewed" content={itemObj.name} />
+      <meta itemProp="name" content={itemObj.name} />
+      <link itemProp="image" href={itemObj.photo?.image2x} />
+      <meta itemProp="description" content={itemObj.description} />
+
+      <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
+        <meta
+          itemProp="availability"
+          content={`https://schema.org/${
+            itemObj.available ? "InStock" : "OutOfStock"
+          }`}
+        />
+        <meta itemProp="priceCurrency" content="UAH" />
+        <meta
+          itemProp="itemCondition"
+          content="https://schema.org/UsedCondition"
+        />
+        <meta itemProp="price" content={itemObj.price.toString()} />
       </div>
 
-      <meta itemProp="price" content={itemObj.price.toString()} />
-      <meta itemProp="priceCurrency" content="UAH" />
+      <div
+        itemProp="aggregateRating"
+        itemType="https://schema.org/AggregateRating"
+        itemScope
+      >
+        <meta itemProp="reviewCount" content="1" />
+        <meta itemProp="ratingValue" content={itemObj.rating.toString()} />
+      </div>
 
-      <meta
-        itemProp="availability"
-        content={itemObj.available ? "In Stock" : "Out of stock"}
-      />
-
-      <meta itemProp="image" content={itemObj.photo?.image2x} />
-    </>
+      {/* <div itemProp="review" itemType="https://schema.org/Review" itemScope>
+            <div
+              itemProp="reviewRating"
+              itemType="https://schema.org/Rating"
+              itemScope
+            >
+              <meta
+                itemProp="ratingValue"
+                content={itemObj.rating.toString()}
+              />
+              <meta itemProp="bestRating" content="5" />
+              <meta itemProp="worstRating" content="0" />
+            </div>
+          </div> */}
+    </div>
   );
 };
 
