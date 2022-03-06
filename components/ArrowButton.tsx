@@ -19,7 +19,7 @@ const ArrowButton: FC<Props> = ({
 
   return (
     <button
-      className={`${buttonClassName} transform ${rotationStyling} w-${size} h-${size} ${side}-2 flex absolute z-10 items-center justify-center bg-white box-shadow rounded-full`}
+      className={`${buttonClassName} transform ${rotationStyling} w-${size} h-${size} ${side}-0 flex absolute z-10 items-center justify-center bg-white box-shadow rounded-full`}
     >
       <span className={`w-${arrowIconSize} text-grey-300`}>
         <ArrowIcon />
