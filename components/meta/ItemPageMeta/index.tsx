@@ -49,21 +49,6 @@ const ItemPageMeta: FC<Props> = ({ itemObj }) => {
         <meta itemProp="reviewCount" content="1" />
         <meta itemProp="ratingValue" content={itemObj.rating.toString()} />
       </div>
-
-      {/* <div itemProp="review" itemType="https://schema.org/Review" itemScope>
-            <div
-              itemProp="reviewRating"
-              itemType="https://schema.org/Rating"
-              itemScope
-            >
-              <meta
-                itemProp="ratingValue"
-                content={itemObj.rating.toString()}
-              />
-              <meta itemProp="bestRating" content="5" />
-              <meta itemProp="worstRating" content="0" />
-            </div>
-          </div> */}
     </div>
   );
 };
