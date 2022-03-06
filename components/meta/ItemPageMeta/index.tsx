@@ -11,7 +11,7 @@ interface Props {
 
 const ItemPageMeta: FC<Props> = ({ itemObj }) => {
   return (
-    <>
+    <div itemScope itemType="https://schema.org/Product">
       <MetaHead
         title={itemObj.name}
         keywords={itemObj.description}
@@ -64,7 +64,7 @@ const ItemPageMeta: FC<Props> = ({ itemObj }) => {
               <meta itemProp="worstRating" content="0" />
             </div>
           </div> */}
-    </>
+    </div>
   );
 };
 

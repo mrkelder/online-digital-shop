@@ -120,7 +120,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   };
 
   return (
-    <div itemScope itemType="https://schema.org/Product">
+    <>
       <ItemPageMeta itemObj={itemObj} />
 
       <Link
@@ -307,7 +307,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
         <Characteristics characteristics={itemObj.characteristics} />
       </div>
       <MailNotification />
-    </div>
+    </>
   );
 };
 
