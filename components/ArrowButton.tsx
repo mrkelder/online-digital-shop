@@ -16,10 +16,11 @@ const ArrowButton: FC<Props> = ({
   arrowIconSize
 }) => {
   const rotationStyling = side === "left" ? "rotate-0" : "rotate-180";
+  const translateStyling = side === "left" ? "translate-x-2" : "-translate-x-2";
 
   return (
     <button
-      className={`${buttonClassName} transform ${rotationStyling} w-${size} h-${size} ${side}-0 flex absolute z-10 items-center justify-center bg-white box-shadow rounded-full`}
+      className={`${buttonClassName} transform ${rotationStyling} ${translateStyling} w-${size} h-${size} ${side}-0 flex absolute z-10 items-center justify-center bg-white box-shadow rounded-full`}
     >
       <span className={`w-${arrowIconSize} text-grey-300`}>
         <ArrowIcon />
