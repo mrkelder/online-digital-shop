@@ -21,7 +21,3 @@
 .tr-c:nth-child(even) {
   background-color: var(--grey-75);
 }
-
-.photo-slide {
-  @apply w-full mx-auto relative bg-white border h-52 border-grey-100 lg:w-16 lg:h-16 lg:border-none;
-}

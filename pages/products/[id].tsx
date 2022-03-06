@@ -79,14 +79,13 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   const activeStars = createStars(activeStarIcon, itemObj.rating);
   const inactiveStars = createStars(starIcon, MAXIMUM_RATING - itemObj.rating);
   const [chosenPhotoIndex, setChosenPhotoIndex] = useState(0);
-  const { isMobile } = useMatchMedia();
+  const { isMobile, isLoaded } = useMatchMedia();
   const items = useSelector<RootStore>(
     store => store.cart.items
   ) as CartState["items"];
   const buttonProperty = items.find(i => i.id === itemObj.id)
     ? { color: "grey", text: "В корзине" }
     : { color: "red", text: "Купить" };
-  // FIXME: render conditionally
 
   function switchCurrentSlideToFocused(index: number) {
     return () => {
@@ -167,34 +166,38 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
             >
               {itemObj.photos.map((photo, index) => (
                 <SwiperSlide key={`slide_${index}`}>
-                  <button
-                    className={styles["photo-slide"]}
-                    onClick={choosePhotoIndex(index)}
-                    onFocus={switchCurrentSlideToFocused(index)}
-                  >
-                    {photo ? (
-                      <Image
-                        className={currentPhotoStyling(index)}
-                        src={photo.image2x}
-                        layout={isMobile ? "fill" : "intrinsic"}
-                        width={isMobile ? undefined : 64}
-                        height={isMobile ? undefined : 64}
-                        objectFit="contain"
-                        objectPosition="center"
-                        alt="Фото товара"
-                        priority
-                      />
-                    ) : (
-                      <Image
-                        layout="fill"
-                        src={DefaultPhoto}
-                        alt="Фото товара"
-                        objectFit="cover"
-                        objectPosition="50%"
-                        priority
-                      />
-                    )}
-                  </button>
+                  <div className="h-52 lg:h-16">
+                    <button
+                      className={`w-full mx-auto relative bg-white border h-full border-grey-100 lg:w-16 lg:border-none ${
+                        isLoaded ? "block" : "hidden"
+                      }`}
+                      onClick={choosePhotoIndex(index)}
+                      onFocus={switchCurrentSlideToFocused(index)}
+                    >
+                      {photo ? (
+                        <Image
+                          className={currentPhotoStyling(index)}
+                          src={photo.image2x}
+                          layout={isMobile ? "fill" : "intrinsic"}
+                          width={isMobile ? undefined : 64}
+                          height={isMobile ? undefined : 64}
+                          objectFit="contain"
+                          objectPosition="center"
+                          alt="Фото товара"
+                          priority
+                        />
+                      ) : (
+                        <Image
+                          layout="fill"
+                          src={DefaultPhoto}
+                          alt="Фото товара"
+                          objectFit="cover"
+                          objectPosition="50%"
+                          priority
+                        />
+                      )}
+                    </button>
+                  </div>
                 </SwiperSlide>
               ))}
             </SwiperComponent>

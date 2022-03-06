@@ -92,7 +92,7 @@ const CatalogPage: NextPage<Props> = ({
   const [quantityOfPages, setQuantityOfPages] = useState(totalQuantitiyOfPages);
   const [currentPage, setCurrentPage] = useState(page);
   const [catalog, setCatalog] = useState<FirebaseProduct[]>(products);
-  const { isMobile } = useMatchMedia();
+  const { isLoaded, isMobile } = useMatchMedia();
 
   const toggleMobileFilters = useCallback(
     () => setAreMobileFiltersOpened(!areMobileFiltersOpened),
@@ -232,7 +232,7 @@ const CatalogPage: NextPage<Props> = ({
     <div className="py-4">
       <MetaHead title={TITLE} noindex />
 
-      {isMobile && (
+      {isLoaded && isMobile && (
         <MobileDialog
           opened={areMobileFiltersOpened}
           onClose={toggleMobileFilters}
@@ -266,8 +266,8 @@ const CatalogPage: NextPage<Props> = ({
           <Button onClick={toggleMobileFilters}>Фильтры</Button>
         </div>
         <div className="flex justify-center lg:justify-between">
-          {!isMobile && (
-            <div>
+          <div id="desktop-filters">
+            {isLoaded && !isMobile && (
               <Filters
                 {...{
                   queryPrice,
@@ -277,8 +277,8 @@ const CatalogPage: NextPage<Props> = ({
                 }}
                 filterEventName={CHANGE_FILTERS_EVENT_NAME}
               />
-            </div>
-          )}
+            )}
+          </div>
           <div className="flex flex-col items-center flex-1">
             <div className="grid grid-cols-1 self-center gap-10 sm:grid-cols-2">
               {catalog.map(i => (
@@ -321,6 +321,14 @@ const CatalogPage: NextPage<Props> = ({
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @media (min-width: 1024px) {
+          #desktop-filters {
+            min-width: 336px;
+          }
+        }
+      `}</style>
     </div>
   );
 };

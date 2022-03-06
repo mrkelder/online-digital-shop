@@ -41,10 +41,14 @@ const Header: FC = () => {
         id="header_block"
         className="flex items-center bg-white border-b border-grey-100 lg:border-b-0"
       >
-        {isMobile ? (
-          <MobileMenu {...{ catalogInfo }} isLoading={categoriesLoading} />
-        ) : (
-          <DesktopMenu {...{ catalogInfo }} isLoading={categoriesLoading} />
+        {isLoaded && (
+          <>
+            {isMobile ? (
+              <MobileMenu {...{ catalogInfo }} isLoading={categoriesLoading} />
+            ) : (
+              <DesktopMenu {...{ catalogInfo }} isLoading={categoriesLoading} />
+            )}
+          </>
         )}
       </header>
 
