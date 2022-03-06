@@ -120,7 +120,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   };
 
   return (
-    <div itemScope itemType="https://schema.org/OfferForPurchase">
+    <div itemScope itemType="https://schema.org/Product">
       <ItemPageMeta itemObj={itemObj} />
 
       <Link
