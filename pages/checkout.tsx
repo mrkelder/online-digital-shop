@@ -8,14 +8,13 @@ import {
 } from "react";
 
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 
 import Button from "components/Button";
-import Card from "components/checkout-page/Card";
 import CheckoutInput from "components/checkout-page/CheckoutInput";
+import StageWrapper from "components/checkout-page/StageWrapper";
 import MetaHead from "components/meta/MetaHead";
 import FailureIcon from "public/img/failure.svg";
 import LoadingIcon from "public/img/loading.svg";
@@ -42,7 +41,8 @@ const DEFAULT_VALIDATION: CheckotInfo = {
   zipCode: false,
   number: false,
   date: false,
-  pin: false
+  pin: false,
+  email: false
 };
 
 const DEFAULT_FORM_DATA: FormData = {
@@ -52,7 +52,8 @@ const DEFAULT_FORM_DATA: FormData = {
   zipCode: "",
   number: "",
   date: "",
-  pin: ""
+  pin: "",
+  email: ""
 };
 
 const DEFAULT_PAYMENT_INFO: PaymentInfo = {
@@ -118,31 +119,6 @@ const CheckoutPage: NextPage = () => {
     setValidationErrors(DEFAULT_VALIDATION);
   }
 
-  const memoizedCard = useMemo(
-    () => (
-      <Card
-        info={{
-          number: formData.number,
-          date: formData.date,
-          pin: formData.pin
-        }}
-        validation={{
-          number: validationErrors.number,
-          date: validationErrors.date,
-          pin: validationErrors.pin
-        }}
-      />
-    ),
-    [
-      formData.number,
-      formData.date,
-      formData.pin,
-      validationErrors.number,
-      validationErrors.date,
-      validationErrors.pin
-    ]
-  );
-
   useEffect(() => {
     const cookieAmountOfItemsInCart = Number(
       cookie.readCookie(AMOUNT_OF_ITEMS_IN_CART)
@@ -160,109 +136,101 @@ const CheckoutPage: NextPage = () => {
   }, [itemsQuantity, router, loadedLocalStorage]);
 
   return (
-    <div className="max-w-7xl mx-auto lg:px-12">
+    <>
       <MetaHead title={TITLE} noindex />
-
       <h1>{TITLE}</h1>
 
-      <form
-        className={
-          "my-2 space-y-3 gap-x-6 grid-cols-1 sm:grid-cols-2 " + formStyle
-        }
-        onSubmit={submitCheckout}
-        onChange={formChange}
-      >
-        <div>
-          <h2 className="mb-2">Информация о покупателе</h2>
-          <div className="space-y-3 mb-3 sm:mb-0">
-            {useMemo(
-              () => (
-                <CheckoutInput
-                  error={validationErrors.fullName}
-                  value={formData.fullName}
-                  name="fullName"
-                  placeholder="Фамилия Имя"
-                  errorMessage="Форма может содержать русские, английские или украинские символы"
-                />
-              ),
-              [validationErrors.fullName, formData.fullName]
-            )}
-            {useMemo(
-              () => (
-                <CheckoutInput
-                  name="country"
-                  placeholder="Страна"
-                  error={validationErrors.country}
-                  value={formData.country}
-                  errorMessage="Указана неверная страна"
-                />
-              ),
-              [validationErrors.country, formData.country]
-            )}
-            {useMemo(
-              () => (
-                <CheckoutInput
-                  name="city"
-                  placeholder="Город"
-                  error={validationErrors.city}
-                  value={formData.city}
-                  errorMessage="Указан неверный город"
-                />
-              ),
-              [validationErrors.city, formData.city]
-            )}
-            {useMemo(
-              () => (
-                <CheckoutInput
-                  name="zipCode"
-                  placeholder="Почтовый индекс"
-                  error={validationErrors.zipCode}
-                  value={formData.zipCode}
-                  errorMessage="Указан неверный почтовый индекс"
-                />
-              ),
-              [validationErrors.zipCode, formData.zipCode]
-            )}
-          </div>
-        </div>
-        <div className="sm:mx-auto">
-          <h2 className="mb-2">Информация о карте</h2>
-          {memoizedCard}
-        </div>
-        <div className="w-56 mt-3">
-          <Button variant="lg">Оформить заказ</Button>
-        </div>
-      </form>
+      <div className="space-y-2">
+        <StageWrapper title="Данные о покупателе" stageNumber={1} active={true}>
+          <form>
+            <div className="space-y-3 ">
+              {useMemo(
+                () => (
+                  <CheckoutInput
+                    error={validationErrors.fullName}
+                    value={formData.fullName}
+                    name="fullName"
+                    placeholder="Фамилия Имя"
+                    errorMessage="Форма может содержать только русские, английские или украинские символы"
+                  />
+                ),
+                [validationErrors.fullName, formData.fullName]
+              )}
+              {useMemo(
+                () => (
+                  <CheckoutInput
+                    error={validationErrors.email}
+                    value={formData.email}
+                    name="email"
+                    placeholder="Почта"
+                    errorMessage="Указана неверная почта"
+                  />
+                ),
+                [validationErrors.email, formData.email]
+              )}
+            </div>
+            <div className="w-36 mt-3">
+              <Button>Продолжить</Button>
+            </div>
+          </form>
+        </StageWrapper>
 
-      <div className={"pt-10 " + paymentResultStyle}>
-        <div className={paymentLoadingStyle}>
-          <div className="w-16 text-red animate-spin mx-auto">
-            <LoadingIcon />
-          </div>
-          <p>Выполняем оплату</p>
-        </div>
+        <StageWrapper title="Место получения" stageNumber={2} active={true}>
+          <form>
+            <div className="space-y-3">
+              {useMemo(
+                () => (
+                  <CheckoutInput
+                    name="country"
+                    placeholder="Страна"
+                    error={validationErrors.country}
+                    value={formData.country}
+                    errorMessage="Указана неверная страна"
+                  />
+                ),
+                [validationErrors.country, formData.country]
+              )}
+              {useMemo(
+                () => (
+                  <CheckoutInput
+                    name="city"
+                    placeholder="Город"
+                    error={validationErrors.city}
+                    value={formData.city}
+                    errorMessage="Указан неверный город"
+                  />
+                ),
+                [validationErrors.city, formData.city]
+              )}
+              {useMemo(
+                () => (
+                  <CheckoutInput
+                    name="zipCode"
+                    placeholder="Почтовый индекс"
+                    error={validationErrors.zipCode}
+                    value={formData.zipCode}
+                    errorMessage="Указан неверный почтовый индекс"
+                  />
+                ),
+                [validationErrors.zipCode, formData.zipCode]
+              )}
+            </div>
+            <div className="w-36 mt-3">
+              <Button>Продолжить</Button>
+            </div>
+          </form>
+        </StageWrapper>
 
-        <div className={paymentSuccessStyle}>
-          <div className="w-16 text-success">
-            <SuccessIcon />
-          </div>
-          <p>Оплата прошла успешно!</p>
-          <Link href="/">
-            <a className="text-base underline">Перейти на главную</a>
-          </Link>
-        </div>
-
-        <div className={paymentFailureStyle}>
-          <div className="w-16 text-red">
-            <FailureIcon />
-          </div>
-          <p>Не удалось совершить оплату</p>
-          <Link href="/">
-            <a className="text-base underline">Перейти на главную</a>
-          </Link>
-        </div>
+        <StageWrapper title="Оплата" stageNumber={3} active={true}>
+          <form>
+            {/* Placeholder for Stripe */}
+            <div className="w-48 mt-3">
+              <Button variant="lg">Продолжить</Button>
+            </div>
+          </form>
+        </StageWrapper>
       </div>
-    </div>
+    </>
   );
 };
 

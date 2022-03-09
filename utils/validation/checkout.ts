@@ -6,11 +6,14 @@ export interface FormData {
   number: string;
   date: string;
   pin: string;
+  email: string;
 }
 
 const FULLNAME_REG =
   /^ *[A-Za-zА-Яа-яёЁЇїІіЄєҐґ]{1,} +[A-Za-zА-Яа-яёЁЇїІіЄєҐґ]{1,} *$/;
 const EXPIRATIONAL_DATE_REG = /\d{2}\/\d{2}/;
+const EMAIL_REG =
+  /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
 function removeSpaces(str: string) {
   return str.replace(/ /g, "");
@@ -30,6 +33,7 @@ export function validateFormData(obj: FormData): keyof FormData | undefined {
     return "number";
   if (!EXPIRATIONAL_DATE_REG.test(date)) return "date";
   if (!includesOnlyNumbers(pin) || removeSpaces(pin).length !== 3) return "pin";
+  if (!EMAIL_REG.test(obj.email)) return "email";
 }
 
 export type CheckotInfo = OptionsFlags<FormData>;
