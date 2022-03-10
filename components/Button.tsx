@@ -5,9 +5,17 @@ interface Props {
   variant?: "sm" | "lg";
   onClick?: () => void;
   disabled?: boolean;
+  type?: "button" | "submit";
 }
 
-const Button: FC<Props> = ({ children, variant, color, onClick, disabled }) => {
+const Button: FC<Props> = ({
+  children,
+  variant,
+  color,
+  onClick,
+  disabled,
+  type
+}) => {
   const initialColorStyle =
     color === "grey"
       ? "bg-grey-300 hover:bg-grey-400"
@@ -22,6 +30,7 @@ const Button: FC<Props> = ({ children, variant, color, onClick, disabled }) => {
     <button
       onClick={onClick}
       disabled={disabled}
+      type={type}
       className={`text-white font-light w-full ${colorStyle} ${sizeStyle} transition-colors`}
     >
       {children}
@@ -33,7 +42,8 @@ Button.defaultProps = {
   color: "red",
   variant: "sm",
   onClick: undefined,
-  disabled: false
+  disabled: false,
+  type: "button"
 };
 
 export default Button;
