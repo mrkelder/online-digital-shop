@@ -27,11 +27,9 @@ const CheckoutInput: FC<Props> = ({
         placeholder={placeholder}
         error={error}
         defaultValue={value}
-        required
       />
       <b className={"text-red text-sm " + errorMessageStyle}>{errorMessage}</b>
     </div>
   );
 };
-
 export default CheckoutInput;
