@@ -36,24 +36,26 @@ interface PaymentInfo {
 
 const DEFAULT_VALIDATION: CheckotInfo = {
   fullName: false,
-  country: false,
   city: false,
-  zipCode: false,
   number: false,
   date: false,
   pin: false,
-  email: false
+  email: false,
+  street: false,
+  house: false,
+  apartment: false
 };
 
 const DEFAULT_FORM_DATA: FormData = {
   fullName: "",
-  country: "",
   city: "",
-  zipCode: "",
   number: "",
   date: "",
   pin: "",
-  email: ""
+  email: "",
+  apartment: "",
+  house: "",
+  street: ""
 };
 
 const DEFAULT_PAYMENT_INFO: PaymentInfo = {
@@ -177,19 +179,7 @@ const CheckoutPage: NextPage = () => {
 
         <StageWrapper title="Место получения" stageNumber={2} active={true}>
           <form>
-            <div className="space-y-3">
-              {useMemo(
-                () => (
-                  <CheckoutInput
-                    name="country"
-                    placeholder="Страна"
-                    error={validationErrors.country}
-                    value={formData.country}
-                    errorMessage="Указана неверная страна"
-                  />
-                ),
-                [validationErrors.country, formData.country]
-              )}
+            <div className="grid grid-cols-1 gap-y-2 gap-x-4 sm:grid-cols-2 md:gap-x-5 md:grid-cols-4">
               {useMemo(
                 () => (
                   <CheckoutInput
@@ -205,16 +195,41 @@ const CheckoutPage: NextPage = () => {
               {useMemo(
                 () => (
                   <CheckoutInput
-                    name="zipCode"
-                    placeholder="Почтовый индекс"
-                    error={validationErrors.zipCode}
-                    value={formData.zipCode}
-                    errorMessage="Указан неверный почтовый индекс"
+                    name="street"
+                    placeholder="Улица"
+                    error={validationErrors.street}
+                    value={formData.street}
+                    errorMessage="Указан неверный город"
                   />
                 ),
-                [validationErrors.zipCode, formData.zipCode]
+                [validationErrors.street, formData.street]
+              )}
+              {useMemo(
+                () => (
+                  <CheckoutInput
+                    name="house"
+                    placeholder="Дом"
+                    error={validationErrors.house}
+                    value={formData.house}
+                    errorMessage="Указан неверный город"
+                  />
+                ),
+                [validationErrors.house, formData.house]
+              )}
+              {useMemo(
+                () => (
+                  <CheckoutInput
+                    name="apartment"
+                    placeholder="Квартира"
+                    error={validationErrors.apartment}
+                    value={formData.apartment}
+                    errorMessage="Указан неверный город"
+                  />
+                ),
+                [validationErrors.apartment, formData.apartment]
               )}
             </div>
+
             <div className="w-36 mt-3">
               <Button>Продолжить</Button>
             </div>

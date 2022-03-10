@@ -1,8 +1,9 @@
 export interface FormData {
   fullName: string;
-  country: string;
   city: string;
-  zipCode: string;
+  street: string;
+  house: string;
+  apartment: string;
   number: string;
   date: string;
   pin: string;
@@ -24,16 +25,18 @@ function includesOnlyNumbers(str: string) {
 }
 
 export function validateFormData(obj: FormData): keyof FormData | undefined {
-  const { fullName, country, city, zipCode, number, date, pin } = obj;
+  const { fullName, house, city, email, apartment, number, date, pin, street } =
+    obj;
   if (!FULLNAME_REG.test(fullName)) return "fullName";
-  if (country.length < 1) return "country";
+  if (apartment.length < 1) return "apartment";
+  if (house.length < 1) return "house";
   if (city.length < 1) return "city";
-  if (zipCode.length < 1) return "zipCode";
+  if (street.length < 1) return "street";
   if (!includesOnlyNumbers(number) || removeSpaces(number).length !== 16)
     return "number";
   if (!EXPIRATIONAL_DATE_REG.test(date)) return "date";
   if (!includesOnlyNumbers(pin) || removeSpaces(pin).length !== 3) return "pin";
-  if (!EMAIL_REG.test(obj.email)) return "email";
+  if (!EMAIL_REG.test(email)) return "email";
 }
 
 export type CheckotInfo = OptionsFlags<FormData>;
