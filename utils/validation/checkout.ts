@@ -7,19 +7,22 @@ export interface FormData {
   email: string;
 }
 
+export type CheckotInfo = OptionsFlags<FormData>;
+
 const FULLNAME_REG =
   /^ *[A-Za-zА-Яа-яёЁЇїІіЄєҐґ]{1,} +[A-Za-zА-Яа-яёЁЇїІіЄєҐґ]{1,} *$/;
 const EMAIL_REG =
   /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-export function validateFormData(obj: FormData): keyof FormData | undefined {
+export function validateFormData(obj: FormData): CheckotInfo {
   const { fullName, house, city, email, apartment, street } = obj;
-  if (!FULLNAME_REG.test(fullName)) return "fullName";
-  if (!EMAIL_REG.test(email)) return "email";
-  if (city.length < 1) return "city";
-  if (street.length < 1) return "street";
-  if (apartment.length < 1) return "apartment";
-  if (house.length < 1) return "house";
-}
 
-export type CheckotInfo = OptionsFlags<FormData>;
+  return {
+    fullName: !FULLNAME_REG.test(fullName),
+    email: !EMAIL_REG.test(email),
+    city: city.length < 1,
+    street: street.length < 1,
+    house: house.length < 1,
+    apartment: apartment.length < 1
+  };
+}
