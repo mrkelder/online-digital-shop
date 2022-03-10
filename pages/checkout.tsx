@@ -2,6 +2,7 @@ import {
   ChangeEvent,
   Dispatch,
   FormEventHandler,
+  useCallback,
   useEffect,
   useMemo,
   useState
@@ -34,12 +35,11 @@ interface PaymentInfo {
   paymentSuccess: boolean | "none";
 }
 
+type CheckoutStages = 1 | 2 | 3;
+
 const DEFAULT_VALIDATION: CheckotInfo = {
   fullName: false,
   city: false,
-  number: false,
-  date: false,
-  pin: false,
   email: false,
   street: false,
   house: false,
@@ -49,9 +49,6 @@ const DEFAULT_VALIDATION: CheckotInfo = {
 const DEFAULT_FORM_DATA: FormData = {
   fullName: "",
   city: "",
-  number: "",
-  date: "",
-  pin: "",
   email: "",
   apartment: "",
   house: "",
@@ -62,6 +59,10 @@ const DEFAULT_PAYMENT_INFO: PaymentInfo = {
   paymentSent: false,
   paymentSuccess: "none"
 };
+
+const FIRST_STAGE = 1;
+const SECOND_STAGE = 2;
+const THIRD_STAGE = 3;
 
 const RESULT_STYLE = "flex flex-col items-center space-y-2";
 const TITLE = "Оплата";
@@ -79,6 +80,7 @@ const CheckoutPage: NextPage = () => {
   const [paymentInfo, setPaymentInfo] = useState(DEFAULT_PAYMENT_INFO);
   const [loadedLocalStorage, setLoadedLocalStorage] = useState(false);
   // TODO: create a separeate hook
+  const [currentStage, setCurrentStage] = useState<CheckoutStages>(FIRST_STAGE);
 
   const { paymentSent, paymentSuccess } = paymentInfo;
 
@@ -96,22 +98,69 @@ const CheckoutPage: NextPage = () => {
     paymentFailureStyle = paymentSuccess === false ? RESULT_STYLE : "hidden";
   }
 
+  const switchStage = useCallback((newStage: CheckoutStages) => {
+    return () => {
+      setCurrentStage(newStage);
+    };
+  }, []);
+
   const submitCheckout: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
-    const validation = validateFormData(formData);
 
-    if (validation && !loadedLocalStorage) {
-      const newValidationErrors = { ...validationErrors };
-      newValidationErrors[validation] = true;
-      setValidationErrors(newValidationErrors);
-    } else {
-      setPaymentInfo({ paymentSuccess: "none", paymentSent: true });
-      setTimeout(() => {
-        dispatch({ type: "cart/restore" });
-        setPaymentInfo({ paymentSent: true, paymentSuccess: true });
-      }, 3000);
+    if (currentStage === THIRD_STAGE) {
+      const validation = validateFormData(formData);
+
+      if (validation && !loadedLocalStorage) {
+        const newValidationErrors = { ...validationErrors };
+        const arrayOfValidationItems = Object.entries(validation);
+
+        for (const [field, value] of arrayOfValidationItems) {
+          newValidationErrors[field] = value;
+        }
+
+        setValidationErrors(newValidationErrors);
+      } else {
+        setPaymentInfo({ paymentSuccess: "none", paymentSent: true });
+        setTimeout(() => {
+          dispatch({ type: "cart/restore" });
+          setPaymentInfo({ paymentSent: true, paymentSuccess: true });
+        }, 3000);
+      }
     }
   };
+
+  function firstStageFormHandler() {
+    const validation = validateFormData(formData);
+
+    if (validation.fullName || validation.email) {
+      const newValidationErrors = { ...validationErrors };
+      const arrayOfValidationItems = Object.entries(validation);
+
+      for (const [field, value] of arrayOfValidationItems) {
+        newValidationErrors[field] = value;
+      }
+      setValidationErrors(newValidationErrors);
+    } else {
+      switchStage(2)();
+    }
+  }
+
+  function secondStageFormHandler() {
+    const validation = validateFormData(formData);
+    const { city, street, house, apartment } = validation;
+
+    if (city || street || house || apartment) {
+      const newValidationErrors = { ...validationErrors };
+      const arrayOfValidationItems = Object.entries(validation);
+
+      for (const [field, value] of arrayOfValidationItems) {
+        newValidationErrors[field] = value;
+      }
+      setValidationErrors(newValidationErrors);
+    } else {
+      switchStage(3)();
+    }
+  }
 
   function formChange(e: ChangeEvent<HTMLFormElement>) {
     const { name, value } = e.target;
@@ -142,109 +191,137 @@ const CheckoutPage: NextPage = () => {
       <MetaHead title={TITLE} noindex />
       <h1>{TITLE}</h1>
 
-      <div className="space-y-2">
-        <StageWrapper title="Данные о покупателе" stageNumber={1} active={true}>
-          <form>
-            <div className="space-y-3 ">
-              {useMemo(
-                () => (
-                  <CheckoutInput
-                    error={validationErrors.fullName}
-                    value={formData.fullName}
-                    name="fullName"
-                    placeholder="Фамилия Имя"
-                    errorMessage="Форма может содержать только русские, английские или украинские символы"
-                  />
-                ),
-                [validationErrors.fullName, formData.fullName]
-              )}
-              {useMemo(
-                () => (
-                  <CheckoutInput
-                    error={validationErrors.email}
-                    value={formData.email}
-                    name="email"
-                    placeholder="Почта"
-                    errorMessage="Указана неверная почта"
-                  />
-                ),
-                [validationErrors.email, formData.email]
-              )}
+      <form
+        onChange={formChange}
+        onSubmit={submitCheckout}
+        className="space-y-2"
+      >
+        <StageWrapper
+          title="Данные о покупателе"
+          stageNumber={FIRST_STAGE}
+          active={currentStage === FIRST_STAGE}
+        >
+          <div className="space-y-3">
+            {useMemo(
+              () => (
+                <CheckoutInput
+                  error={validationErrors.fullName}
+                  value={formData.fullName}
+                  name="fullName"
+                  placeholder="Фамилия Имя"
+                  errorMessage="Форма может содержать только русские, английские или украинские символы"
+                />
+              ),
+              [validationErrors.fullName, formData.fullName]
+            )}
+            {useMemo(
+              () => (
+                <CheckoutInput
+                  error={validationErrors.email}
+                  value={formData.email}
+                  name="email"
+                  placeholder="Почта"
+                  errorMessage="Указана неверная почта"
+                />
+              ),
+              [validationErrors.email, formData.email]
+            )}
+          </div>
+
+          <div className="flex justify-between mt-3">
+            <div className="w-24 sm:w-36">
+              <Button onClick={firstStageFormHandler}>Продолжить</Button>
             </div>
-            <div className="w-36 mt-3">
-              <Button>Продолжить</Button>
-            </div>
-          </form>
+          </div>
         </StageWrapper>
 
-        <StageWrapper title="Место получения" stageNumber={2} active={true}>
-          <form>
-            <div className="grid grid-cols-1 gap-y-2 gap-x-4 sm:grid-cols-2 md:gap-x-5 md:grid-cols-4">
-              {useMemo(
-                () => (
-                  <CheckoutInput
-                    name="city"
-                    placeholder="Город"
-                    error={validationErrors.city}
-                    value={formData.city}
-                    errorMessage="Указан неверный город"
-                  />
-                ),
-                [validationErrors.city, formData.city]
-              )}
-              {useMemo(
-                () => (
-                  <CheckoutInput
-                    name="street"
-                    placeholder="Улица"
-                    error={validationErrors.street}
-                    value={formData.street}
-                    errorMessage="Указан неверный город"
-                  />
-                ),
-                [validationErrors.street, formData.street]
-              )}
-              {useMemo(
-                () => (
-                  <CheckoutInput
-                    name="house"
-                    placeholder="Дом"
-                    error={validationErrors.house}
-                    value={formData.house}
-                    errorMessage="Указан неверный город"
-                  />
-                ),
-                [validationErrors.house, formData.house]
-              )}
-              {useMemo(
-                () => (
-                  <CheckoutInput
-                    name="apartment"
-                    placeholder="Квартира"
-                    error={validationErrors.apartment}
-                    value={formData.apartment}
-                    errorMessage="Указан неверный город"
-                  />
-                ),
-                [validationErrors.apartment, formData.apartment]
-              )}
-            </div>
+        <StageWrapper
+          title="Место получения"
+          stageNumber={SECOND_STAGE}
+          active={currentStage === SECOND_STAGE}
+        >
+          <div className="grid grid-cols-1 gap-y-2 gap-x-4 sm:grid-cols-2 md:gap-x-5 md:grid-cols-4">
+            {useMemo(
+              () => (
+                <CheckoutInput
+                  name="city"
+                  placeholder="Город"
+                  error={validationErrors.city}
+                  value={formData.city}
+                  errorMessage="Город указан неверно"
+                />
+              ),
+              [validationErrors.city, formData.city]
+            )}
+            {useMemo(
+              () => (
+                <CheckoutInput
+                  name="street"
+                  placeholder="Улица"
+                  error={validationErrors.street}
+                  value={formData.street}
+                  errorMessage="Улица указана неверно"
+                />
+              ),
+              [validationErrors.street, formData.street]
+            )}
+            {useMemo(
+              () => (
+                <CheckoutInput
+                  name="house"
+                  placeholder="Дом"
+                  error={validationErrors.house}
+                  value={formData.house}
+                  errorMessage="Дом указан неверно"
+                />
+              ),
+              [validationErrors.house, formData.house]
+            )}
+            {useMemo(
+              () => (
+                <CheckoutInput
+                  name="apartment"
+                  placeholder="Квартира"
+                  error={validationErrors.apartment}
+                  value={formData.apartment}
+                  errorMessage="Квартира указана неверно"
+                />
+              ),
+              [validationErrors.apartment, formData.apartment]
+            )}
+          </div>
 
-            <div className="w-36 mt-3">
-              <Button>Продолжить</Button>
+          <div className="flex justify-between mt-3">
+            <div className="w-24 sm:w-36">
+              <Button onClick={secondStageFormHandler}>Продолжить</Button>
             </div>
-          </form>
+            <div className="w-24 sm:w-36">
+              <Button onClick={switchStage(1)} color="grey">
+                Назад
+              </Button>
+            </div>
+          </div>
         </StageWrapper>
 
-        <StageWrapper title="Оплата" stageNumber={3} active={true}>
-          <form>
-            {/* Placeholder for Stripe */}
-            <div className="w-48 mt-3">
-              <Button variant="lg">Продолжить</Button>
+        <StageWrapper
+          title="Оплата"
+          stageNumber={THIRD_STAGE}
+          active={currentStage === THIRD_STAGE}
+        >
+          {/* Placeholder for Stripe */}
+
+          <div className="flex justify-between mt-3">
+            <div className="w-24 sm:w-36">
+              <Button disabled>Продолжить</Button>
             </div>
-          </form>
+            <div className="w-24 sm:w-36">
+              <Button onClick={switchStage(2)} color="grey">
+                Назад
+              </Button>
+            </div>
+          </div>
         </StageWrapper>
-      </div>
+      </form>
     </>
   );
 };
