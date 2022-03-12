@@ -1,13 +1,13 @@
 import { FC } from "react";
 
 import Input from "components/Input";
-import { FormData } from "utils/validation/checkout";
+import { CheckoutValidationFields } from "utils/validation/checkout";
 
 interface Props {
   error: boolean;
   value: string;
   placeholder: string;
-  name: keyof FormData;
+  name: CheckoutValidationFields;
   errorMessage: string;
 }
 

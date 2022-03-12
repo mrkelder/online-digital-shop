@@ -1,20 +1,25 @@
-export interface FormData {
-  fullName: string;
-  city: string;
-  street: string;
-  house: string;
-  apartment: string;
-  email: string;
-}
+export type CheckoutValidationFields =
+  | "fullName"
+  | "city"
+  | "street"
+  | "house"
+  | "apartment"
+  | "email";
 
-export type CheckotInfo = OptionsFlags<FormData>;
+export type CheckoutFormData = {
+  [key in CheckoutValidationFields]: string;
+};
+
+export type CheckoutValidationData = OptionsFlags<CheckoutFormData>;
 
 const FULLNAME_REG =
   /^ *[A-Za-zА-Яа-яёЁЇїІіЄєҐґ]{1,} +[A-Za-zА-Яа-яёЁЇїІіЄєҐґ]{1,} *$/;
 const EMAIL_REG =
   /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-export function validateFormData(obj: FormData): CheckotInfo {
+export function validateFormData(
+  obj: CheckoutFormData
+): CheckoutValidationData {
   const { fullName, house, city, email, apartment, street } = obj;
 
   return {
