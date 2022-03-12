@@ -25,8 +25,9 @@ import { CartActions } from "store/cartReducer";
 import Cookie from "utils/cookie/cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
 import {
-  CheckotInfo,
-  FormData,
+  CheckoutValidationData,
+  CheckoutValidationFields,
+  CheckoutFormData,
   validateFormData
 } from "utils/validation/checkout";
 
@@ -37,7 +38,7 @@ interface PaymentInfo {
 
 type CheckoutStages = 1 | 2 | 3;
 
-const DEFAULT_VALIDATION: CheckotInfo = {
+const DEFAULT_VALIDATION: CheckoutValidationData = {
   fullName: false,
   city: false,
   email: false,
@@ -46,7 +47,7 @@ const DEFAULT_VALIDATION: CheckotInfo = {
   apartment: false
 };
 
-const DEFAULT_FORM_DATA: FormData = {
+const DEFAULT_FORM_DATA: CheckoutFormData = {
   fullName: "",
   city: "",
   email: "",
@@ -104,22 +105,30 @@ const CheckoutPage: NextPage = () => {
     };
   }, []);
 
+  function checkValidation(): CheckoutValidationData {
+    const validation = validateFormData(formData);
+
+    const newValidationErrors = { ...validationErrors };
+    const arrayOfValidationItems = Object.entries(validation);
+
+    for (const [field, value] of arrayOfValidationItems) {
+      newValidationErrors[field as CheckoutValidationFields] = value;
+    }
+
+    setValidationErrors(newValidationErrors);
+    return newValidationErrors;
+  }
+
   const submitCheckout: FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
 
     if (currentStage === THIRD_STAGE) {
-      const validation = validateFormData(formData);
+      const validationResult = checkValidation();
 
-      if (validation && !loadedLocalStorage) {
-        const newValidationErrors = { ...validationErrors };
-        const arrayOfValidationItems = Object.entries(validation);
+      const isThereAnyError =
+        Object.values(validationResult).indexOf(true) !== -1;
 
-        for (const [field, value] of arrayOfValidationItems) {
-          newValidationErrors[field] = value;
-        }
-
-        setValidationErrors(newValidationErrors);
-      } else {
+      if (!isThereAnyError) {
         setPaymentInfo({ paymentSuccess: "none", paymentSent: true });
         setTimeout(() => {
           dispatch({ type: "cart/restore" });
@@ -130,34 +139,20 @@ const CheckoutPage: NextPage = () => {
   };
 
   function firstStageFormHandler() {
-    const validation = validateFormData(formData);
+    const validationResult = checkValidation();
+    const { fullName, email } = validationResult;
 
-    if (validation.fullName || validation.email) {
-      const newValidationErrors = { ...validationErrors };
-      const arrayOfValidationItems = Object.entries(validation);
-
-      for (const [field, value] of arrayOfValidationItems) {
-        newValidationErrors[field] = value;
-      }
-      setValidationErrors(newValidationErrors);
-    } else {
+    if (!fullName && !email) {
+      setValidationErrors(DEFAULT_VALIDATION);
       switchStage(2)();
     }
   }
 
   function secondStageFormHandler() {
-    const validation = validateFormData(formData);
-    const { city, street, house, apartment } = validation;
+    const validationResult = checkValidation();
+    const { city, street, house, apartment } = validationResult;
 
-    if (city || street || house || apartment) {
-      const newValidationErrors = { ...validationErrors };
-      const arrayOfValidationItems = Object.entries(validation);
-
-      for (const [field, value] of arrayOfValidationItems) {
-        newValidationErrors[field] = value;
-      }
-      setValidationErrors(newValidationErrors);
-    } else {
+    if (!city && !street && !house && !apartment) {
       switchStage(3)();
     }
   }
@@ -165,7 +160,7 @@ const CheckoutPage: NextPage = () => {
   function formChange(e: ChangeEvent<HTMLFormElement>) {
     const { name, value } = e.target;
     const newFormState = { ...formData };
-    newFormState[name as keyof FormData] = value;
+    newFormState[name as CheckoutValidationFields] = value;
     setFormData(newFormState);
     setValidationErrors(DEFAULT_VALIDATION);
   }
