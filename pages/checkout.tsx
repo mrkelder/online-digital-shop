@@ -12,6 +12,7 @@ import CheckoutInput from "components/checkout-page/CheckoutInput";
 import StageWrapper from "components/checkout-page/StageWrapper";
 import LoadingSpinner from "components/LoadingSpinner";
 import MetaHead from "components/meta/MetaHead";
+import useMatchMedia from "hooks/useMatchMedia";
 import { RootStore } from "store";
 import Cookie from "utils/cookie/cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
@@ -61,10 +62,9 @@ const CheckoutPage: NextPage = () => {
   const itemsQuantity = useSelector<RootStore>(
     store => store.cart.items.length
   ) as number;
+  const { isLoaded } = useMatchMedia();
   const [validationErrors, setValidationErrors] = useState(DEFAULT_VALIDATION);
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
-  const [loadedLocalStorage, setLoadedLocalStorage] = useState(false);
-  // TODO: create a separeate hook
   const [stripeClientSecret, setStripeClientSecret] = useState<
     string | undefined
   >(undefined);
@@ -143,11 +143,10 @@ const CheckoutPage: NextPage = () => {
       cookieAmountOfItemsInCart !== itemsQuantity;
 
     const shouldBeRedirected = cookieIsNaN || cookieAndLocalStorageAreNotEqual;
-    const decision = loadedLocalStorage && shouldBeRedirected;
+    const decision = isLoaded && shouldBeRedirected;
 
     if (decision) router.push("/");
-    else setLoadedLocalStorage(true);
-  }, [itemsQuantity, router, loadedLocalStorage]);
+  }, [itemsQuantity, router, isLoaded]);
 
   useEffect(() => {
     async function fetchClientSecret() {
