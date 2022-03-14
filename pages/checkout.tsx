@@ -25,6 +25,8 @@ import {
 
 import { CreatePaymentIntentResponse } from "./api/createPaymentIntent";
 
+// Submition of the payment and form in general is in CheckoutForm component
+
 type CheckoutStages = 1 | 2 | 3;
 
 const DEFAULT_VALIDATION: CheckoutValidationData = {
