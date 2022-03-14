@@ -1,14 +1,15 @@
 import { DOMAttributes, FC } from "react";
 
+import LoadingSpinner from "./LoadingSpinner";
+
 interface Props {
   color?: "grey" | "red";
   variant?: "sm" | "lg";
+  type?: "button" | "submit";
   onClick?: DOMAttributes<HTMLButtonElement>["onClick"];
   disabled?: boolean;
-  type?: "button" | "submit";
+  loading?: boolean;
 }
-
-// TODO: loading state
 
 const Button: FC<Props> = ({
   children,
@@ -16,7 +17,8 @@ const Button: FC<Props> = ({
   color,
   onClick,
   disabled,
-  type
+  type,
+  loading
 }) => {
   const initialColorStyle =
     color === "grey"
@@ -33,9 +35,9 @@ const Button: FC<Props> = ({
       onClick={onClick}
       disabled={disabled}
       type={type}
-      className={`text-white font-light w-full ${colorStyle} ${sizeStyle} transition-colors`}
+      className={`flex items-center justify-center text-white font-light w-full ${colorStyle} ${sizeStyle} transition-colors`}
     >
-      {children}
+      {loading ? <LoadingSpinner color="white" size={20} /> : children}
     </button>
   );
 };
@@ -43,9 +45,10 @@ const Button: FC<Props> = ({
 Button.defaultProps = {
   color: "red",
   variant: "sm",
+  type: "button",
   onClick: undefined,
   disabled: false,
-  type: "button"
+  loading: false
 };
 
 export default Button;
