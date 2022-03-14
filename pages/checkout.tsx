@@ -1,27 +1,18 @@
-import {
-  ChangeEvent,
-  Dispatch,
-  FormEventHandler,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import Button from "components/Button";
+import CheckoutForm from "components/checkout-page/CheckoutForm";
 import CheckoutInput from "components/checkout-page/CheckoutInput";
 import StageWrapper from "components/checkout-page/StageWrapper";
+import LoadingSpinner from "components/LoadingSpinner";
 import MetaHead from "components/meta/MetaHead";
-import FailureIcon from "public/img/failure.svg";
-import LoadingIcon from "public/img/loading.svg";
-import SuccessIcon from "public/img/success.svg";
 import { RootStore } from "store";
-import { CartActions } from "store/cartReducer";
 import Cookie from "utils/cookie/cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
 import {
@@ -31,10 +22,7 @@ import {
   validateFormData
 } from "utils/validation/checkout";
 
-interface PaymentInfo {
-  paymentSent: boolean;
-  paymentSuccess: boolean | "none";
-}
+import { CreatePaymentIntentResponse } from "./api/createPaymentIntent";
 
 type CheckoutStages = 1 | 2 | 3;
 
@@ -56,48 +44,37 @@ const DEFAULT_FORM_DATA: CheckoutFormData = {
   street: ""
 };
 
-const DEFAULT_PAYMENT_INFO: PaymentInfo = {
-  paymentSent: false,
-  paymentSuccess: "none"
-};
-
+// TODO: assign CheckoutStages to these
 const FIRST_STAGE = 1;
 const SECOND_STAGE = 2;
 const THIRD_STAGE = 3;
+// TODO: assign CheckoutStages to these
 
-const RESULT_STYLE = "flex flex-col items-center space-y-2";
 const TITLE = "Оплата";
 
 const cookie = new Cookie();
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
+);
 
 const CheckoutPage: NextPage = () => {
   const router = useRouter();
   const itemsQuantity = useSelector<RootStore>(
     store => store.cart.items.length
   ) as number;
-  const dispatch = useDispatch<Dispatch<CartActions>>();
   const [validationErrors, setValidationErrors] = useState(DEFAULT_VALIDATION);
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
-  const [paymentInfo, setPaymentInfo] = useState(DEFAULT_PAYMENT_INFO);
   const [loadedLocalStorage, setLoadedLocalStorage] = useState(false);
   // TODO: create a separeate hook
+  const [stripeClientSecret, setStripeClientSecret] = useState<
+    string | undefined
+  >(undefined);
   const [currentStage, setCurrentStage] = useState<CheckoutStages>(FIRST_STAGE);
 
-  const { paymentSent, paymentSuccess } = paymentInfo;
-
-  let formStyle = "grid";
-  let paymentResultStyle = "hidden";
-  let paymentLoadingStyle = "hidden";
-  let paymentSuccessStyle = "hidden";
-  let paymentFailureStyle = "hidden";
-
-  if (paymentSent) {
-    formStyle = "hidden";
-    paymentResultStyle = "block";
-    paymentLoadingStyle = paymentSuccess === "none" ? RESULT_STYLE : "hidden";
-    paymentSuccessStyle = paymentSuccess === true ? RESULT_STYLE : "hidden";
-    paymentFailureStyle = paymentSuccess === false ? RESULT_STYLE : "hidden";
-  }
+  const options: StripeElementsOptions = {
+    clientSecret: stripeClientSecret
+  };
 
   const switchStage = useCallback((newStage: CheckoutStages) => {
     return () => {
@@ -115,28 +92,17 @@ const CheckoutPage: NextPage = () => {
       newValidationErrors[field as CheckoutValidationFields] = value;
     }
 
-    setValidationErrors(newValidationErrors);
     return newValidationErrors;
   }
 
-  const submitCheckout: FormEventHandler<HTMLFormElement> = e => {
-    e.preventDefault();
+  function checkTotalValidation(): boolean {
+    const validationResult = checkValidation();
 
-    if (currentStage === THIRD_STAGE) {
-      const validationResult = checkValidation();
+    const isThereAnyError =
+      Object.values(validationResult).indexOf(true) !== -1;
 
-      const isThereAnyError =
-        Object.values(validationResult).indexOf(true) !== -1;
-
-      if (!isThereAnyError) {
-        setPaymentInfo({ paymentSuccess: "none", paymentSent: true });
-        setTimeout(() => {
-          dispatch({ type: "cart/restore" });
-          setPaymentInfo({ paymentSent: true, paymentSuccess: true });
-        }, 3000);
-      }
-    }
-  };
+    return isThereAnyError;
+  }
 
   function firstStageFormHandler() {
     const validationResult = checkValidation();
@@ -145,6 +111,8 @@ const CheckoutPage: NextPage = () => {
     if (!fullName && !email) {
       setValidationErrors(DEFAULT_VALIDATION);
       switchStage(2)();
+    } else {
+      setValidationErrors(validationResult);
     }
   }
 
@@ -154,6 +122,8 @@ const CheckoutPage: NextPage = () => {
 
     if (!city && !street && !house && !apartment) {
       switchStage(3)();
+    } else {
+      setValidationErrors(validationResult);
     }
   }
 
@@ -181,16 +151,35 @@ const CheckoutPage: NextPage = () => {
     else setLoadedLocalStorage(true);
   }, [itemsQuantity, router, loadedLocalStorage]);
 
+  useEffect(() => {
+    async function fetchClientSecret() {
+      const endpoint =
+        process.env.NEXT_PUBLIC_HOSTNAME + "/api/createPaymentIntent";
+
+      const result = await fetch(endpoint, { method: "POST" });
+
+      if (!result.ok || !result) {
+        // TODO: make it visible
+        throw new Error(
+          "Checkout page: stripe payment intent has not been retrieved successfully"
+        );
+      }
+
+      const data: CreatePaymentIntentResponse = await result.json();
+      setStripeClientSecret(data.secret as string);
+    }
+
+    if (currentStage === THIRD_STAGE && stripeClientSecret === undefined) {
+      fetchClientSecret();
+    }
+  }, [currentStage, stripeClientSecret]);
+
   return (
     <>
       <MetaHead title={TITLE} noindex />
       <h1>{TITLE}</h1>
 
-      <form
-        onChange={formChange}
-        onSubmit={submitCheckout}
-        className="space-y-2"
-      >
+      <form onChange={formChange} className="space-y-2">
         <StageWrapper
           title="Данные о покупателе"
           stageNumber={FIRST_STAGE}
@@ -303,18 +292,23 @@ const CheckoutPage: NextPage = () => {
           stageNumber={THIRD_STAGE}
           active={currentStage === THIRD_STAGE}
         >
-          {/* Placeholder for Stripe */}
-
-          <div className="flex justify-between mt-3">
-            <div className="w-24 sm:w-36">
-              <Button disabled>Продолжить</Button>
+          {stripeClientSecret === undefined ? (
+            <div className="flex items-center justify-center space-x-2">
+              <span>Создание заказа</span>
+              <LoadingSpinner size={15} />
             </div>
-            <div className="w-24 sm:w-36">
-              <Button onClick={switchStage(2)} color="grey">
-                Назад
-              </Button>
-            </div>
-          </div>
+          ) : (
+            <>
+              <Elements options={options} stripe={stripePromise}>
+                <CheckoutForm
+                  swtichToSecondStage={switchStage(2)}
+                  clientSecret={stripeClientSecret}
+                  isFormValid={checkTotalValidation()}
+                  clientInfo={formData}
+                />
+              </Elements>
+            </>
+          )}
         </StageWrapper>
       </form>
     </>
