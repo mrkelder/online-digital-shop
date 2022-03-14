@@ -1,12 +1,14 @@
-import { FC } from "react";
+import { DOMAttributes, FC } from "react";
 
 interface Props {
   color?: "grey" | "red";
   variant?: "sm" | "lg";
-  onClick?: () => void;
+  onClick?: DOMAttributes<HTMLButtonElement>["onClick"];
   disabled?: boolean;
   type?: "button" | "submit";
 }
+
+// TODO: loading state
 
 const Button: FC<Props> = ({
   children,
