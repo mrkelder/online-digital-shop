@@ -44,11 +44,9 @@ const DEFAULT_FORM_DATA: CheckoutFormData = {
   street: ""
 };
 
-// TODO: assign CheckoutStages to these
-const FIRST_STAGE = 1;
-const SECOND_STAGE = 2;
-const THIRD_STAGE = 3;
-// TODO: assign CheckoutStages to these
+const FIRST_STAGE: CheckoutStages = 1;
+const SECOND_STAGE: CheckoutStages = 2;
+const THIRD_STAGE: CheckoutStages = 3;
 
 const TITLE = "Оплата";
 
