@@ -27,9 +27,10 @@ const CheckoutForm: FC<Props> = ({
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
   const [isStripeUIIsLoaded, setIsStripeUIIsLoaded] = useState(false);
+  const [isPaymentSent, setIsPaymentSent] = useState(false);
 
   const isStripeLoaded = !!stripe && elements;
-  const isFormTotallyReady = !!stripe && isFormValid;
+  const isFormTotallyReady = (!!stripe && isFormValid) || isPaymentSent;
   const stripeFormVisibilityStyling = isStripeUIIsLoaded ? "block" : "hidden";
 
   const handleSubmit: MouseEventHandler<HTMLButtonElement> = async e => {
@@ -40,6 +41,7 @@ const CheckoutForm: FC<Props> = ({
     }
 
     const { city, fullName, email, street, apartment, house } = clientInfo;
+    setIsPaymentSent(true);
 
     const { error } = await stripe.confirmPayment({
       elements,
@@ -60,6 +62,7 @@ const CheckoutForm: FC<Props> = ({
 
     if (error) {
       setErrorMessage(error.message as string);
+      setIsPaymentSent(false);
     }
   };
 
@@ -111,7 +114,11 @@ const CheckoutForm: FC<Props> = ({
 
           <div className="flex justify-between">
             <div className="w-24 sm:w-36">
-              <Button disabled={isFormTotallyReady} onClick={handleSubmit}>
+              <Button
+                loading={isPaymentSent}
+                disabled={isFormTotallyReady}
+                onClick={handleSubmit}
+              >
                 Продолжить
               </Button>
             </div>
