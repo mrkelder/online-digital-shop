@@ -1,4 +1,4 @@
-import { ReduxCartProduct } from "store/cartReducer";
+import { ReduxCartProduct } from "store/reducers/cartReducer";
 
 export default function convertToReduxCartProduct(
   product: Product

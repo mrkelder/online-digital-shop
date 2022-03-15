@@ -21,7 +21,7 @@ import LocationIcon from "public/img/geo-point.svg";
 import activeStarIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
 import { RootStore } from "store";
-import { CartActions, CartState } from "store/cartReducer";
+import { CartActions, CartState } from "store/reducers/cartReducer";
 import styles from "styles/item-page.module.css";
 import convertToReduxCartProduct from "utils/dto/convertToReduxCartProduct";
 import Firebase from "utils/firebase";

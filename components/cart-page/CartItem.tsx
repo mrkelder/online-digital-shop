@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useDispatch } from "react-redux";
 
 import CrossIcon from "public/img/cross.svg";
-import { CartActions, ReduxCartProduct } from "store/cartReducer";
+import { CartActions, ReduxCartProduct } from "store/reducers/cartReducer";
 import styles from "styles/cart-item.module.css";
 
 interface Props {

@@ -4,8 +4,8 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import LocalStorage from "utils/localStorage/localStorage";
 
 import { CART } from "../utils/localStorage/localStorageNames";
-import { CartState, CartActions } from "./cartReducer";
-import cartReducer from "./cartReducer";
+import { CartState, CartActions } from "./reducers/cartReducer";
+import cartReducer from "./reducers/cartReducer";
 
 export type ReduxStore = Store<
   EmptyObject & {
