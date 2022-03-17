@@ -46,7 +46,7 @@ class Firebase {
     return data;
   }
 
-  async getDocumentsById<T>(collectionName: string, ids: string[]) {
+  async getDocumentsByIds<T>(collectionName: string, ids: string[]) {
     const queryObj: QueryObject = {
       field: documentId(),
       condition: "in",
