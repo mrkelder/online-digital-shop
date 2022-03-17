@@ -17,8 +17,12 @@ import useMatchMedia from "hooks/useMatchMedia";
 import { RootStore } from "store";
 import {
   CheckoutActions,
+  CheckoutStages,
   CheckoutState,
-  CheckoutStateKeys
+  CheckoutStateKeys,
+  FIRST_STAGE,
+  SECOND_STAGE,
+  THIRD_STAGE
 } from "store/reducers/checkoutReducer";
 import Cookie from "utils/cookie/cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
@@ -33,8 +37,6 @@ import { CreatePaymentIntentResponse } from "./api/createPaymentIntent";
 
 // Submition of the payment and form in general is in CheckoutForm component
 
-type CheckoutStages = 1 | 2 | 3;
-
 const DEFAULT_VALIDATION: CheckoutValidationData = {
   fullName: false,
   city: false,
@@ -43,10 +45,6 @@ const DEFAULT_VALIDATION: CheckoutValidationData = {
   house: false,
   apartment: false
 };
-
-const FIRST_STAGE: CheckoutStages = 1;
-const SECOND_STAGE: CheckoutStages = 2;
-const THIRD_STAGE: CheckoutStages = 3;
 
 const TITLE = "Оплата";
 
@@ -67,19 +65,25 @@ const CheckoutPage: NextPage = () => {
   ) as CheckoutState;
   const { isLoaded } = useMatchMedia();
   const [validationErrors, setValidationErrors] = useState(DEFAULT_VALIDATION);
-  const [currentStage, setCurrentStage] = useState<CheckoutStages>(FIRST_STAGE);
 
+  const { currentStage } = formData;
   const stripeClientSecret = formData.stripeClientId;
 
   const options: StripeElementsOptions = {
     clientSecret: stripeClientSecret
   };
 
-  const switchStage = useCallback((newStage: CheckoutStages) => {
-    return () => {
-      setCurrentStage(newStage);
-    };
-  }, []);
+  const switchStage = useCallback(
+    (newStage: CheckoutStages) => {
+      return () => {
+        dispatch({
+          type: "checkout/changeField",
+          payload: { name: "currentStage", value: newStage }
+        });
+      };
+    },
+    [dispatch]
+  );
 
   function checkValidation(): CheckoutValidationData {
     const validation = validateFormData(formData);

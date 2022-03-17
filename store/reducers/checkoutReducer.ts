@@ -4,23 +4,40 @@ import LocalStorage from "utils/localStorage/localStorage";
 import { CHECKOUT } from "utils/localStorage/localStorageNames";
 import { CheckoutFormData } from "utils/validation/checkoutValidation";
 
+// FIXME: it definetely needs some more organization rather than all types and data in one file
+// wich is by the way intended to be for the reducer only
+
+export type CheckoutStages = 1 | 2 | 3;
+
 export type CheckoutState = CheckoutFormData & {
   stripeClientId: string | undefined;
+  currentStage: CheckoutStages;
 };
 
 export type CheckoutStateKeys = keyof CheckoutState;
 
+interface StringPayloads {
+  name: Exclude<CheckoutStateKeys, "currentStage">;
+  value: string;
+}
+
+interface NumberPayloads {
+  name: "currentStage";
+  value: number;
+}
+
 type ChangeFiledAction = {
   type: "checkout/changeField";
-  payload: {
-    name: CheckoutStateKeys;
-    value: string;
-  };
+  payload: StringPayloads | NumberPayloads;
 };
 
 type RestoreAction = { type: "checkout/restore" };
 
 export type CheckoutActions = ChangeFiledAction | RestoreAction;
+
+export const FIRST_STAGE: CheckoutStages = 1;
+export const SECOND_STAGE: CheckoutStages = 2;
+export const THIRD_STAGE: CheckoutStages = 3;
 
 export const DEFAULT_CHECKOUT_STATE: CheckoutState = {
   fullName: "",
@@ -29,7 +46,8 @@ export const DEFAULT_CHECKOUT_STATE: CheckoutState = {
   house: "",
   apartment: "",
   email: "",
-  stripeClientId: undefined
+  stripeClientId: undefined,
+  currentStage: FIRST_STAGE
 };
 
 const localStoragClass = new LocalStorage();
