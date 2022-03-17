@@ -313,7 +313,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const firebase = new Firebase();
-  const result = await firebase.getDocumentsById<FirebaseProduct>("products", [
+  const result = await firebase.getDocumentsByIds<FirebaseProduct>("products", [
     context.params?.id as string
   ]);
 
