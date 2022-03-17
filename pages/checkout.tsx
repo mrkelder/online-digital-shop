@@ -31,7 +31,7 @@ import {
   CheckoutValidationData,
   CheckoutValidationFields,
   validateFormData
-} from "utils/validation/checkoutValidation";
+} from "utils/validation/isCheckoutDataValid";
 
 import { CreatePaymentIntentResponse } from "./api/createPaymentIntent";
 

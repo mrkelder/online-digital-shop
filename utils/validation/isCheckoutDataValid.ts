@@ -1,3 +1,5 @@
+// FIXME: rename this file
+
 export type CheckoutValidationFields =
   | "fullName"
   | "city"
@@ -6,9 +8,7 @@ export type CheckoutValidationFields =
   | "apartment"
   | "email";
 
-export type CheckoutFormData = {
-  [key in CheckoutValidationFields]: string;
-};
+export type CheckoutFormData = Record<CheckoutValidationFields, string>;
 
 export type CheckoutValidationData = OptionsFlags<CheckoutFormData>;
 
