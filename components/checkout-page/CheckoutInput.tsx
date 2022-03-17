@@ -1,24 +1,41 @@
-import { FC } from "react";
+import { ChangeEventHandler, Dispatch, FC, useCallback } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
 
 import Input from "components/Input";
-import { CheckoutValidationFields } from "utils/validation/checkoutValidation";
+import { RootStore } from "store";
+import {
+  CheckoutActions,
+  CheckoutStateKeys
+} from "store/reducers/checkoutReducer";
+import isKeyOfCheckoutData from "utils/validation/checkoutDataKeysValidation";
 
 interface Props {
   error: boolean;
-  value: string;
   placeholder: string;
-  name: CheckoutValidationFields;
+  name: CheckoutStateKeys;
   errorMessage: string;
 }
 
 const CheckoutInput: FC<Props> = ({
   error,
-  value,
   placeholder,
   name,
   errorMessage
 }) => {
+  const dispatch = useDispatch<Dispatch<CheckoutActions>>();
+  const value = useSelector<RootStore>(store => store.checkout[name]) as string;
   const errorMessageStyle = error ? "inline" : "hidden";
+
+  const changeHanlder: ChangeEventHandler<any> = e => {
+    if (isKeyOfCheckoutData(name)) {
+      const { value } = e.target;
+      dispatch({ type: "checkout/changeField", payload: { name, value } });
+    }
+  };
+
+  const memoizedChangeHandler = useCallback(changeHanlder, [dispatch, name]);
+
   return (
     <div>
       <Input
@@ -26,7 +43,8 @@ const CheckoutInput: FC<Props> = ({
         name={name}
         placeholder={placeholder}
         error={error}
-        defaultValue={value}
+        value={value}
+        onChange={memoizedChangeHandler}
       />
       <b className={"text-red text-sm " + errorMessageStyle}>{errorMessage}</b>
     </div>

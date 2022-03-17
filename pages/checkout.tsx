@@ -128,8 +128,6 @@ const CheckoutPage: NextPage = () => {
 
   function formChange(e: ChangeEvent<HTMLFormElement>) {
     const { name, value } = e.target;
-    const newFormState = { ...formData };
-    newFormState[name as CheckoutValidationFields] = value;
 
     if (isKeyOfCheckoutData(name)) {
       dispatch({
@@ -141,6 +139,12 @@ const CheckoutPage: NextPage = () => {
       });
       setValidationErrors(DEFAULT_VALIDATION);
     }
+  }
+
+  function resetCheckoutData() {
+    dispatch({ type: "checkout/restore" });
+    setValidationErrors(DEFAULT_VALIDATION);
+    switchStage(1)();
   }
 
   useEffect(() => {
@@ -189,6 +193,10 @@ const CheckoutPage: NextPage = () => {
       <MetaHead title={TITLE} noindex />
       <h1>{TITLE}</h1>
 
+      <button onClick={resetCheckoutData} className="mb-2 underline">
+        Сбросить форму
+      </button>
+
       <form onChange={formChange} className="space-y-2">
         <StageWrapper
           title="Данные о покупателе"
@@ -200,25 +208,23 @@ const CheckoutPage: NextPage = () => {
               () => (
                 <CheckoutInput
                   error={validationErrors.fullName}
-                  value={formData.fullName}
                   name="fullName"
                   placeholder="Фамилия Имя"
                   errorMessage="Форма может содержать только русские, английские или украинские символы"
                 />
               ),
-              [validationErrors.fullName, formData.fullName]
+              [validationErrors.fullName]
             )}
             {useMemo(
               () => (
                 <CheckoutInput
                   error={validationErrors.email}
-                  value={formData.email}
                   name="email"
                   placeholder="Почта"
                   errorMessage="Указана неверная почта"
                 />
               ),
-              [validationErrors.email, formData.email]
+              [validationErrors.email]
             )}
           </div>
 
@@ -241,11 +247,10 @@ const CheckoutPage: NextPage = () => {
                   name="city"
                   placeholder="Город"
                   error={validationErrors.city}
-                  value={formData.city}
                   errorMessage="Город указан неверно"
                 />
               ),
-              [validationErrors.city, formData.city]
+              [validationErrors.city]
             )}
             {useMemo(
               () => (
@@ -253,11 +258,10 @@ const CheckoutPage: NextPage = () => {
                   name="street"
                   placeholder="Улица"
                   error={validationErrors.street}
-                  value={formData.street}
                   errorMessage="Улица указана неверно"
                 />
               ),
-              [validationErrors.street, formData.street]
+              [validationErrors.street]
             )}
             {useMemo(
               () => (
@@ -265,11 +269,10 @@ const CheckoutPage: NextPage = () => {
                   name="house"
                   placeholder="Дом"
                   error={validationErrors.house}
-                  value={formData.house}
                   errorMessage="Дом указан неверно"
                 />
               ),
-              [validationErrors.house, formData.house]
+              [validationErrors.house]
             )}
             {useMemo(
               () => (
@@ -277,11 +280,10 @@ const CheckoutPage: NextPage = () => {
                   name="apartment"
                   placeholder="Квартира"
                   error={validationErrors.apartment}
-                  value={formData.apartment}
                   errorMessage="Квартира указана неверно"
                 />
               ),
-              [validationErrors.apartment, formData.apartment]
+              [validationErrors.apartment]
             )}
           </div>
 
