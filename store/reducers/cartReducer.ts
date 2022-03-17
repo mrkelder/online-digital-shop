@@ -32,7 +32,7 @@ export type CartActions =
   | ChangeQuantityAction
   | RestoreAction;
 
-const DEFAULT_STATE: CartState = {
+export const DEFAULT_CART_STATE: CartState = {
   items: []
 };
 
@@ -40,7 +40,7 @@ const cookie = new Cookie();
 const localStoragClass = new LocalStorage();
 
 const cartReducer: Reducer<CartState, CartActions> = (
-  state = DEFAULT_STATE,
+  state = DEFAULT_CART_STATE,
   action
 ) => {
   let newState = state;
