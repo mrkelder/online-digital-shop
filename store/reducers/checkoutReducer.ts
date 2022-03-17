@@ -8,10 +8,12 @@ export type CheckoutState = CheckoutFormData & {
   stripeClientId: string | undefined;
 };
 
+export type CheckoutStateKeys = keyof CheckoutState;
+
 type ChangeFiledAction = {
   type: "checkout/changeField";
   payload: {
-    name: keyof CheckoutState;
+    name: CheckoutStateKeys;
     value: string;
   };
 };

@@ -4,7 +4,8 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Dispatch } from "redux";
 
 import Button from "components/Button";
 import CheckoutForm from "components/checkout-page/CheckoutForm";
@@ -14,12 +15,17 @@ import LoadingSpinner from "components/LoadingSpinner";
 import MetaHead from "components/meta/MetaHead";
 import useMatchMedia from "hooks/useMatchMedia";
 import { RootStore } from "store";
+import {
+  CheckoutActions,
+  CheckoutState,
+  CheckoutStateKeys
+} from "store/reducers/checkoutReducer";
 import Cookie from "utils/cookie/cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
+import isKeyOfCheckoutData from "utils/validation/checkoutDataKeysValidation";
 import {
   CheckoutValidationData,
   CheckoutValidationFields,
-  CheckoutFormData,
   validateFormData
 } from "utils/validation/checkoutValidation";
 
@@ -38,15 +44,6 @@ const DEFAULT_VALIDATION: CheckoutValidationData = {
   apartment: false
 };
 
-const DEFAULT_FORM_DATA: CheckoutFormData = {
-  fullName: "",
-  city: "",
-  email: "",
-  apartment: "",
-  house: "",
-  street: ""
-};
-
 const FIRST_STAGE: CheckoutStages = 1;
 const SECOND_STAGE: CheckoutStages = 2;
 const THIRD_STAGE: CheckoutStages = 3;
@@ -61,16 +58,18 @@ const stripePromise = loadStripe(
 
 const CheckoutPage: NextPage = () => {
   const router = useRouter();
+  const dispatch = useDispatch<Dispatch<CheckoutActions>>();
   const itemsQuantity = useSelector<RootStore>(
     store => store.cart.items.length
   ) as number;
+  const formData = useSelector<RootStore>(
+    store => store.checkout
+  ) as CheckoutState;
   const { isLoaded } = useMatchMedia();
   const [validationErrors, setValidationErrors] = useState(DEFAULT_VALIDATION);
-  const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
-  const [stripeClientSecret, setStripeClientSecret] = useState<
-    string | undefined
-  >(undefined);
   const [currentStage, setCurrentStage] = useState<CheckoutStages>(FIRST_STAGE);
+
+  const stripeClientSecret = formData.stripeClientId;
 
   const options: StripeElementsOptions = {
     clientSecret: stripeClientSecret
@@ -131,8 +130,17 @@ const CheckoutPage: NextPage = () => {
     const { name, value } = e.target;
     const newFormState = { ...formData };
     newFormState[name as CheckoutValidationFields] = value;
-    setFormData(newFormState);
-    setValidationErrors(DEFAULT_VALIDATION);
+
+    if (isKeyOfCheckoutData(name)) {
+      dispatch({
+        type: "checkout/changeField",
+        payload: {
+          name: name as CheckoutStateKeys,
+          value
+        }
+      });
+      setValidationErrors(DEFAULT_VALIDATION);
+    }
   }
 
   useEffect(() => {
@@ -165,13 +173,16 @@ const CheckoutPage: NextPage = () => {
       }
 
       const data: CreatePaymentIntentResponse = await result.json();
-      setStripeClientSecret(data.secret as string);
+      dispatch({
+        type: "checkout/changeField",
+        payload: { name: "stripeClientId", value: data.secret as string }
+      });
     }
 
     if (currentStage === THIRD_STAGE && stripeClientSecret === undefined) {
       fetchClientSecret();
     }
-  }, [currentStage, stripeClientSecret]);
+  }, [currentStage, stripeClientSecret, dispatch]);
 
   return (
     <>
