@@ -2,10 +2,7 @@ import { Reducer } from "redux";
 
 import LocalStorage from "utils/localStorage/localStorage";
 import { CHECKOUT } from "utils/localStorage/localStorageNames";
-import {
-  CheckoutFormData,
-  CheckoutValidationFields
-} from "utils/validation/checkoutValidation";
+import { CheckoutFormData } from "utils/validation/checkoutValidation";
 
 export type CheckoutState = CheckoutFormData & {
   stripeClientId: string | undefined;
@@ -14,7 +11,7 @@ export type CheckoutState = CheckoutFormData & {
 type ChangeFiledAction = {
   type: "checkout/changeField";
   payload: {
-    name: CheckoutValidationFields | "stripeClient";
+    name: keyof CheckoutState;
     value: string;
   };
 };
