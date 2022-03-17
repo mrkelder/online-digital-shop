@@ -21,7 +21,7 @@ import {
   CheckoutValidationFields,
   CheckoutFormData,
   validateFormData
-} from "utils/validation/checkout";
+} from "utils/validation/checkoutValidation";
 
 import { CreatePaymentIntentResponse } from "./api/createPaymentIntent";
 

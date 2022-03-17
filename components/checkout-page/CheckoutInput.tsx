@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import Input from "components/Input";
-import { CheckoutValidationFields } from "utils/validation/checkout";
+import { CheckoutValidationFields } from "utils/validation/checkoutValidation";
 
 interface Props {
   error: boolean;

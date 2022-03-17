@@ -5,7 +5,7 @@ import { CHECKOUT } from "utils/localStorage/localStorageNames";
 import {
   CheckoutFormData,
   CheckoutValidationFields
-} from "utils/validation/checkout";
+} from "utils/validation/checkoutValidation";
 
 export type CheckoutState = CheckoutFormData & {
   stripeClientId: string | undefined;
