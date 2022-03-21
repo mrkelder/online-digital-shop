@@ -15,6 +15,7 @@ import LoadingSpinner from "components/LoadingSpinner";
 import MetaHead from "components/meta/MetaHead";
 import useMatchMedia from "hooks/useMatchMedia";
 import { RootStore } from "store";
+import { ReduxCartProduct } from "store/reducers/cartReducer";
 import {
   CheckoutActions,
   CheckoutStages,
@@ -57,14 +58,15 @@ const stripePromise = loadStripe(
 const CheckoutPage: NextPage = () => {
   const router = useRouter();
   const dispatch = useDispatch<Dispatch<CheckoutActions>>();
-  const itemsQuantity = useSelector<RootStore>(
-    store => store.cart.items.length
-  ) as number;
+  const cartItems = useSelector<RootStore>(
+    store => store.cart.items
+  ) as ReduxCartProduct[];
   const formData = useSelector<RootStore>(
     store => store.checkout
   ) as CheckoutState;
   const { isLoaded } = useMatchMedia();
   const [validationErrors, setValidationErrors] = useState(DEFAULT_VALIDATION);
+  const [isStripeFetchSuccessful, setIsStripeFetchSuccessful] = useState(true);
 
   const { currentStage } = formData;
   const stripeClientSecret = formData.stripeClientId;
@@ -158,24 +160,29 @@ const CheckoutPage: NextPage = () => {
 
     const cookieIsNaN = isNaN(cookieAmountOfItemsInCart);
     const cookieAndLocalStorageAreNotEqual =
-      cookieAmountOfItemsInCart !== itemsQuantity;
+      cookieAmountOfItemsInCart !== cartItems.length;
 
     const shouldBeRedirected = cookieIsNaN || cookieAndLocalStorageAreNotEqual;
     const decision = isLoaded && shouldBeRedirected;
 
     if (decision) router.push("/");
-  }, [itemsQuantity, router, isLoaded]);
+  }, [cartItems, router, isLoaded]);
 
   useEffect(() => {
     async function fetchClientSecret() {
       const endpoint =
         process.env.NEXT_PUBLIC_HOSTNAME + "/api/createPaymentIntent";
-
-      const result = await fetch(endpoint, { method: "POST" });
+      const body = JSON.stringify(
+        cartItems.map(i => ({ id: i.id, quantity: i.quantity }))
+      );
+      const result = await fetch(endpoint, {
+        method: "POST",
+        body
+      });
 
       if (!result.ok || !result) {
-        // TODO: make it visible
-        throw new Error(
+        setIsStripeFetchSuccessful(false);
+        console.error(
           "Checkout page: stripe payment intent has not been retrieved successfully"
         );
       }
@@ -190,7 +197,7 @@ const CheckoutPage: NextPage = () => {
     if (currentStage === THIRD_STAGE && stripeClientSecret === undefined) {
       fetchClientSecret();
     }
-  }, [currentStage, stripeClientSecret, dispatch]);
+  }, [currentStage, stripeClientSecret, dispatch, cartItems]);
 
   return (
     <>
@@ -310,8 +317,12 @@ const CheckoutPage: NextPage = () => {
         >
           {stripeClientSecret === undefined ? (
             <div className="flex items-center justify-center space-x-2">
-              <span>Создание заказа</span>
-              <LoadingSpinner size={15} />
+              <span>
+                {isStripeFetchSuccessful
+                  ? "Создание заказа"
+                  : "Не удалось создать заказ"}
+              </span>
+              {isStripeFetchSuccessful && <LoadingSpinner size={15} />}
             </div>
           ) : (
             <>
