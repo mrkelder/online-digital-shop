@@ -1,6 +1,6 @@
 import { ReduxStore } from "store";
 
-import Cookie from "./cookie";
+import Cookie from "./";
 import { AMOUNT_OF_ITEMS_IN_CART } from "./cookieNames";
 
 const cookie = new Cookie();

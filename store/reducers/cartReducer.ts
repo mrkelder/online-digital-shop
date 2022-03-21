@@ -1,6 +1,6 @@
 import { Reducer } from "redux";
 
-import Cookie from "utils/cookie/cookie";
+import Cookie from "utils/cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
 import LocalStorage from "utils/localStorage/localStorage";
 
