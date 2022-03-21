@@ -17,7 +17,7 @@ function findCharacteristicById(
 async function fetchCharacteristicsObjects(
   characteristicsIds: string[]
 ): Promise<Characteristic[]> {
-  return await firebase.getDocumentsById<Characteristic>(
+  return await firebase.getDocumentsByIds<Characteristic>(
     "characteristics",
     characteristicsIds
   );
@@ -25,7 +25,10 @@ async function fetchCharacteristicsObjects(
 
 async function fetchAvailableCities(product: FirebaseProduct): Promise<Shop[]> {
   return (
-    await firebase.getDocumentsById<FirebaseShop>("shops", product.available_in)
+    await firebase.getDocumentsByIds<FirebaseShop>(
+      "shops",
+      product.available_in
+    )
   ).map(i => serializeShop(i));
 }
 

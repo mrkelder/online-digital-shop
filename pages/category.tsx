@@ -35,7 +35,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
   const { id } = context.query;
 
   const category = (
-    await firebase.getDocumentsById<Category>("categories", [id as string])
+    await firebase.getDocumentsByIds<Category>("categories", [id as string])
   )[0];
 
   if (!category) {
@@ -44,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
     };
   }
 
-  const subcategories = await firebase.getDocumentsById<SubCategory>(
+  const subcategories = await firebase.getDocumentsByIds<SubCategory>(
     "subcategories",
     categoriesToSubCategoryIds([category])
   );
