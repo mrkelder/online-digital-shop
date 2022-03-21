@@ -2,7 +2,7 @@ import { GetStaticProps, NextPage } from "next";
 
 import ShopMap from "components/map/ShopMap";
 import MetaHead from "components/meta/MetaHead";
-import serializeShop from "utils/dto/serializeShop";
+import DTO from "utils/DTO";
 import Firebase from "utils/firebase";
 
 interface Props {
@@ -25,6 +25,7 @@ const ShopsPage: NextPage<Props> = ({ geoInfo }) => (
 );
 
 export const getStaticProps: GetStaticProps = async () => {
+  const dto = new DTO();
   const firebase = new Firebase();
   const shops = await firebase.getAllDocumentsInCollection<FirebaseShop>(
     "shops"
@@ -32,7 +33,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const cities = await firebase.getAllDocumentsInCollection<City>("cities");
 
   const geoInfo: GeoInfo = {
-    shops: shops.map(shop => serializeShop(shop)),
+    shops: shops.map(shop => dto.firebaseShopToShop(shop)),
     cities
   };
 

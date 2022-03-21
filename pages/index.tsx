@@ -11,7 +11,7 @@ import Slider from "components/Slider";
 import GuaranteeIcon from "public/img/guarantee.svg";
 import LikeIcon from "public/img/like.svg";
 import TruckIcon from "public/img/truck.svg";
-import serializeShop from "utils/dto/serializeShop";
+import DTO from "utils/DTO";
 import Firebase from "utils/firebase";
 
 import "swiper/css";
@@ -156,6 +156,7 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
+  const dto = new DTO();
   const firebase = new Firebase();
   const dbSlides = await firebase.getAllDocumentsInCollection<Slide>("slider");
   const dbReccommendations =
@@ -184,7 +185,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const cities = await firebase.getAllDocumentsInCollection<City>("cities");
 
   const geoInfo: GeoInfo = {
-    shops: shops.map(shop => serializeShop(shop)),
+    shops: shops.map(shop => dto.firebaseShopToShop(shop)),
     cities
   };
 

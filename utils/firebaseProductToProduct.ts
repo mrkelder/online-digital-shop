@@ -1,4 +1,4 @@
-import serializeShop from "utils/dto/serializeShop";
+import DTO from "utils/DTO";
 import Firebase from "utils/firebase";
 
 const firebase = new Firebase();
@@ -24,12 +24,14 @@ async function fetchCharacteristicsObjects(
 }
 
 async function fetchAvailableCities(product: FirebaseProduct): Promise<Shop[]> {
+  const dto = new DTO();
+
   return (
     await firebase.getDocumentsByIds<FirebaseShop>(
       "shops",
       product.available_in
     )
-  ).map(i => serializeShop(i));
+  ).map(i => dto.firebaseShopToShop(i));
 }
 
 function convertToCharacteristics(

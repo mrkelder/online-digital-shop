@@ -23,7 +23,7 @@ import starIcon from "public/img/star.png";
 import { RootStore } from "store";
 import { CartActions, CartState } from "store/reducers/cartReducer";
 import styles from "styles/item-page.module.css";
-import convertToReduxCartProduct from "utils/dto/convertToReduxCartProduct";
+import DTO from "utils/DTO";
 import Firebase from "utils/firebase";
 import firebaseProductToProduct from "utils/firebaseProductToProduct";
 
@@ -96,11 +96,13 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
     };
   }
 
-  const addItemToCart = () =>
+  const addItemToCart = () => {
+    const dto = new DTO();
     dispatch({
       type: "cart/addItem",
-      payload: convertToReduxCartProduct(itemObj)
+      payload: dto.productToReduxCartProduct(itemObj)
     });
+  };
 
   const choosePhotoIndex = (index: number) => {
     return () => {
