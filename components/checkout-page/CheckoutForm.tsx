@@ -75,9 +75,20 @@ const CheckoutForm: FC<Props> = ({
       setIsStripeUIIsLoaded(true);
     }
 
+    function handleFormChange() {
+      setErrorMessage(null);
+    }
+
     if (elements) {
       elements.getElement("payment")?.once("ready", handleStripeLoad);
+      elements.getElement("payment")?.on("change", handleFormChange);
     }
+
+    return () => {
+      if (elements) {
+        elements.getElement("payment")?.off("change", handleFormChange);
+      }
+    };
   }, [elements]);
 
   return (
