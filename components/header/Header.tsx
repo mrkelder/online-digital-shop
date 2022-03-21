@@ -23,7 +23,7 @@ const Header: FC = () => {
         "categories"
       );
 
-      const subcategories = await firebase.getDocumentsById<SubCategory>(
+      const subcategories = await firebase.getDocumentsByIds<SubCategory>(
         "subcategories",
         categoriesToSubCategoryIds(categories)
       );

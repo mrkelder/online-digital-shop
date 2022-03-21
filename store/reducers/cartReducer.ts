@@ -4,7 +4,7 @@ import Cookie from "utils/cookie/cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
 import LocalStorage from "utils/localStorage/localStorage";
 
-import { CART } from "../utils/localStorage/localStorageNames";
+import { CART } from "../../utils/localStorage/localStorageNames";
 
 export type ReduxCartProduct = Pick<
   Product,
@@ -32,7 +32,7 @@ export type CartActions =
   | ChangeQuantityAction
   | RestoreAction;
 
-const DEFAULT_STATE: CartState = {
+export const DEFAULT_CART_STATE: CartState = {
   items: []
 };
 
@@ -40,7 +40,7 @@ const cookie = new Cookie();
 const localStoragClass = new LocalStorage();
 
 const cartReducer: Reducer<CartState, CartActions> = (
-  state = DEFAULT_STATE,
+  state = DEFAULT_CART_STATE,
   action
 ) => {
   let newState = state;

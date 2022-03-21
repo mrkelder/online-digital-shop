@@ -1,147 +1,157 @@
-import {
-  ChangeEvent,
-  Dispatch,
-  FormEventHandler,
-  useEffect,
-  useMemo,
-  useState
-} from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
+import { Dispatch } from "redux";
 
 import Button from "components/Button";
-import Card from "components/checkout-page/Card";
+import CheckoutForm from "components/checkout-page/CheckoutForm";
 import CheckoutInput from "components/checkout-page/CheckoutInput";
+import StageWrapper from "components/checkout-page/StageWrapper";
+import LoadingSpinner from "components/LoadingSpinner";
 import MetaHead from "components/meta/MetaHead";
-import FailureIcon from "public/img/failure.svg";
-import LoadingIcon from "public/img/loading.svg";
-import SuccessIcon from "public/img/success.svg";
+import useMatchMedia from "hooks/useMatchMedia";
 import { RootStore } from "store";
-import { CartActions } from "store/cartReducer";
+import { ReduxCartProduct } from "store/reducers/cartReducer";
+import {
+  CheckoutActions,
+  CheckoutStages,
+  CheckoutState,
+  CheckoutStateKeys,
+  FIRST_STAGE,
+  SECOND_STAGE,
+  THIRD_STAGE
+} from "store/reducers/checkoutReducer";
 import Cookie from "utils/cookie/cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
+import isKeyOfCheckoutData from "utils/validation/checkoutDataKeysValidation";
 import {
-  CheckotInfo,
-  FormData,
+  CheckoutValidationData,
+  CheckoutValidationFields,
   validateFormData
-} from "utils/validation/checkout";
+} from "utils/validation/isCheckoutDataValid";
 
-interface PaymentInfo {
-  paymentSent: boolean;
-  paymentSuccess: boolean | "none";
-}
+import { CreatePaymentIntentResponse } from "./api/createPaymentIntent";
 
-const DEFAULT_VALIDATION: CheckotInfo = {
+// Submition of the payment and form in general is in CheckoutForm component
+
+const DEFAULT_VALIDATION: CheckoutValidationData = {
   fullName: false,
-  country: false,
   city: false,
-  zipCode: false,
-  number: false,
-  date: false,
-  pin: false
+  email: false,
+  street: false,
+  house: false,
+  apartment: false
 };
 
-const DEFAULT_FORM_DATA: FormData = {
-  fullName: "",
-  country: "",
-  city: "",
-  zipCode: "",
-  number: "",
-  date: "",
-  pin: ""
-};
-
-const DEFAULT_PAYMENT_INFO: PaymentInfo = {
-  paymentSent: false,
-  paymentSuccess: "none"
-};
-
-const RESULT_STYLE = "flex flex-col items-center space-y-2";
 const TITLE = "Оплата";
 
 const cookie = new Cookie();
 
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
+);
+
 const CheckoutPage: NextPage = () => {
   const router = useRouter();
-  const itemsQuantity = useSelector<RootStore>(
-    store => store.cart.items.length
-  ) as number;
-  const dispatch = useDispatch<Dispatch<CartActions>>();
+  const dispatch = useDispatch<Dispatch<CheckoutActions>>();
+  const cartItems = useSelector<RootStore>(
+    store => store.cart.items
+  ) as ReduxCartProduct[];
+  const formData = useSelector<RootStore>(
+    store => store.checkout
+  ) as CheckoutState;
+  const { isLoaded } = useMatchMedia();
   const [validationErrors, setValidationErrors] = useState(DEFAULT_VALIDATION);
-  const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
-  const [paymentInfo, setPaymentInfo] = useState(DEFAULT_PAYMENT_INFO);
-  const [loadedLocalStorage, setLoadedLocalStorage] = useState(false);
-  // TODO: create a separeate hook
+  const [isStripeFetchSuccessful, setIsStripeFetchSuccessful] = useState(true);
 
-  const { paymentSent, paymentSuccess } = paymentInfo;
+  const { currentStage } = formData;
+  const stripeClientSecret = formData.stripeClientId;
 
-  let formStyle = "grid";
-  let paymentResultStyle = "hidden";
-  let paymentLoadingStyle = "hidden";
-  let paymentSuccessStyle = "hidden";
-  let paymentFailureStyle = "hidden";
+  const options: StripeElementsOptions = {
+    clientSecret: stripeClientSecret
+  };
 
-  if (paymentSent) {
-    formStyle = "hidden";
-    paymentResultStyle = "block";
-    paymentLoadingStyle = paymentSuccess === "none" ? RESULT_STYLE : "hidden";
-    paymentSuccessStyle = paymentSuccess === true ? RESULT_STYLE : "hidden";
-    paymentFailureStyle = paymentSuccess === false ? RESULT_STYLE : "hidden";
-  }
+  const switchStage = useCallback(
+    (newStage: CheckoutStages) => {
+      return () => {
+        dispatch({
+          type: "checkout/changeField",
+          payload: { name: "currentStage", value: newStage }
+        });
+      };
+    },
+    [dispatch]
+  );
 
-  const submitCheckout: FormEventHandler<HTMLFormElement> = e => {
-    e.preventDefault();
+  function checkValidation(): CheckoutValidationData {
     const validation = validateFormData(formData);
 
-    if (validation && !loadedLocalStorage) {
-      const newValidationErrors = { ...validationErrors };
-      newValidationErrors[validation] = true;
-      setValidationErrors(newValidationErrors);
-    } else {
-      setPaymentInfo({ paymentSuccess: "none", paymentSent: true });
-      setTimeout(() => {
-        dispatch({ type: "cart/restore" });
-        setPaymentInfo({ paymentSent: true, paymentSuccess: true });
-      }, 3000);
+    const newValidationErrors = { ...validationErrors };
+    const arrayOfValidationItems = Object.entries(validation);
+
+    for (const [field, value] of arrayOfValidationItems) {
+      newValidationErrors[field as CheckoutValidationFields] = value;
     }
-  };
+
+    return newValidationErrors;
+  }
+
+  function checkTotalValidation(): boolean {
+    const validationResult = checkValidation();
+
+    const isThereAnyError =
+      Object.values(validationResult).indexOf(true) !== -1;
+
+    return isThereAnyError;
+  }
+
+  function firstStageFormHandler() {
+    const validationResult = checkValidation();
+    const { fullName, email } = validationResult;
+
+    if (!fullName && !email) {
+      setValidationErrors(DEFAULT_VALIDATION);
+      switchStage(2)();
+    } else {
+      setValidationErrors(validationResult);
+    }
+  }
+
+  function secondStageFormHandler() {
+    const validationResult = checkValidation();
+    const { city, street, house, apartment } = validationResult;
+
+    if (!city && !street && !house && !apartment) {
+      switchStage(3)();
+    } else {
+      setValidationErrors(validationResult);
+    }
+  }
 
   function formChange(e: ChangeEvent<HTMLFormElement>) {
     const { name, value } = e.target;
-    const newFormState = { ...formData };
-    newFormState[name as keyof FormData] = value;
-    setFormData(newFormState);
-    setValidationErrors(DEFAULT_VALIDATION);
+
+    if (isKeyOfCheckoutData(name)) {
+      dispatch({
+        type: "checkout/changeField",
+        payload: {
+          name: name as CheckoutStateKeys,
+          value
+        }
+      });
+      setValidationErrors(DEFAULT_VALIDATION);
+    }
   }
 
-  const memoizedCard = useMemo(
-    () => (
-      <Card
-        info={{
-          number: formData.number,
-          date: formData.date,
-          pin: formData.pin
-        }}
-        validation={{
-          number: validationErrors.number,
-          date: validationErrors.date,
-          pin: validationErrors.pin
-        }}
-      />
-    ),
-    [
-      formData.number,
-      formData.date,
-      formData.pin,
-      validationErrors.number,
-      validationErrors.date,
-      validationErrors.pin
-    ]
-  );
+  function resetCheckoutData() {
+    dispatch({ type: "checkout/restore" });
+    setValidationErrors(DEFAULT_VALIDATION);
+    switchStage(1)();
+  }
 
   useEffect(() => {
     const cookieAmountOfItemsInCart = Number(
@@ -150,119 +160,185 @@ const CheckoutPage: NextPage = () => {
 
     const cookieIsNaN = isNaN(cookieAmountOfItemsInCart);
     const cookieAndLocalStorageAreNotEqual =
-      cookieAmountOfItemsInCart !== itemsQuantity;
+      cookieAmountOfItemsInCart !== cartItems.length;
 
     const shouldBeRedirected = cookieIsNaN || cookieAndLocalStorageAreNotEqual;
-    const decision = loadedLocalStorage && shouldBeRedirected;
+    const decision = isLoaded && shouldBeRedirected;
 
     if (decision) router.push("/");
-    else setLoadedLocalStorage(true);
-  }, [itemsQuantity, router, loadedLocalStorage]);
+  }, [cartItems, router, isLoaded]);
+
+  useEffect(() => {
+    async function fetchClientSecret() {
+      const endpoint =
+        process.env.NEXT_PUBLIC_HOSTNAME + "/api/createPaymentIntent";
+      const body = JSON.stringify(
+        cartItems.map(i => ({ id: i.id, quantity: i.quantity }))
+      );
+      const result = await fetch(endpoint, {
+        method: "POST",
+        body
+      });
+
+      if (!result.ok || !result) {
+        setIsStripeFetchSuccessful(false);
+        console.error(
+          "Checkout page: stripe payment intent has not been retrieved successfully"
+        );
+      }
+
+      const data: CreatePaymentIntentResponse = await result.json();
+      dispatch({
+        type: "checkout/changeField",
+        payload: { name: "stripeClientId", value: data.secret as string }
+      });
+    }
+
+    if (currentStage === THIRD_STAGE && stripeClientSecret === undefined) {
+      fetchClientSecret();
+    }
+  }, [currentStage, stripeClientSecret, dispatch, cartItems]);
 
   return (
-    <div className="max-w-7xl mx-auto lg:px-12">
+    <>
       <MetaHead title={TITLE} noindex />
-
       <h1>{TITLE}</h1>
 
-      <form
-        className={
-          "my-2 space-y-3 gap-x-6 grid-cols-1 sm:grid-cols-2 " + formStyle
-        }
-        onSubmit={submitCheckout}
-        onChange={formChange}
-      >
-        <div>
-          <h2 className="mb-2">Информация о покупателе</h2>
-          <div className="space-y-3 mb-3 sm:mb-0">
+      <button onClick={resetCheckoutData} className="mb-2 underline">
+        Сбросить форму
+      </button>
+
+      <form onChange={formChange} className="space-y-2">
+        <StageWrapper
+          title="Данные о покупателе"
+          stageNumber={FIRST_STAGE}
+          active={currentStage === FIRST_STAGE}
+        >
+          <div className="space-y-3">
             {useMemo(
               () => (
                 <CheckoutInput
                   error={validationErrors.fullName}
-                  value={formData.fullName}
                   name="fullName"
                   placeholder="Фамилия Имя"
-                  errorMessage="Форма может содержать русские, английские или украинские символы"
+                  errorMessage="Форма может содержать только русские, английские или украинские символы"
                 />
               ),
-              [validationErrors.fullName, formData.fullName]
+              [validationErrors.fullName]
             )}
             {useMemo(
               () => (
                 <CheckoutInput
-                  name="country"
-                  placeholder="Страна"
-                  error={validationErrors.country}
-                  value={formData.country}
-                  errorMessage="Указана неверная страна"
+                  error={validationErrors.email}
+                  name="email"
+                  placeholder="Почта"
+                  errorMessage="Указана неверная почта"
                 />
               ),
-              [validationErrors.country, formData.country]
+              [validationErrors.email]
             )}
+          </div>
+
+          <div className="flex justify-between mt-3">
+            <div className="w-24 sm:w-36">
+              <Button onClick={firstStageFormHandler}>Продолжить</Button>
+            </div>
+          </div>
+        </StageWrapper>
+
+        <StageWrapper
+          title="Место получения"
+          stageNumber={SECOND_STAGE}
+          active={currentStage === SECOND_STAGE}
+        >
+          <div className="grid grid-cols-1 gap-y-2 gap-x-4 sm:grid-cols-2 md:gap-x-5 md:grid-cols-4">
             {useMemo(
               () => (
                 <CheckoutInput
                   name="city"
                   placeholder="Город"
                   error={validationErrors.city}
-                  value={formData.city}
-                  errorMessage="Указан неверный город"
+                  errorMessage="Город указан неверно"
                 />
               ),
-              [validationErrors.city, formData.city]
+              [validationErrors.city]
             )}
             {useMemo(
               () => (
                 <CheckoutInput
-                  name="zipCode"
-                  placeholder="Почтовый индекс"
-                  error={validationErrors.zipCode}
-                  value={formData.zipCode}
-                  errorMessage="Указан неверный почтовый индекс"
+                  name="street"
+                  placeholder="Улица"
+                  error={validationErrors.street}
+                  errorMessage="Улица указана неверно"
                 />
               ),
-              [validationErrors.zipCode, formData.zipCode]
+              [validationErrors.street]
+            )}
+            {useMemo(
+              () => (
+                <CheckoutInput
+                  name="house"
+                  placeholder="Дом"
+                  error={validationErrors.house}
+                  errorMessage="Дом указан неверно"
+                />
+              ),
+              [validationErrors.house]
+            )}
+            {useMemo(
+              () => (
+                <CheckoutInput
+                  name="apartment"
+                  placeholder="Квартира"
+                  error={validationErrors.apartment}
+                  errorMessage="Квартира указана неверно"
+                />
+              ),
+              [validationErrors.apartment]
             )}
           </div>
-        </div>
-        <div className="sm:mx-auto">
-          <h2 className="mb-2">Информация о карте</h2>
-          {memoizedCard}
-        </div>
-        <div className="w-56 mt-3">
-          <Button variant="lg">Оформить заказ</Button>
-        </div>
+
+          <div className="flex justify-between mt-3">
+            <div className="w-24 sm:w-36">
+              <Button onClick={secondStageFormHandler}>Продолжить</Button>
+            </div>
+            <div className="w-24 sm:w-36">
+              <Button onClick={switchStage(1)} color="grey">
+                Назад
+              </Button>
+            </div>
+          </div>
+        </StageWrapper>
+
+        <StageWrapper
+          title="Оплата"
+          stageNumber={THIRD_STAGE}
+          active={currentStage === THIRD_STAGE}
+        >
+          {stripeClientSecret === undefined ? (
+            <div className="flex items-center justify-center space-x-2">
+              <span>
+                {isStripeFetchSuccessful
+                  ? "Создание заказа"
+                  : "Не удалось создать заказ"}
+              </span>
+              {isStripeFetchSuccessful && <LoadingSpinner size={15} />}
+            </div>
+          ) : (
+            <>
+              <Elements options={options} stripe={stripePromise}>
+                <CheckoutForm
+                  swtichToSecondStage={switchStage(2)}
+                  clientSecret={stripeClientSecret}
+                  isFormValid={checkTotalValidation()}
+                  clientInfo={formData}
+                />
+              </Elements>
+            </>
+          )}
+        </StageWrapper>
       </form>
-
-      <div className={"pt-10 " + paymentResultStyle}>
-        <div className={paymentLoadingStyle}>
-          <div className="w-16 text-red animate-spin mx-auto">
-            <LoadingIcon />
-          </div>
-          <p>Выполняем оплату</p>
-        </div>
-
-        <div className={paymentSuccessStyle}>
-          <div className="w-16 text-success">
-            <SuccessIcon />
-          </div>
-          <p>Оплата прошла успешно!</p>
-          <Link href="/">
-            <a className="text-base underline">Перейти на главную</a>
-          </Link>
-        </div>
-
-        <div className={paymentFailureStyle}>
-          <div className="w-16 text-red">
-            <FailureIcon />
-          </div>
-          <p>Не удалось совершить оплату</p>
-          <Link href="/">
-            <a className="text-base underline">Перейти на главную</a>
-          </Link>
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 

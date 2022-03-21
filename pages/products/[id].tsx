@@ -21,7 +21,7 @@ import LocationIcon from "public/img/geo-point.svg";
 import activeStarIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
 import { RootStore } from "store";
-import { CartActions, CartState } from "store/cartReducer";
+import { CartActions, CartState } from "store/reducers/cartReducer";
 import styles from "styles/item-page.module.css";
 import convertToReduxCartProduct from "utils/dto/convertToReduxCartProduct";
 import Firebase from "utils/firebase";
@@ -313,7 +313,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const firebase = new Firebase();
-  const result = await firebase.getDocumentsById<FirebaseProduct>("products", [
+  const result = await firebase.getDocumentsByIds<FirebaseProduct>("products", [
     context.params?.id as string
   ]);
 
