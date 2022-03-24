@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 
 import Layout from "components/Layout";
 import { storeInitiator, epmtyStore } from "store/index";
-import cookieInitiator from "utils/cookie/cookieInitiator";
+import cookieInitiator from "utils/Cookie/cookieInitiator";
 import Firebase from "utils/firebase";
 import { FirebaseContext } from "utils/firebase";
 

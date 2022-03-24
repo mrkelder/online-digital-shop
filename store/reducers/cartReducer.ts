@@ -1,7 +1,7 @@
 import { Reducer } from "redux";
 
-import Cookie from "utils/cookie";
-import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
+import Cookie from "utils/Cookie";
+import { AMOUNT_OF_ITEMS_IN_CART } from "utils/Cookie/cookieNames";
 import LocalStorage from "utils/localStorage/localStorage";
 
 import { CART } from "../../utils/localStorage/localStorageNames";

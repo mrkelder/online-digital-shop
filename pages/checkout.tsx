@@ -25,8 +25,8 @@ import {
   SECOND_STAGE,
   THIRD_STAGE
 } from "store/reducers/checkoutReducer";
-import Cookie from "utils/cookie";
-import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
+import Cookie from "utils/Cookie";
+import { AMOUNT_OF_ITEMS_IN_CART } from "utils/Cookie/cookieNames";
 import isKeyOfCheckoutData from "utils/validation/checkoutDataKeysValidation";
 import {
   CheckoutValidationData,
