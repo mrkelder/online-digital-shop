@@ -1,6 +1,7 @@
 import { combineReducers, createStore, Store, EmptyObject } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
+import { CheckoutState } from "types/checkout";
 import LocalStorage from "utils/LocalStorage";
 
 import { CART, CHECKOUT } from "../utils/LocalStorage/localStorageNames";
@@ -12,7 +13,6 @@ import {
 import cartReducer from "./reducers/cartReducer";
 import checkoutReducer, {
   CheckoutActions,
-  CheckoutState,
   DEFAULT_CHECKOUT_STATE
 } from "./reducers/checkoutReducer";
 
