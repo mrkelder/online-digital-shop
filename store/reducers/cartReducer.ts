@@ -1,9 +1,9 @@
 import { Reducer } from "redux";
 
+import { AMOUNT_OF_ITEMS_IN_CART } from "constants/cookie-names";
 import { DEFAULT_CART_STATE } from "constants/redux";
 import { CartState, CartActions } from "types/cart-reducer";
 import Cookie from "utils/Cookie";
-import { AMOUNT_OF_ITEMS_IN_CART } from "utils/Cookie/cookieNames";
 import LocalStorage from "utils/LocalStorage";
 
 import { CART } from "../../utils/LocalStorage/localStorageNames";

@@ -13,6 +13,7 @@ import CheckoutInput from "components/checkout-page/CheckoutInput";
 import StageWrapper from "components/checkout-page/StageWrapper";
 import LoadingSpinner from "components/LoadingSpinner";
 import MetaHead from "components/meta/MetaHead";
+import { AMOUNT_OF_ITEMS_IN_CART } from "constants/cookie-names";
 import { THIRD_STAGE, FIRST_STAGE, SECOND_STAGE } from "constants/redux";
 import useMatchMedia from "hooks/useMatchMedia";
 import { RootStore } from "store";
@@ -27,7 +28,6 @@ import {
 } from "types/checkout";
 import { CheckoutActions } from "types/checkout-reducer";
 import Cookie from "utils/Cookie";
-import { AMOUNT_OF_ITEMS_IN_CART } from "utils/Cookie/cookieNames";
 import Validation from "utils/Validation";
 
 // Submition of the payment and form in general is in CheckoutForm component
