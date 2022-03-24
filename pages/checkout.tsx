@@ -27,12 +27,10 @@ import {
 } from "store/reducers/checkoutReducer";
 import Cookie from "utils/Cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/Cookie/cookieNames";
-import isKeyOfCheckoutData from "utils/validation/checkoutDataKeysValidation";
-import {
-  CheckoutValidationData,
-  CheckoutValidationFields,
-  validateFormData
-} from "utils/validation/isCheckoutDataValid";
+import Validation, {
+  CheckoutFields,
+  CheckoutValidationData
+} from "utils/Validation";
 
 import { CreatePaymentIntentResponse } from "./api/createPaymentIntent";
 
@@ -86,13 +84,13 @@ const CheckoutPage: NextPage = () => {
   );
 
   function checkValidation(): CheckoutValidationData {
-    const validation = validateFormData(formData);
+    const validation = Validation.checkoutFormData(formData);
 
     const newValidationErrors = { ...validationErrors };
     const arrayOfValidationItems = Object.entries(validation);
 
     for (const [field, value] of arrayOfValidationItems) {
-      newValidationErrors[field as CheckoutValidationFields] = value;
+      newValidationErrors[field as CheckoutFields] = value;
     }
 
     return newValidationErrors;
@@ -133,7 +131,7 @@ const CheckoutPage: NextPage = () => {
   function formChange(e: ChangeEvent<HTMLFormElement>) {
     const { name, value } = e.target;
 
-    if (isKeyOfCheckoutData(name)) {
+    if (Validation.isKeyOfCheckoutData(name)) {
       dispatch({
         type: "checkout/changeField",
         payload: {

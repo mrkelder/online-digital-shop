@@ -2,7 +2,7 @@ import { Reducer } from "redux";
 
 import LocalStorage from "utils/LocalStorage";
 import { CHECKOUT } from "utils/LocalStorage/localStorageNames";
-import { CheckoutFormData } from "utils/validation/isCheckoutDataValid";
+import { CheckoutFormData } from "utils/Validation";
 
 // FIXME: it definetely needs some more organization rather than all types and data in one file
 // wich is by the way intended to be for the reducer only

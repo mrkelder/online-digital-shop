@@ -8,7 +8,7 @@ import {
   CheckoutActions,
   CheckoutStateKeys
 } from "store/reducers/checkoutReducer";
-import isKeyOfCheckoutData from "utils/validation/checkoutDataKeysValidation";
+import Validation from "utils/Validation";
 
 interface Props {
   error: boolean;
@@ -28,7 +28,7 @@ const CheckoutInput: FC<Props> = ({
   const errorMessageStyle = error ? "inline" : "hidden";
 
   const changeHanlder: ChangeEventHandler<any> = e => {
-    if (isKeyOfCheckoutData(name)) {
+    if (Validation.isKeyOfCheckoutData(name)) {
       const { value } = e.target;
       dispatch({ type: "checkout/changeField", payload: { name, value } });
     }
