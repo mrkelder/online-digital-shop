@@ -36,7 +36,6 @@ export const DEFAULT_CART_STATE: CartState = {
   items: []
 };
 
-const cookie = new Cookie();
 const localStoragClass = new LocalStorage();
 
 const cartReducer: Reducer<CartState, CartActions> = (
@@ -81,7 +80,7 @@ const cartReducer: Reducer<CartState, CartActions> = (
       return newState;
   }
 
-  cookie.setCookie(AMOUNT_OF_ITEMS_IN_CART, newState.items.length.toString());
+  Cookie.setCookie(AMOUNT_OF_ITEMS_IN_CART, newState.items.length.toString());
   localStoragClass.setItem(CART, newState.items);
   return JSON.parse(JSON.stringify(newState));
 };

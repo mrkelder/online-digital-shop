@@ -49,8 +49,6 @@ const DEFAULT_VALIDATION: CheckoutValidationData = {
 
 const TITLE = "Оплата";
 
-const cookie = new Cookie();
-
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
 );
@@ -155,7 +153,7 @@ const CheckoutPage: NextPage = () => {
 
   useEffect(() => {
     const cookieAmountOfItemsInCart = Number(
-      cookie.readCookie(AMOUNT_OF_ITEMS_IN_CART)
+      Cookie.readCookie(AMOUNT_OF_ITEMS_IN_CART)
     );
 
     const cookieIsNaN = isNaN(cookieAmountOfItemsInCart);
@@ -348,7 +346,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
   ) {
     res.setHeader(
       "Set-Cookie",
-      cookie.returnDeleteCookieConf(AMOUNT_OF_ITEMS_IN_CART)
+      Cookie.returnDeleteCookieConf(AMOUNT_OF_ITEMS_IN_CART)
     );
 
     return {
