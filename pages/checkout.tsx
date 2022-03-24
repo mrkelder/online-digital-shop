@@ -13,13 +13,9 @@ import CheckoutInput from "components/checkout-page/CheckoutInput";
 import StageWrapper from "components/checkout-page/StageWrapper";
 import LoadingSpinner from "components/LoadingSpinner";
 import MetaHead from "components/meta/MetaHead";
+import { THIRD_STAGE, FIRST_STAGE, SECOND_STAGE } from "constants/redux";
 import useMatchMedia from "hooks/useMatchMedia";
 import { RootStore } from "store";
-import {
-  FIRST_STAGE,
-  SECOND_STAGE,
-  THIRD_STAGE
-} from "store/reducers/checkoutReducer";
 import { CreatePaymentIntentResponse } from "types/api";
 import { ReduxCartProduct } from "types/cart-reducer";
 import {

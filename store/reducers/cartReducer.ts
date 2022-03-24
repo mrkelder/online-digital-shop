@@ -1,15 +1,12 @@
 import { Reducer } from "redux";
 
+import { DEFAULT_CART_STATE } from "constants/redux";
 import { CartState, CartActions } from "types/cart-reducer";
 import Cookie from "utils/Cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/Cookie/cookieNames";
 import LocalStorage from "utils/LocalStorage";
 
 import { CART } from "../../utils/LocalStorage/localStorageNames";
-
-export const DEFAULT_CART_STATE: CartState = {
-  items: []
-};
 
 const cartReducer: Reducer<CartState, CartActions> = (
   state = DEFAULT_CART_STATE,
