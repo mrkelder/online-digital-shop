@@ -1,7 +1,7 @@
 import { Reducer } from "redux";
 
-import LocalStorage from "utils/localStorage/localStorage";
-import { CHECKOUT } from "utils/localStorage/localStorageNames";
+import LocalStorage from "utils/LocalStorage";
+import { CHECKOUT } from "utils/LocalStorage/localStorageNames";
 import { CheckoutFormData } from "utils/validation/isCheckoutDataValid";
 
 // FIXME: it definetely needs some more organization rather than all types and data in one file
@@ -50,8 +50,6 @@ export const DEFAULT_CHECKOUT_STATE: CheckoutState = {
   currentStage: FIRST_STAGE
 };
 
-const localStoragClass = new LocalStorage();
-
 const checkoutReducer: Reducer<CheckoutState, CheckoutActions> = (
   state = DEFAULT_CHECKOUT_STATE,
   action
@@ -73,7 +71,7 @@ const checkoutReducer: Reducer<CheckoutState, CheckoutActions> = (
       return state;
   }
 
-  localStoragClass.setItem(CHECKOUT, newState);
+  LocalStorage.setItem(CHECKOUT, newState);
   return newState;
 };
 
