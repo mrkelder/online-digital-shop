@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-import ldJsonFAQPage, { FAQQuestion } from "utils/ldJsonMeta/ldJsonFAQPage";
+import LdJson, { FAQQuestion } from "utils/LdJson";
 
 import MetaHead from "../MetaHead";
 import MetaScript from "../MetaScript";
@@ -28,7 +28,7 @@ const GuaranteeMeta: FC = () => {
       />
 
       <MetaScript id="guarantee-structured-data">
-        {ldJsonFAQPage(questions)}
+        {LdJson.faqPage(questions)}
       </MetaScript>
 
       <div itemScope itemType="https://schema.org/FAQPage">
