@@ -1,6 +1,7 @@
 import { FC } from "react";
 
-import LdJson, { FAQQuestion } from "utils/LdJson";
+import { FAQQuestion } from "types/staic-page";
+import LdJson from "utils/LdJson";
 
 import MetaHead from "../MetaHead";
 import MetaScript from "../MetaScript";

@@ -1,7 +1,4 @@
-export interface FAQQuestion {
-  question: string;
-  answer: string;
-}
+import { FAQQuestion } from "types/staic-page";
 
 class LdJson {
   public static faqPage(questions: FAQQuestion[]): string {
