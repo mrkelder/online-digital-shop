@@ -1,19 +1,8 @@
-export type CheckoutFields =
-  | "fullName"
-  | "city"
-  | "street"
-  | "house"
-  | "apartment"
-  | "email";
-
-export type LocalStorageCheckoutFields =
-  | CheckoutFields
-  | "stripeClientId"
-  | "currentStage";
-
-export type CheckoutFormData = Record<CheckoutFields, string>;
-
-export type CheckoutValidationData = OptionsFlags<CheckoutFormData>;
+import {
+  CheckoutStateKeys,
+  CheckoutFormData,
+  CheckoutValidationData
+} from "types/checkout";
 
 class Validation {
   private static FULLNAME_REG =
@@ -21,16 +10,15 @@ class Validation {
   private static EMAIL_REG =
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-  private static localStorageCheckoutFormFields: LocalStorageCheckoutFields[] =
-    [
-      "apartment",
-      "city",
-      "email",
-      "fullName",
-      "house",
-      "street",
-      "stripeClientId"
-    ];
+  private static localStorageCheckoutFormFields: CheckoutStateKeys[] = [
+    "apartment",
+    "city",
+    "email",
+    "fullName",
+    "house",
+    "street",
+    "stripeClientId"
+  ];
 
   public static checkoutFormData(
     obj: CheckoutFormData
@@ -49,7 +37,7 @@ class Validation {
 
   public static isKeyOfCheckoutData(key: string): boolean {
     return Validation.localStorageCheckoutFormFields.includes(
-      key as LocalStorageCheckoutFields
+      key as CheckoutStateKeys
     );
   }
 }

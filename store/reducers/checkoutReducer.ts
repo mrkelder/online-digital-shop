@@ -1,20 +1,15 @@
 import { Reducer } from "redux";
 
+import {
+  CheckoutStages,
+  CheckoutState,
+  CheckoutStateKeys
+} from "types/checkout";
 import LocalStorage from "utils/LocalStorage";
 import { CHECKOUT } from "utils/LocalStorage/localStorageNames";
-import { CheckoutFormData } from "utils/Validation";
 
 // FIXME: it definetely needs some more organization rather than all types and data in one file
 // wich is by the way intended to be for the reducer only
-
-export type CheckoutStages = 1 | 2 | 3;
-
-export type CheckoutState = CheckoutFormData & {
-  stripeClientId: string | undefined;
-  currentStage: CheckoutStages;
-};
-
-export type CheckoutStateKeys = keyof CheckoutState;
 
 interface StringPayloads {
   name: Exclude<CheckoutStateKeys, "currentStage">;

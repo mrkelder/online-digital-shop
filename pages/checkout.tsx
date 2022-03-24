@@ -18,19 +18,20 @@ import { RootStore } from "store";
 import { ReduxCartProduct } from "store/reducers/cartReducer";
 import {
   CheckoutActions,
-  CheckoutStages,
-  CheckoutState,
-  CheckoutStateKeys,
   FIRST_STAGE,
   SECOND_STAGE,
   THIRD_STAGE
 } from "store/reducers/checkoutReducer";
+import {
+  CheckoutValidationData,
+  CheckoutFields,
+  CheckoutStages,
+  CheckoutState,
+  CheckoutStateKeys
+} from "types/checkout";
 import Cookie from "utils/Cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/Cookie/cookieNames";
-import Validation, {
-  CheckoutFields,
-  CheckoutValidationData
-} from "utils/Validation";
+import Validation from "utils/Validation";
 
 import { CreatePaymentIntentResponse } from "./api/createPaymentIntent";
 
