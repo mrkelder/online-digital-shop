@@ -1,34 +1,12 @@
 import { Reducer } from "redux";
 
-import {
-  CheckoutStages,
-  CheckoutState,
-  CheckoutStateKeys
-} from "types/checkout";
+import { CheckoutStages, CheckoutState } from "types/checkout";
+import { CheckoutActions } from "types/checkout-reducer";
 import LocalStorage from "utils/LocalStorage";
 import { CHECKOUT } from "utils/LocalStorage/localStorageNames";
 
 // FIXME: it definetely needs some more organization rather than all types and data in one file
 // wich is by the way intended to be for the reducer only
-
-interface StringPayloads {
-  name: Exclude<CheckoutStateKeys, "currentStage">;
-  value: string;
-}
-
-interface NumberPayloads {
-  name: "currentStage";
-  value: number;
-}
-
-type ChangeFiledAction = {
-  type: "checkout/changeField";
-  payload: StringPayloads | NumberPayloads;
-};
-
-type RestoreAction = { type: "checkout/restore" };
-
-export type CheckoutActions = ChangeFiledAction | RestoreAction;
 
 export const FIRST_STAGE: CheckoutStages = 1;
 export const SECOND_STAGE: CheckoutStages = 2;

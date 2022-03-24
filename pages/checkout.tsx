@@ -16,7 +16,6 @@ import MetaHead from "components/meta/MetaHead";
 import useMatchMedia from "hooks/useMatchMedia";
 import { RootStore } from "store";
 import {
-  CheckoutActions,
   FIRST_STAGE,
   SECOND_STAGE,
   THIRD_STAGE
@@ -30,6 +29,7 @@ import {
   CheckoutState,
   CheckoutStateKeys
 } from "types/checkout";
+import { CheckoutActions } from "types/checkout-reducer";
 import Cookie from "utils/Cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/Cookie/cookieNames";
 import Validation from "utils/Validation";

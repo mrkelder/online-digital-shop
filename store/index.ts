@@ -3,13 +3,13 @@ import { composeWithDevTools } from "redux-devtools-extension";
 
 import { CartState, CartActions } from "types/cart-reducer";
 import { CheckoutState } from "types/checkout";
+import { CheckoutActions } from "types/checkout-reducer";
 import LocalStorage from "utils/LocalStorage";
 
 import { CART, CHECKOUT } from "../utils/LocalStorage/localStorageNames";
 import { DEFAULT_CART_STATE } from "./reducers/cartReducer";
 import cartReducer from "./reducers/cartReducer";
 import checkoutReducer, {
-  CheckoutActions,
   DEFAULT_CHECKOUT_STATE
 } from "./reducers/checkoutReducer";
 
