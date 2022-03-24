@@ -1,13 +1,13 @@
 import { combineReducers, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
+import { CART, CHECKOUT } from "constants/localstorage-names";
 import { DEFAULT_CART_STATE, DEFAULT_CHECKOUT_STATE } from "constants/redux";
 import { CartState } from "types/cart-reducer";
 import { CheckoutState } from "types/checkout";
 import { ReduxStore, StoreState } from "types/store";
 import LocalStorage from "utils/LocalStorage";
 
-import { CART, CHECKOUT } from "../utils/LocalStorage/localStorageNames";
 import cartReducer from "./reducers/cartReducer";
 import checkoutReducer from "./reducers/checkoutReducer";
 

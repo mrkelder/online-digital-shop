@@ -1,10 +1,10 @@
 import { Reducer } from "redux";
 
+import { CHECKOUT } from "constants/localstorage-names";
 import { DEFAULT_CHECKOUT_STATE } from "constants/redux";
 import { CheckoutState } from "types/checkout";
 import { CheckoutActions } from "types/checkout-reducer";
 import LocalStorage from "utils/LocalStorage";
-import { CHECKOUT } from "utils/LocalStorage/localStorageNames";
 
 const checkoutReducer: Reducer<CheckoutState, CheckoutActions> = (
   state = DEFAULT_CHECKOUT_STATE,
