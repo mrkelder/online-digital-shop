@@ -1,4 +1,4 @@
-import { ReduxCartProduct } from "store/reducers/cartReducer";
+import { ReduxCartProduct } from "types/cart-reducer";
 
 class DTO {
   public static productToReduxCartProduct(product: Product): ReduxCartProduct {

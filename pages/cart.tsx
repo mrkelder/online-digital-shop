@@ -9,7 +9,7 @@ import Button from "components/Button";
 import CartItem from "components/cart-page/CartItem";
 import MetaHead from "components/meta/MetaHead";
 import { RootStore } from "store";
-import { CartState } from "store/reducers/cartReducer";
+import { CartState } from "types/cart-reducer";
 
 const CartPage: NextPage = () => {
   const router = useRouter();

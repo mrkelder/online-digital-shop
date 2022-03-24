@@ -15,7 +15,6 @@ import LoadingSpinner from "components/LoadingSpinner";
 import MetaHead from "components/meta/MetaHead";
 import useMatchMedia from "hooks/useMatchMedia";
 import { RootStore } from "store";
-import { ReduxCartProduct } from "store/reducers/cartReducer";
 import {
   CheckoutActions,
   FIRST_STAGE,
@@ -23,6 +22,7 @@ import {
   THIRD_STAGE
 } from "store/reducers/checkoutReducer";
 import { CreatePaymentIntentResponse } from "types/api";
+import { ReduxCartProduct } from "types/cart-reducer";
 import {
   CheckoutValidationData,
   CheckoutFields,

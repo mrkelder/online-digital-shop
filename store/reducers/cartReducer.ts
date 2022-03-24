@@ -1,36 +1,11 @@
 import { Reducer } from "redux";
 
+import { CartState, CartActions } from "types/cart-reducer";
 import Cookie from "utils/Cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/Cookie/cookieNames";
 import LocalStorage from "utils/LocalStorage";
 
 import { CART } from "../../utils/LocalStorage/localStorageNames";
-
-export type ReduxCartProduct = Pick<
-  Product,
-  "id" | "name" | "photo" | "price"
-> & { quantity: number };
-
-export interface CartState {
-  items: ReadonlyArray<ReduxCartProduct>;
-}
-
-type RestoreAction = { type: "cart/restore" };
-
-type AddItemAction = { type: "cart/addItem"; payload: ReduxCartProduct };
-
-type RemoveItemAction = { type: "cart/removeItem"; payload: Product["id"] };
-
-type ChangeQuantityAction = {
-  type: "cart/changeQuantity";
-  payload: { id: Product["id"]; quantity: number };
-};
-
-export type CartActions =
-  | AddItemAction
-  | RemoveItemAction
-  | ChangeQuantityAction
-  | RestoreAction;
 
 export const DEFAULT_CART_STATE: CartState = {
   items: []
