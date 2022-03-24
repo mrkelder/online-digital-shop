@@ -156,7 +156,6 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const dto = new DTO();
   const firebase = new Firebase();
   const dbSlides = await firebase.getAllDocumentsInCollection<Slide>("slider");
   const dbReccommendations =
@@ -185,7 +184,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const cities = await firebase.getAllDocumentsInCollection<City>("cities");
 
   const geoInfo: GeoInfo = {
-    shops: shops.map(shop => dto.firebaseShopToShop(shop)),
+    shops: shops.map(shop => DTO.firebaseShopToShop(shop)),
     cities
   };
 

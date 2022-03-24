@@ -25,7 +25,6 @@ const ShopsPage: NextPage<Props> = ({ geoInfo }) => (
 );
 
 export const getStaticProps: GetStaticProps = async () => {
-  const dto = new DTO();
   const firebase = new Firebase();
   const shops = await firebase.getAllDocumentsInCollection<FirebaseShop>(
     "shops"
@@ -33,7 +32,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const cities = await firebase.getAllDocumentsInCollection<City>("cities");
 
   const geoInfo: GeoInfo = {
-    shops: shops.map(shop => dto.firebaseShopToShop(shop)),
+    shops: shops.map(shop => DTO.firebaseShopToShop(shop)),
     cities
   };
 

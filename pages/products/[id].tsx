@@ -97,10 +97,9 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   }
 
   const addItemToCart = () => {
-    const dto = new DTO();
     dispatch({
       type: "cart/addItem",
-      payload: dto.productToReduxCartProduct(itemObj)
+      payload: DTO.productToReduxCartProduct(itemObj)
     });
   };
 

@@ -32,7 +32,6 @@ const CategoryPage: NextPage<Props> = ({ category, subcategories }) => {
 const firebase = new Firebase();
 
 export const getServerSideProps: GetServerSideProps = async context => {
-  const dto = new DTO();
   const { id } = context.query;
 
   const category = (
@@ -47,7 +46,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
   const subcategories = await firebase.getDocumentsByIds<SubCategory>(
     "subcategories",
-    dto.categoriesToSubCategoryIds([category])
+    DTO.categoriesToSubCategoryIds([category])
   );
 
   return { props: { subcategories, category } };

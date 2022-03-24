@@ -24,14 +24,12 @@ async function fetchCharacteristicsObjects(
 }
 
 async function fetchAvailableCities(product: FirebaseProduct): Promise<Shop[]> {
-  const dto = new DTO();
-
   return (
     await firebase.getDocumentsByIds<FirebaseShop>(
       "shops",
       product.available_in
     )
-  ).map(i => dto.firebaseShopToShop(i));
+  ).map(i => DTO.firebaseShopToShop(i));
 }
 
 function convertToCharacteristics(

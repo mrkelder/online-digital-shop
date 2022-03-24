@@ -19,14 +19,13 @@ const Header: FC = () => {
   useEffect(() => {
     async function fetch() {
       setCategoriesLoading(true);
-      const dto = new DTO();
       const categories = await firebase.getAllDocumentsInCollection<Category>(
         "categories"
       );
 
       const subcategories = await firebase.getDocumentsByIds<SubCategory>(
         "subcategories",
-        dto.categoriesToSubCategoryIds(categories)
+        DTO.categoriesToSubCategoryIds(categories)
       );
 
       setCatalogInfo({ categories, subcategories });
