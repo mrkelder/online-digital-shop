@@ -1,12 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import type Stripe from "stripe";
 import stripe from "stripe";
 
+import { CreatePaymentIntentResponse } from "types/api";
 import Firebase from "utils/firebase";
-
-export interface CreatePaymentIntentResponse {
-  secret: Stripe.PaymentIntent["client_secret"];
-}
 
 interface FailureResolve {
   message: unknown;

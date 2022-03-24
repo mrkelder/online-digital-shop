@@ -22,6 +22,7 @@ import {
   SECOND_STAGE,
   THIRD_STAGE
 } from "store/reducers/checkoutReducer";
+import { CreatePaymentIntentResponse } from "types/api";
 import {
   CheckoutValidationData,
   CheckoutFields,
@@ -32,8 +33,6 @@ import {
 import Cookie from "utils/Cookie";
 import { AMOUNT_OF_ITEMS_IN_CART } from "utils/Cookie/cookieNames";
 import Validation from "utils/Validation";
-
-import { CreatePaymentIntentResponse } from "./api/createPaymentIntent";
 
 // Submition of the payment and form in general is in CheckoutForm component
 
