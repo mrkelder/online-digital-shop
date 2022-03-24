@@ -1,4 +1,4 @@
-import { ReduxStore } from "store";
+import { ReduxStore } from "types/store";
 
 import Cookie from ".";
 import { AMOUNT_OF_ITEMS_IN_CART } from "./cookieNames";

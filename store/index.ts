@@ -1,9 +1,9 @@
-import { combineReducers, createStore, Store, EmptyObject } from "redux";
+import { combineReducers, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
-import { CartState, CartActions } from "types/cart-reducer";
+import { CartState } from "types/cart-reducer";
 import { CheckoutState } from "types/checkout";
-import { CheckoutActions } from "types/checkout-reducer";
+import { ReduxStore, StoreState } from "types/store";
 import LocalStorage from "utils/LocalStorage";
 
 import { CART, CHECKOUT } from "../utils/LocalStorage/localStorageNames";
@@ -12,19 +12,6 @@ import cartReducer from "./reducers/cartReducer";
 import checkoutReducer, {
   DEFAULT_CHECKOUT_STATE
 } from "./reducers/checkoutReducer";
-
-export type ReduxStore = Store<
-  EmptyObject & {
-    cart: CartState;
-    checkout: CheckoutState;
-  },
-  CartActions | CheckoutActions
->;
-
-interface StoreState {
-  cart: CartState;
-  checkout: CheckoutState;
-}
 
 const rootReducer = combineReducers({
   cart: cartReducer,
