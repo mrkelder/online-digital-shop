@@ -19,6 +19,11 @@ If you're just looking for practice, feel free to copy and modify this code in a
 - [Commits Naming](#Commits-Naming)
 - [Workflow](#Workflow)
 
+## External Links
+
+- [Architecture](./docs/ARCHITECTURE.md)
+- [API Endpoints](./docs/API_ENDPOINTS.md)
+
 ## Setting Up
 
 To get started with the project:
