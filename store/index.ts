@@ -48,5 +48,3 @@ export function storeInitiator(): ReduxStore {
   const store = createStore(rootReducer, preloadedStore, composedEnhancers);
   return store;
 }
-
-export type RootStore = ReturnType<typeof rootReducer>;

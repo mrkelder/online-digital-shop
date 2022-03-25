@@ -3,9 +3,9 @@ import { ChangeEventHandler, Dispatch, FC, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Input from "components/Input";
-import { RootStore } from "store";
 import { CheckoutStateKeys } from "types/checkout";
 import { CheckoutActions } from "types/checkout-reducer";
+import type { RootStore } from "types/store";
 import Validation from "utils/Validation";
 
 interface Props {

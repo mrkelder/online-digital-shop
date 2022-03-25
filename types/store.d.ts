@@ -10,3 +10,11 @@ export interface StoreState {
   cart: CartState;
   checkout: CheckoutState;
 }
+
+export type RootStore = Reducer<
+  CombinedState<{
+    cart: CartState;
+    checkout: CheckoutState;
+  }>,
+  CartActions | CheckoutActions
+>;

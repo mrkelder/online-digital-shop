@@ -8,8 +8,8 @@ import { useSelector } from "react-redux";
 import Button from "components/Button";
 import CartItem from "components/cart-page/CartItem";
 import MetaHead from "components/meta/MetaHead";
-import { RootStore } from "store";
 import { CartState } from "types/cart-reducer";
+import type { RootStore } from "types/store";
 
 const CartPage: NextPage = () => {
   const router = useRouter();
