@@ -1,56 +1,10 @@
 import { Reducer } from "redux";
 
-import LocalStorage from "utils/localStorage/localStorage";
-import { CHECKOUT } from "utils/localStorage/localStorageNames";
-import { CheckoutFormData } from "utils/validation/isCheckoutDataValid";
-
-// FIXME: it definetely needs some more organization rather than all types and data in one file
-// wich is by the way intended to be for the reducer only
-
-export type CheckoutStages = 1 | 2 | 3;
-
-export type CheckoutState = CheckoutFormData & {
-  stripeClientId: string | undefined;
-  currentStage: CheckoutStages;
-};
-
-export type CheckoutStateKeys = keyof CheckoutState;
-
-interface StringPayloads {
-  name: Exclude<CheckoutStateKeys, "currentStage">;
-  value: string;
-}
-
-interface NumberPayloads {
-  name: "currentStage";
-  value: number;
-}
-
-type ChangeFiledAction = {
-  type: "checkout/changeField";
-  payload: StringPayloads | NumberPayloads;
-};
-
-type RestoreAction = { type: "checkout/restore" };
-
-export type CheckoutActions = ChangeFiledAction | RestoreAction;
-
-export const FIRST_STAGE: CheckoutStages = 1;
-export const SECOND_STAGE: CheckoutStages = 2;
-export const THIRD_STAGE: CheckoutStages = 3;
-
-export const DEFAULT_CHECKOUT_STATE: CheckoutState = {
-  fullName: "",
-  city: "",
-  street: "",
-  house: "",
-  apartment: "",
-  email: "",
-  stripeClientId: undefined,
-  currentStage: FIRST_STAGE
-};
-
-const localStoragClass = new LocalStorage();
+import { CHECKOUT } from "constants/localstorage-names";
+import { DEFAULT_CHECKOUT_STATE } from "constants/redux";
+import { CheckoutState } from "types/checkout";
+import { CheckoutActions } from "types/checkout-reducer";
+import LocalStorage from "utils/LocalStorage";
 
 const checkoutReducer: Reducer<CheckoutState, CheckoutActions> = (
   state = DEFAULT_CHECKOUT_STATE,
@@ -73,7 +27,7 @@ const checkoutReducer: Reducer<CheckoutState, CheckoutActions> = (
       return state;
   }
 
-  localStoragClass.setItem(CHECKOUT, newState);
+  LocalStorage.setItem(CHECKOUT, newState);
   return newState;
 };
 

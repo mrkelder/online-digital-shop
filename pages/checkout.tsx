@@ -13,28 +13,26 @@ import CheckoutInput from "components/checkout-page/CheckoutInput";
 import StageWrapper from "components/checkout-page/StageWrapper";
 import LoadingSpinner from "components/LoadingSpinner";
 import MetaHead from "components/meta/MetaHead";
-import useMatchMedia from "hooks/useMatchMedia";
-import { RootStore } from "store";
-import { ReduxCartProduct } from "store/reducers/cartReducer";
 import {
-  CheckoutActions,
-  CheckoutStages,
-  CheckoutState,
-  CheckoutStateKeys,
+  THIRD_STAGE,
   FIRST_STAGE,
-  SECOND_STAGE,
-  THIRD_STAGE
-} from "store/reducers/checkoutReducer";
-import Cookie from "utils/cookie/cookie";
-import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
-import isKeyOfCheckoutData from "utils/validation/checkoutDataKeysValidation";
+  SECOND_STAGE
+} from "constants/checkout-stages";
+import { AMOUNT_OF_ITEMS_IN_CART } from "constants/cookie-names";
+import useMatchMedia from "hooks/useMatchMedia";
+import { CreatePaymentIntentResponse } from "types/api";
+import { ReduxCartProduct } from "types/cart-reducer";
 import {
   CheckoutValidationData,
-  CheckoutValidationFields,
-  validateFormData
-} from "utils/validation/isCheckoutDataValid";
-
-import { CreatePaymentIntentResponse } from "./api/createPaymentIntent";
+  CheckoutFields,
+  CheckoutStages,
+  CheckoutState,
+  CheckoutStateKeys
+} from "types/checkout";
+import { CheckoutActions } from "types/checkout-reducer";
+import type { RootStore } from "types/store";
+import Cookie from "utils/Cookie";
+import Validation from "utils/Validation";
 
 // Submition of the payment and form in general is in CheckoutForm component
 
@@ -48,8 +46,6 @@ const DEFAULT_VALIDATION: CheckoutValidationData = {
 };
 
 const TITLE = "Оплата";
-
-const cookie = new Cookie();
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
@@ -88,13 +84,13 @@ const CheckoutPage: NextPage = () => {
   );
 
   function checkValidation(): CheckoutValidationData {
-    const validation = validateFormData(formData);
+    const validation = Validation.checkoutFormData(formData);
 
     const newValidationErrors = { ...validationErrors };
     const arrayOfValidationItems = Object.entries(validation);
 
     for (const [field, value] of arrayOfValidationItems) {
-      newValidationErrors[field as CheckoutValidationFields] = value;
+      newValidationErrors[field as CheckoutFields] = value;
     }
 
     return newValidationErrors;
@@ -135,7 +131,7 @@ const CheckoutPage: NextPage = () => {
   function formChange(e: ChangeEvent<HTMLFormElement>) {
     const { name, value } = e.target;
 
-    if (isKeyOfCheckoutData(name)) {
+    if (Validation.isKeyOfCheckoutData(name)) {
       dispatch({
         type: "checkout/changeField",
         payload: {
@@ -155,7 +151,7 @@ const CheckoutPage: NextPage = () => {
 
   useEffect(() => {
     const cookieAmountOfItemsInCart = Number(
-      cookie.readCookie(AMOUNT_OF_ITEMS_IN_CART)
+      Cookie.readCookie(AMOUNT_OF_ITEMS_IN_CART)
     );
 
     const cookieIsNaN = isNaN(cookieAmountOfItemsInCart);
@@ -348,7 +344,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
   ) {
     res.setHeader(
       "Set-Cookie",
-      cookie.returnDeleteCookieConf(AMOUNT_OF_ITEMS_IN_CART)
+      Cookie.returnDeleteCookieConf(AMOUNT_OF_ITEMS_IN_CART)
     );
 
     return {

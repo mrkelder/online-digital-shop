@@ -20,10 +20,10 @@ import DefaultPhoto from "public/img/default-photo.jpg";
 import LocationIcon from "public/img/geo-point.svg";
 import activeStarIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
-import { RootStore } from "store";
-import { CartActions, CartState } from "store/reducers/cartReducer";
 import styles from "styles/item-page.module.css";
-import convertToReduxCartProduct from "utils/dto/convertToReduxCartProduct";
+import { CartActions, CartState } from "types/cart-reducer";
+import type { RootStore } from "types/store";
+import DTO from "utils/DTO";
 import Firebase from "utils/firebase";
 import firebaseProductToProduct from "utils/firebaseProductToProduct";
 
@@ -96,11 +96,12 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
     };
   }
 
-  const addItemToCart = () =>
+  const addItemToCart = () => {
     dispatch({
       type: "cart/addItem",
-      payload: convertToReduxCartProduct(itemObj)
+      payload: DTO.productToReduxCartProduct(itemObj)
     });
+  };
 
   const choosePhotoIndex = (index: number) => {
     return () => {

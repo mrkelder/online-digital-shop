@@ -7,7 +7,7 @@ import Input from "components/Input";
 import ArrowIcon from "public/img/arrow.svg";
 import GeoIcon from "public/img/geo-point.svg";
 import Logo from "public/img/logo.svg";
-import { RootStore } from "store";
+import type { RootStore } from "types/store";
 
 import Cart from "./Cart";
 import Catalog from "./Catalog";

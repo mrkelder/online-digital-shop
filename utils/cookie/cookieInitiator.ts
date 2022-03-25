@@ -1,12 +1,10 @@
-import { ReduxStore } from "store";
+import { AMOUNT_OF_ITEMS_IN_CART } from "constants/cookie-names";
+import { ReduxStore } from "types/store";
 
-import Cookie from "./cookie";
-import { AMOUNT_OF_ITEMS_IN_CART } from "./cookieNames";
-
-const cookie = new Cookie();
+import Cookie from ".";
 
 export default function cookieInitiator(store: ReduxStore) {
-  cookie.setCookie(
+  Cookie.setCookie(
     AMOUNT_OF_ITEMS_IN_CART,
     store.getState().cart.items.length.toString()
   );
