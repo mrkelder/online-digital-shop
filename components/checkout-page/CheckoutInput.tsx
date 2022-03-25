@@ -3,12 +3,10 @@ import { ChangeEventHandler, Dispatch, FC, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Input from "components/Input";
-import { RootStore } from "store";
-import {
-  CheckoutActions,
-  CheckoutStateKeys
-} from "store/reducers/checkoutReducer";
-import isKeyOfCheckoutData from "utils/validation/checkoutDataKeysValidation";
+import { CheckoutStateKeys } from "types/checkout";
+import { CheckoutActions } from "types/checkout-reducer";
+import type { RootStore } from "types/store";
+import Validation from "utils/Validation";
 
 interface Props {
   error: boolean;
@@ -28,7 +26,7 @@ const CheckoutInput: FC<Props> = ({
   const errorMessageStyle = error ? "inline" : "hidden";
 
   const changeHanlder: ChangeEventHandler<any> = e => {
-    if (isKeyOfCheckoutData(name)) {
+    if (Validation.isKeyOfCheckoutData(name)) {
       const { value } = e.target;
       dispatch({ type: "checkout/changeField", payload: { name, value } });
     }

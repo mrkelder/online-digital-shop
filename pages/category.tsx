@@ -2,7 +2,7 @@ import { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
 
 import MetaHead from "components/meta/MetaHead";
-import categoriesToSubCategoryIds from "utils/dto/categoriesToSubCategoryIds";
+import DTO from "utils/DTO";
 import Firebase from "utils/firebase";
 
 interface Props {
@@ -46,7 +46,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
   const subcategories = await firebase.getDocumentsByIds<SubCategory>(
     "subcategories",
-    categoriesToSubCategoryIds([category])
+    DTO.categoriesToSubCategoryIds([category])
   );
 
   return { props: { subcategories, category } };

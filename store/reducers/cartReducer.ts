@@ -1,43 +1,11 @@
 import { Reducer } from "redux";
 
-import Cookie from "utils/cookie/cookie";
-import { AMOUNT_OF_ITEMS_IN_CART } from "utils/cookie/cookieNames";
-import LocalStorage from "utils/localStorage/localStorage";
-
-import { CART } from "../../utils/localStorage/localStorageNames";
-
-export type ReduxCartProduct = Pick<
-  Product,
-  "id" | "name" | "photo" | "price"
-> & { quantity: number };
-
-export interface CartState {
-  items: ReadonlyArray<ReduxCartProduct>;
-}
-
-type RestoreAction = { type: "cart/restore" };
-
-type AddItemAction = { type: "cart/addItem"; payload: ReduxCartProduct };
-
-type RemoveItemAction = { type: "cart/removeItem"; payload: Product["id"] };
-
-type ChangeQuantityAction = {
-  type: "cart/changeQuantity";
-  payload: { id: Product["id"]; quantity: number };
-};
-
-export type CartActions =
-  | AddItemAction
-  | RemoveItemAction
-  | ChangeQuantityAction
-  | RestoreAction;
-
-export const DEFAULT_CART_STATE: CartState = {
-  items: []
-};
-
-const cookie = new Cookie();
-const localStoragClass = new LocalStorage();
+import { AMOUNT_OF_ITEMS_IN_CART } from "constants/cookie-names";
+import { CART } from "constants/localstorage-names";
+import { DEFAULT_CART_STATE } from "constants/redux";
+import { CartState, CartActions } from "types/cart-reducer";
+import Cookie from "utils/Cookie";
+import LocalStorage from "utils/LocalStorage";
 
 const cartReducer: Reducer<CartState, CartActions> = (
   state = DEFAULT_CART_STATE,
@@ -81,8 +49,8 @@ const cartReducer: Reducer<CartState, CartActions> = (
       return newState;
   }
 
-  cookie.setCookie(AMOUNT_OF_ITEMS_IN_CART, newState.items.length.toString());
-  localStoragClass.setItem(CART, newState.items);
+  Cookie.setCookie(AMOUNT_OF_ITEMS_IN_CART, newState.items.length.toString());
+  LocalStorage.setItem(CART, newState.items);
   return JSON.parse(JSON.stringify(newState));
 };
 

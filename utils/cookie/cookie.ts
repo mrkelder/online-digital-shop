@@ -5,7 +5,7 @@ class Cookie {
 
   private static COOKIE_CONF = "max-age=31536000; path=*";
 
-  public setCookie(fieldName: string, value: string): void {
+  public static setCookie(fieldName: string, value: string): void {
     const filedNameIsInvalid = typeof fieldName !== "string";
     const valueIsInvalid = typeof value !== "string";
 
@@ -20,20 +20,20 @@ class Cookie {
     }
 
     if (Cookie._isCookieAvailbale()) {
-      this._setCookie(fieldName, value);
+      Cookie._setCookie(fieldName, value);
     }
   }
 
-  private _setCookie(fieldName: string, value: string): void {
+  private static _setCookie(fieldName: string, value: string): void {
     document.cookie = `${fieldName}=${value}; ${Cookie.COOKIE_CONF};`;
   }
 
-  public readCookie(fieldName: string): ReadCookieReturnValue {
-    if (Cookie._isCookieAvailbale()) return this._readCookie(fieldName);
+  public static readCookie(fieldName: string): ReadCookieReturnValue {
+    if (Cookie._isCookieAvailbale()) return Cookie._readCookie(fieldName);
     else undefined;
   }
 
-  private _readCookie(fieldName: string): ReadCookieReturnValue {
+  private static _readCookie(fieldName: string): ReadCookieReturnValue {
     const cookies = document.cookie;
     const regExp = new RegExp(`${fieldName}=[\\d\\w]*`);
     const result = cookies.match(regExp);
@@ -43,7 +43,7 @@ class Cookie {
     } else return undefined;
   }
 
-  public returnDeleteCookieConf(field: string): string {
+  public static returnDeleteCookieConf(field: string): string {
     return `${field}=; path=*; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
   }
 

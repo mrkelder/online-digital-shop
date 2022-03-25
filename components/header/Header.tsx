@@ -1,7 +1,7 @@
 import { FC, useContext, useEffect, useState } from "react";
 
 import useMatchMedia from "hooks/useMatchMedia";
-import categoriesToSubCategoryIds from "utils/dto/categoriesToSubCategoryIds";
+import DTO from "utils/DTO";
 import { FirebaseContext } from "utils/firebase";
 
 import DesktopMenu from "./desktop/Header";
@@ -25,7 +25,7 @@ const Header: FC = () => {
 
       const subcategories = await firebase.getDocumentsByIds<SubCategory>(
         "subcategories",
-        categoriesToSubCategoryIds(categories)
+        DTO.categoriesToSubCategoryIds(categories)
       );
 
       setCatalogInfo({ categories, subcategories });

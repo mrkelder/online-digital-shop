@@ -1,33 +1,15 @@
-import { combineReducers, createStore, Store, EmptyObject } from "redux";
+import { combineReducers, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
-import LocalStorage from "utils/localStorage/localStorage";
+import { CART, CHECKOUT } from "constants/localstorage-names";
+import { DEFAULT_CART_STATE, DEFAULT_CHECKOUT_STATE } from "constants/redux";
+import { CartState } from "types/cart-reducer";
+import { CheckoutState } from "types/checkout";
+import { ReduxStore, StoreState } from "types/store";
+import LocalStorage from "utils/LocalStorage";
 
-import { CART, CHECKOUT } from "../utils/localStorage/localStorageNames";
-import {
-  CartState,
-  CartActions,
-  DEFAULT_CART_STATE
-} from "./reducers/cartReducer";
 import cartReducer from "./reducers/cartReducer";
-import checkoutReducer, {
-  CheckoutActions,
-  CheckoutState,
-  DEFAULT_CHECKOUT_STATE
-} from "./reducers/checkoutReducer";
-
-export type ReduxStore = Store<
-  EmptyObject & {
-    cart: CartState;
-    checkout: CheckoutState;
-  },
-  CartActions | CheckoutActions
->;
-
-interface StoreState {
-  cart: CartState;
-  checkout: CheckoutState;
-}
+import checkoutReducer from "./reducers/checkoutReducer";
 
 const rootReducer = combineReducers({
   cart: cartReducer,
@@ -39,7 +21,6 @@ const composedEnhancers = composeWithDevTools();
 export const epmtyStore: ReduxStore = createStore(rootReducer);
 
 export function storeInitiator(): ReduxStore {
-  const localStoragClass = new LocalStorage();
   const preloadedStore: StoreState = {
     cart: DEFAULT_CART_STATE,
     checkout: DEFAULT_CHECKOUT_STATE
@@ -47,12 +28,11 @@ export function storeInitiator(): ReduxStore {
 
   try {
     const preloadedCartItems: CartState["items"] = JSON.parse(
-      localStoragClass.getItem(CART) ?? "[]"
+      LocalStorage.getItem(CART) ?? "[]"
     );
 
     const preloadedCheckoutData: CheckoutState = JSON.parse(
-      localStoragClass.getItem(CHECKOUT) ??
-        JSON.stringify(DEFAULT_CHECKOUT_STATE)
+      LocalStorage.getItem(CHECKOUT) ?? JSON.stringify(DEFAULT_CHECKOUT_STATE)
     );
 
     preloadedStore.cart.items = preloadedCartItems.map(i =>
@@ -61,12 +41,10 @@ export function storeInitiator(): ReduxStore {
 
     preloadedStore.checkout = preloadedCheckoutData;
   } catch {
-    localStoragClass.removeItem(CART);
-    localStoragClass.removeItem(CHECKOUT);
+    LocalStorage.removeItem(CART);
+    LocalStorage.removeItem(CHECKOUT);
   }
 
   const store = createStore(rootReducer, preloadedStore, composedEnhancers);
   return store;
 }
-
-export type RootStore = ReturnType<typeof rootReducer>;

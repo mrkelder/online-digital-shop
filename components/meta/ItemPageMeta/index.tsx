@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-import ldJsonItemProduct from "utils/ldJsonMeta/ldJsonItemProduct";
+import LdJson from "utils/LdJson";
 
 import MetaHead from "../MetaHead";
 import MetaScript from "../MetaScript";
@@ -19,7 +19,7 @@ const ItemPageMeta: FC<Props> = ({ itemObj }) => {
       />
 
       <MetaScript id="product-structured-data">
-        {ldJsonItemProduct(itemObj)}
+        {LdJson.itemProduct(itemObj)}
       </MetaScript>
 
       <meta itemProp="name" content={itemObj.name} />
