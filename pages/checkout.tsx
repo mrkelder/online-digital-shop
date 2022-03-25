@@ -13,8 +13,12 @@ import CheckoutInput from "components/checkout-page/CheckoutInput";
 import StageWrapper from "components/checkout-page/StageWrapper";
 import LoadingSpinner from "components/LoadingSpinner";
 import MetaHead from "components/meta/MetaHead";
+import {
+  THIRD_STAGE,
+  FIRST_STAGE,
+  SECOND_STAGE
+} from "constants/checkout-stages";
 import { AMOUNT_OF_ITEMS_IN_CART } from "constants/cookie-names";
-import { THIRD_STAGE, FIRST_STAGE, SECOND_STAGE } from "constants/redux";
 import useMatchMedia from "hooks/useMatchMedia";
 import { CreatePaymentIntentResponse } from "types/api";
 import { ReduxCartProduct } from "types/cart-reducer";
