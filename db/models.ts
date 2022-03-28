@@ -11,14 +11,14 @@ import {
   SUB_CATEGORY_MODEL_NAME
 } from "constants/db";
 
-import categorySchema from "./schemas/Category";
-import characteristicSchema from "./schemas/Characteristic";
-import citySchema from "./schemas/City";
-import itemSchema from "./schemas/Item";
-import recommendationSchema from "./schemas/Recommendation";
-import shopSchema from "./schemas/Shop";
-import slideSchema from "./schemas/Slide";
-import subCategorySchema from "./schemas/SubCategory";
+import categorySchema from "./schemas/category";
+import characteristicSchema from "./schemas/characteristic";
+import citySchema from "./schemas/city";
+import itemSchema from "./schemas/item";
+import recommendationSchema from "./schemas/recommendation";
+import shopSchema from "./schemas/shop";
+import slideSchema from "./schemas/slide";
+import subCategorySchema from "./schemas/subCategory";
 
 const Category = mongoose.model(CATEGORY_MODEL_NAME, categorySchema);
 const Characteristic = mongoose.model(
