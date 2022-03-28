@@ -37,10 +37,12 @@ const itemSchema = new Schema(
       default: 0
     },
     subCategory: { type: Schema.Types.ObjectId, ref: SUB_CATEGORY_MODEL_NAME },
-    characteristics: {
-      type: Schema.Types.ObjectId,
-      ref: CHARACTERISTIC_MODEL_NAME
-    }
+    characteristics: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: CHARACTERISTIC_MODEL_NAME
+      }
+    ]
   },
   SCHEMA_OPTIONS
 );
