@@ -2,6 +2,10 @@
 
 In this section you can find all API endpoints, their intentions and return values
 
+## Sections Of Content
+
+- [CreatePaymentIntent](#createpaymentintent)
+
 ## CreatePaymentIntent
 
 Endpoint: **/api/createPaymentIntent**
