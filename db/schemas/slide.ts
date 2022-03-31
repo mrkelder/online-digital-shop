@@ -4,7 +4,8 @@ import { SCHEMA_OPTIONS } from "constants/db";
 
 const slideSchema = new Schema(
   {
-    photo: String
+    mobile: String,
+    desktop: String
   },
   SCHEMA_OPTIONS
 );
