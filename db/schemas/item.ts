@@ -7,6 +7,16 @@ import {
   SUB_CATEGORY_MODEL_NAME
 } from "constants/db";
 
+const characteristicDoc = {
+  type: Schema.Types.ObjectId,
+  ref: CHARACTERISTIC_MODEL_NAME
+};
+
+const characteristic = {
+  c: characteristicDoc,
+  values: [Number]
+};
+
 const itemSchema = new Schema(
   {
     available: {
@@ -18,9 +28,7 @@ const itemSchema = new Schema(
       type: String,
       default: "Description"
     },
-    key_characteristics: [
-      { type: Schema.Types.ObjectId, ref: CHARACTERISTIC_MODEL_NAME }
-    ],
+    key_characteristics: [characteristic],
     name: {
       type: String,
       default: "Item"
@@ -37,12 +45,7 @@ const itemSchema = new Schema(
       default: 0
     },
     subCategory: { type: Schema.Types.ObjectId, ref: SUB_CATEGORY_MODEL_NAME },
-    characteristics: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: CHARACTERISTIC_MODEL_NAME
-      }
-    ]
+    characteristics: [characteristic]
   },
   SCHEMA_OPTIONS
 );
