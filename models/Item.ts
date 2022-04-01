@@ -29,7 +29,7 @@ const itemSchema = new Schema(
       type: String,
       default: "Description"
     },
-    key_characteristics: [characteristic],
+    key_characteristics: [Number],
     name: {
       type: String,
       default: "Item"
