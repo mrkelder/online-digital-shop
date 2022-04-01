@@ -11,14 +11,14 @@ import Slider from "components/Slider";
 import GuaranteeIcon from "public/img/guarantee.svg";
 import LikeIcon from "public/img/like.svg";
 import TruckIcon from "public/img/truck.svg";
+import { GetSliderResponse } from "types/api";
 import DTO from "utils/DTO";
 import Firebase from "utils/firebase";
 
 import "swiper/css";
 import "swiper/css/autoplay";
-
 interface Props {
-  slides: ReadonlyArray<{ mobile: string; desktop: string }>;
+  slides: GetSliderResponse;
   reccommendedItems: ReadonlyArray<Product>;
   geoInfo: GeoInfo;
 }
@@ -157,20 +157,18 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const firebase = new Firebase();
-  const dbSlides = await firebase.getAllDocumentsInCollection<Slide>("slider");
   const dbReccommendations =
     await firebase.getAllDocumentsInCollection<Reccommendation>(
       "reccommendations"
     );
-  const slideNames = dbSlides.map(i => i.name);
 
-  const mobile = await firebase.downloadFiles("slider/mobile", slideNames);
-  const desktop = await firebase.downloadFiles("slider/desktop", slideNames);
+  const slidesFetch = await fetch(
+    (process.env.NEXT_PUBLIC_HOSTNAME as string) + "/api/getSlider"
+  );
 
-  const slides = mobile.map((i, index) => ({
-    mobile: i,
-    desktop: desktop[index]
-  }));
+  const slides: GetSliderResponse = await slidesFetch.json();
+
+  console.log(slides);
 
   const reccommendations = dbReccommendations.map(i => i.item_id);
   const reccommendedItems = await firebase.getDocumentsByIds(
