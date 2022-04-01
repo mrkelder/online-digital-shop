@@ -11,7 +11,7 @@ import Slider from "components/Slider";
 import GuaranteeIcon from "public/img/guarantee.svg";
 import LikeIcon from "public/img/like.svg";
 import TruckIcon from "public/img/truck.svg";
-import { GetSliderResponse } from "types/api";
+import { GetRecommendationsResponse, GetSliderResponse } from "types/api";
 import DTO from "utils/DTO";
 import Firebase from "utils/firebase";
 
@@ -19,7 +19,7 @@ import "swiper/css";
 import "swiper/css/autoplay";
 interface Props {
   slides: GetSliderResponse;
-  reccommendedItems: ReadonlyArray<Product>;
+  recommendedItems: GetRecommendationsResponse;
   geoInfo: GeoInfo;
 }
 
@@ -60,11 +60,11 @@ const swiperConfig: SwiperOptions = {
   }
 };
 
-const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
+const Home: NextPage<Props> = ({ slides, recommendedItems, geoInfo }) => {
   const geoInfoCondition =
     geoInfo.cities.length !== 0 && geoInfo.shops.length !== 0;
 
-  const isRecommenedItemsEmpty = reccommendedItems.length !== 0;
+  const isRecommenedItemsEmpty = recommendedItems.length !== 0;
 
   return (
     <>
@@ -110,11 +110,11 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
             <ArrowButton buttonClassName="items_navigation_left" />
           )}
           <Swiper {...swiperConfig}>
-            {reccommendedItems.map(item => (
-              <SwiperSlide key={`slide_${item.id}`}>
+            {recommendedItems.map(({ item }) => (
+              <SwiperSlide key={`slide_${item._id}`}>
                 <div className="w-full flex justify-center">
                   <Card
-                    id={item.id}
+                    _id={item._id}
                     name={item.name}
                     price={item.price}
                     photo={item.photo}
@@ -157,24 +157,17 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const firebase = new Firebase();
-  const dbReccommendations =
-    await firebase.getAllDocumentsInCollection<Reccommendation>(
-      "reccommendations"
-    );
-
   const slidesFetch = await fetch(
     (process.env.NEXT_PUBLIC_HOSTNAME as string) + "/api/getSlider"
   );
 
-  const slides: GetSliderResponse = await slidesFetch.json();
-
-  console.log(slides);
-
-  const reccommendations = dbReccommendations.map(i => i.item_id);
-  const reccommendedItems = await firebase.getDocumentsByIds(
-    "products",
-    reccommendations
+  const recommendationsFetch = await fetch(
+    (process.env.NEXT_PUBLIC_HOSTNAME as string) + "/api/getRecommendations"
   );
+
+  const recommendedItems: GetRecommendationsResponse =
+    await recommendationsFetch.json();
+  const slides: GetSliderResponse = await slidesFetch.json();
 
   const shops = await firebase.getAllDocumentsInCollection<FirebaseShop>(
     "shops"
@@ -187,7 +180,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   };
 
   return {
-    props: { slides, reccommendedItems, geoInfo }
+    props: { slides, recommendedItems, geoInfo }
   };
 };
 
