@@ -18,6 +18,15 @@ class DTO {
     const { _lat, _long } = shop.geo;
     return { ...shop, geo: { lat: _lat, lng: _long } };
   }
+
+  public static mongodbCharacteristicValueToString(
+    values: string[],
+    indexes: number[]
+  ): string {
+    let totalStringArray: string[] = [];
+    indexes.forEach(i => totalStringArray.push(values[i]));
+    return totalStringArray.join(", ");
+  }
 }
 
 export default DTO;

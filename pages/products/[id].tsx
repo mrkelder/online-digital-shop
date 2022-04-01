@@ -1,7 +1,7 @@
 import { Dispatch, useRef, useState } from "react";
 
 import { GetServerSideProps, NextPage } from "next";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { FreeMode, Navigation, SwiperOptions } from "swiper";
@@ -24,8 +24,6 @@ import styles from "styles/item-page.module.css";
 import { CartActions, CartState } from "types/cart-reducer";
 import type { RootStore } from "types/store";
 import DTO from "utils/DTO";
-import Firebase from "utils/firebase";
-import firebaseProductToProduct from "utils/firebaseProductToProduct";
 
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -36,6 +34,7 @@ interface Props {
 
 const SWIPER_LEFT_NAVIGATION = "photos_navigation_left";
 const SWIPER_RIGHT_NAVIGATION = "photos_navigation_right";
+const MAXIMUM_RATING = 5;
 
 const swiperConf: SwiperOptions = {
   modules: [FreeMode, Navigation],
@@ -73,7 +72,6 @@ function createStars(starIcon: StaticImageData, quantity: number) {
 }
 
 const ProductPage: NextPage<Props> = ({ itemObj }) => {
-  const MAXIMUM_RATING = 5;
   const swiperInstance = useRef<null | Swiper>(null);
   const dispatch = useDispatch<Dispatch<CartActions>>();
   const activeStars = createStars(activeStarIcon, itemObj.rating);
@@ -83,7 +81,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   const items = useSelector<RootStore>(
     store => store.cart.items
   ) as CartState["items"];
-  const buttonProperty = items.find(i => i.id === itemObj.id)
+  const buttonProperty = items.find(i => i.id === itemObj._id)
     ? { color: "grey", text: "В корзине" }
     : { color: "red", text: "Купить" };
 
@@ -147,7 +145,10 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
         <div className="lg:bg-white box-border lg:flex-1 lg:p-4 lg:shadow-xl lg:flex lg:flex-col lg:items-center">
           <div className="hidden relative w-full h-96 mb-5 lg:block">
             <Image
-              src={itemObj.photos[chosenPhotoIndex].image2x as string}
+              src={
+                process.env.NEXT_PUBLIC_STATIC_HOST +
+                itemObj.photos[chosenPhotoIndex]
+              }
               layout="fill"
               alt="Фото товара"
               objectFit="contain"
@@ -178,7 +179,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                       {photo ? (
                         <Image
                           className={currentPhotoStyling(index)}
-                          src={photo.image2x}
+                          src={process.env.NEXT_PUBLIC_STATIC_HOST + photo}
                           layout={isMobile ? "fill" : "intrinsic"}
                           width={isMobile ? undefined : 64}
                           height={isMobile ? undefined : 64}
@@ -249,12 +250,21 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
           </h2>
           <table className={styles["table"]}>
             <tbody>
-              {itemObj.key_characteristics.map(c => (
-                <tr key={c.id}>
-                  <th className={styles["th-name"]}>{c.name}</th>
-                  <th className={styles["th-value"]}>{c.value}</th>
-                </tr>
-              ))}
+              {itemObj.key_characteristics.length === 0 && (
+                <p className="text-sm text-grey-300 italic">
+                  Ключевых характеристик пока нет
+                </p>
+              )}
+              {itemObj.key_characteristics
+                .map(index => itemObj.characteristics[index])
+                .map(({ c, values }, index) => (
+                  <tr key={`c_${index}`}>
+                    <th className={styles["th-name"]}>{c.name}</th>
+                    <th className={styles["th-value"]}>
+                      {DTO.mongodbCharacteristicValueToString(c.values, values)}
+                    </th>
+                  </tr>
+                ))}
             </tbody>
           </table>
           <hr className="hidden mb-2 lg:block" />
@@ -271,8 +281,8 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                 <LocationIcon />
               </span>
             </h2>
-            {itemObj.available_in.map(i => (
-              <div key={i.id} className="flex flex-col mb-2 lg:mb-3">
+            {itemObj.available_in.map((i, index) => (
+              <div key={`city_${index}`} className="flex flex-col mb-2 lg:mb-3">
                 <address className="text-grey-650 text-xs mb-0.5">
                   {i.name}
                 </address>
@@ -313,21 +323,19 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async context => {
-  const firebase = new Firebase();
-  const result = await firebase.getDocumentsByIds<FirebaseProduct>("products", [
-    context.params?.id as string
-  ]);
-
-  if (result.length === 0)
+  try {
+    const itemFetch = await fetch(
+      process.env.NEXT_PUBLIC_HOSTNAME + "/api/getItem/" + context.params?.id
+    );
+    const itemObj: Product = await itemFetch.json();
+    return {
+      props: { itemObj }
+    };
+  } catch {
     return {
       notFound: true
     };
-
-  const itemObj = await firebaseProductToProduct(result[0]);
-
-  return {
-    props: { itemObj }
-  };
+  }
 };
 
 export default ProductPage;

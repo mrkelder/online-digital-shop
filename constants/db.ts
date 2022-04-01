@@ -22,3 +22,8 @@ export const SHOP_MODEL_NAME = "Shop";
 export const SLIDE_MODEL_NAME = "Slide";
 
 export const SUB_CATEGORY_MODEL_NAME = "SubCategory";
+
+export const populateCreator = (path: string) => ({
+  path,
+  select: "-_id -__v"
+});
