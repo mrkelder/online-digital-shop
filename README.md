@@ -69,8 +69,8 @@ To start the application properly you have to specify the following options in *
 - NEXT_PUBLIC_MAPS_API_KEY - Google Maps API key
 - NEXT_PUBLIC_MAPS_ID - Google Maps Id (for styling purposes)
 - NEXT_PUBLIC_HOSTNAME - the host name of the site (e.g. **http://localhost:port**)
+- NEXT_PUBLIC_STATIC_HOST - the host of a static server (e.g. **http://localhost:port/static/**)
 - MONGODB_HOST - the host of mongodb server (e.g. **mongodb://localhost:port/db**)
-- STATIC_HOST - the host of a static server (e.g. **http://localhost:port/static/**)
 
 ### Firebase Data
 
