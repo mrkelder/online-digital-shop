@@ -1,6 +1,6 @@
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-import { SCHEMA_OPTIONS, CITY_MODEL_NAME } from "constants/db";
+import { SCHEMA_OPTIONS, CITY_MODEL_NAME, SHOP_MODEL_NAME } from "constants/db";
 
 const shopSchema = new Schema(
   {
@@ -20,4 +20,5 @@ const shopSchema = new Schema(
   SCHEMA_OPTIONS
 );
 
-export default shopSchema;
+export default mongoose.models[SHOP_MODEL_NAME] ||
+  mongoose.model(SHOP_MODEL_NAME, shopSchema);

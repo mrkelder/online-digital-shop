@@ -1,7 +1,8 @@
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 import {
   CHARACTERISTIC_MODEL_NAME,
+  ITEM_MODEL_NAME,
   SCHEMA_OPTIONS,
   SHOP_MODEL_NAME,
   SUB_CATEGORY_MODEL_NAME
@@ -52,4 +53,5 @@ const itemSchema = new Schema(
 
 itemSchema.index({ name: "text" });
 
-export default itemSchema;
+export default mongoose.models[ITEM_MODEL_NAME] ||
+  mongoose.model(ITEM_MODEL_NAME, itemSchema);
