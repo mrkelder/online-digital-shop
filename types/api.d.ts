@@ -4,6 +4,6 @@ export interface CreatePaymentIntentResponse {
 
 export type GetSliderResponse = Array<{ mobile: string; desktop: string }>;
 
-type GetRecommendationsResponse = Array<{
+export type GetRecommendationsResponse = Array<{
   item: Pick<Product, "name" | "photo" | "price" | "rating" | "_id">;
 }>;
