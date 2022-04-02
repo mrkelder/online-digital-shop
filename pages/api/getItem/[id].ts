@@ -25,9 +25,7 @@ export default async function handler(
 
     res.json(data);
   } catch {
-    res
-      .status(500)
-      .send("GetItem/[id]: server couldnl't work your request out");
+    res.status(500).send("GetItem/[id]: server couldn't work your request out");
   } finally {
     await mongoose.disconnect();
   }
