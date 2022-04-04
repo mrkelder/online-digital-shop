@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import ArrowButton from "components/ArrowButton";
 import MailNotification from "components/MailNotification";
-import ShopMap from "components/map/ShopMap";
+import Map from "components/map/Map";
 import MetaHead from "components/meta/MetaHead";
 import Card from "components/product-card/Card";
 import Slider from "components/Slider";
@@ -59,7 +59,6 @@ const swiperConfig: SwiperOptions = {
 };
 
 const Home: NextPage<Props> = ({ slides, recommendedItems, cities }) => {
-  const geoInfoCondition = cities.length !== 0;
   const isRecommenedItemsEmpty = recommendedItems.length !== 0;
 
   return (
@@ -137,13 +136,7 @@ const Home: NextPage<Props> = ({ slides, recommendedItems, cities }) => {
           на карте
         </strong>
         <div className="w-full">
-          {geoInfoCondition ? (
-            <ShopMap cities={cities} />
-          ) : (
-            <div className="w-full bg-grey-500 text-white text-xl h-86 flex items-center justify-center text-center px-2 lg:h-130">
-              Возникла проблема при загрузке карты
-            </div>
-          )}
+          <Map cities={cities} />
         </div>
       </section>
       <MailNotification />

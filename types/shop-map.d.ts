@@ -5,4 +5,8 @@ export interface CitySearchResult {
 
 export type ShopWithIndexObject = Shop & { index: number };
 
-type ChangeShopEvent = CustomEvent<number>;
+export type ChangeShopEvent = CustomEvent<number>;
+
+export interface MapProps {
+  cities: City[];
+}

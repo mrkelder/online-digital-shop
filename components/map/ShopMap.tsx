@@ -12,15 +12,12 @@ import styles from "styles/map.module.css";
 import {
   ChangeShopEvent,
   CitySearchResult,
+  MapProps,
   ShopWithIndexObject
 } from "types/shop-map";
 
 import GMap from "./GMap";
 import Shop from "./Shop";
-
-interface Props {
-  cities: City[];
-}
 
 const citiesToCitySearchResults = (cities: City[]): CitySearchResult[] =>
   cities.map((i, index) => ({ ...i, index }));
@@ -28,7 +25,7 @@ const citiesToCitySearchResults = (cities: City[]): CitySearchResult[] =>
 const shopWithIndexObject = (shops: Shop[]): ShopWithIndexObject[] =>
   shops.map((i, index) => ({ ...i, index }));
 
-const ShopMap: FC<Props> = ({ cities }) => {
+const ShopMap: FC<MapProps> = ({ cities }) => {
   // TODO: add animation for shop list
   const defaultCitySearchList = useMemo(
     () => citiesToCitySearchResults(cities),

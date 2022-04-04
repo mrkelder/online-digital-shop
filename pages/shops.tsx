@@ -1,6 +1,6 @@
-import { GetStaticProps, NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 
-import ShopMap from "components/map/ShopMap";
+import Map from "components/map/Map";
 import MetaHead from "components/meta/MetaHead";
 
 interface Props {
@@ -18,18 +18,18 @@ const ShopsPage: NextPage<Props> = ({ cities }) => (
     />
 
     <h1>{TITLE}</h1>
-    <ShopMap cities={cities} />
+    <Map cities={cities} />
   </div>
 );
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const citiesFetch = await fetch(
     (process.env.NEXT_PUBLIC_HOSTNAME as string) + "/api/getCity"
   );
 
   const cities = await citiesFetch.json();
 
-  return { props: { cities }, revalidate: 10 };
+  return { props: { cities } };
 };
 
 export default ShopsPage;
