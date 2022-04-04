@@ -12,15 +12,13 @@ import GuaranteeIcon from "public/img/guarantee.svg";
 import LikeIcon from "public/img/like.svg";
 import TruckIcon from "public/img/truck.svg";
 import { GetRecommendationsResponse, GetSliderResponse } from "types/api";
-import DTO from "utils/DTO";
-import Firebase from "utils/firebase";
 
 import "swiper/css";
 import "swiper/css/autoplay";
 interface Props {
   slides: GetSliderResponse;
   recommendedItems: GetRecommendationsResponse;
-  geoInfo: GeoInfo;
+  cities: City[];
 }
 
 const advantages = [
@@ -60,10 +58,8 @@ const swiperConfig: SwiperOptions = {
   }
 };
 
-const Home: NextPage<Props> = ({ slides, recommendedItems, geoInfo }) => {
-  const geoInfoCondition =
-    geoInfo.cities.length !== 0 && geoInfo.shops.length !== 0;
-
+const Home: NextPage<Props> = ({ slides, recommendedItems, cities }) => {
+  const geoInfoCondition = cities.length !== 0;
   const isRecommenedItemsEmpty = recommendedItems.length !== 0;
 
   return (
@@ -142,7 +138,7 @@ const Home: NextPage<Props> = ({ slides, recommendedItems, geoInfo }) => {
         </strong>
         <div className="w-full">
           {geoInfoCondition ? (
-            <ShopMap {...{ geoInfo }} />
+            <ShopMap cities={cities} />
           ) : (
             <div className="w-full bg-grey-500 text-white text-xl h-86 flex items-center justify-center text-center px-2 lg:h-130">
               Возникла проблема при загрузке карты
@@ -156,11 +152,12 @@ const Home: NextPage<Props> = ({ slides, recommendedItems, geoInfo }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const firebase = new Firebase();
   const slidesFetch = await fetch(
     (process.env.NEXT_PUBLIC_HOSTNAME as string) + "/api/getSlider"
   );
-
+  const citiesFetch = await fetch(
+    (process.env.NEXT_PUBLIC_HOSTNAME as string) + "/api/getCity"
+  );
   const recommendationsFetch = await fetch(
     (process.env.NEXT_PUBLIC_HOSTNAME as string) + "/api/getRecommendations"
   );
@@ -168,19 +165,10 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const recommendedItems: GetRecommendationsResponse =
     await recommendationsFetch.json();
   const slides: GetSliderResponse = await slidesFetch.json();
-
-  const shops = await firebase.getAllDocumentsInCollection<FirebaseShop>(
-    "shops"
-  );
-  const cities = await firebase.getAllDocumentsInCollection<City>("cities");
-
-  const geoInfo: GeoInfo = {
-    shops: shops.map(shop => DTO.firebaseShopToShop(shop)),
-    cities
-  };
+  const cities = await citiesFetch.json();
 
   return {
-    props: { slides, recommendedItems, geoInfo }
+    props: { slides, recommendedItems, cities }
   };
 };
 

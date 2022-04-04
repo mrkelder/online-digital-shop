@@ -2,16 +2,14 @@ import { GetStaticProps, NextPage } from "next";
 
 import ShopMap from "components/map/ShopMap";
 import MetaHead from "components/meta/MetaHead";
-import DTO from "utils/DTO";
-import Firebase from "utils/firebase";
 
 interface Props {
-  geoInfo: GeoInfo;
+  cities: City[];
 }
 
 const TITLE = "Магазины";
 
-const ShopsPage: NextPage<Props> = ({ geoInfo }) => (
+const ShopsPage: NextPage<Props> = ({ cities }) => (
   <div className="lg:max-w-full lg:mx-auto lg:px-12">
     <MetaHead
       title={TITLE}
@@ -20,23 +18,18 @@ const ShopsPage: NextPage<Props> = ({ geoInfo }) => (
     />
 
     <h1>{TITLE}</h1>
-    <ShopMap {...{ geoInfo }} />
+    <ShopMap cities={cities} />
   </div>
 );
 
 export const getStaticProps: GetStaticProps = async () => {
-  const firebase = new Firebase();
-  const shops = await firebase.getAllDocumentsInCollection<FirebaseShop>(
-    "shops"
+  const citiesFetch = await fetch(
+    (process.env.NEXT_PUBLIC_HOSTNAME as string) + "/api/getCity"
   );
-  const cities = await firebase.getAllDocumentsInCollection<City>("cities");
 
-  const geoInfo: GeoInfo = {
-    shops: shops.map(shop => DTO.firebaseShopToShop(shop)),
-    cities
-  };
+  const cities = await citiesFetch.json();
 
-  return { props: { geoInfo }, revalidate: 10 };
+  return { props: { cities }, revalidate: 10 };
 };
 
 export default ShopsPage;

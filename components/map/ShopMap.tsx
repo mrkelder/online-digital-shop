@@ -2,8 +2,6 @@ import {
   FC,
   useState,
   FormEventHandler,
-  useReducer,
-  Reducer,
   useMemo,
   useCallback,
   useEffect
@@ -11,134 +9,109 @@ import {
 
 import useMatchMedia from "hooks/useMatchMedia";
 import styles from "styles/map.module.css";
+import {
+  ChangeShopEvent,
+  CitySearchResult,
+  ShopWithIndexObject
+} from "types/shop-map";
 
 import GMap from "./GMap";
 import Shop from "./Shop";
 
-interface SearchInfo {
-  chosenCityId: City["id"];
-  chosenShop: Shop;
-  searchResults: City[];
+interface Props {
+  cities: City[];
 }
 
-type ChosenCityId = { type: "change-city"; payload: City["id"] };
-type ChosenShop = { type: "change-shop"; payload: Shop };
-type CitySearchResults = {
-  type: "change-city-search-results";
-  payload: City[];
-};
+const citiesToCitySearchResults = (cities: City[]): CitySearchResult[] =>
+  cities.map((i, index) => ({ ...i, index }));
 
-type MenuAction = CitySearchResults | ChosenCityId | ChosenShop;
+const shopWithIndexObject = (shops: Shop[]): ShopWithIndexObject[] =>
+  shops.map((i, index) => ({ ...i, index }));
 
-type MapSearchReducer = Reducer<SearchInfo, MenuAction>;
-
-const mapInfoReducer: MapSearchReducer = (state, action) => {
-  switch (action.type) {
-    case "change-city":
-      return { ...state, chosenCityId: action.payload };
-    case "change-shop":
-      return { ...state, chosenShop: action.payload };
-    case "change-city-search-results":
-      return { ...state, searchResults: action.payload };
-    default:
-      throw new Error("Unexpected menu state behavior: " + process.cwd);
-  }
-};
-
-const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
+const ShopMap: FC<Props> = ({ cities }) => {
   // TODO: add animation for shop list
-  const INITIAL_MAP_INFO: SearchInfo = {
-    chosenCityId: geoInfo.cities[0].id,
-    chosenShop: geoInfo.shops.find(
-      i => i.city === geoInfo.cities[0].id
-    ) as Shop,
-    searchResults: geoInfo.cities
-  };
+  const defaultCitySearchList = useMemo(
+    () => citiesToCitySearchResults(cities),
+    [cities]
+  );
 
-  const [searchInfo, searchInfoDispatch] = useReducer<MapSearchReducer>(
-    mapInfoReducer,
-    INITIAL_MAP_INFO
+  const [chosenCityIndex, setChosenCityIndex] = useState(0);
+  const [chosenShopIndex, setChosenShopIndex] = useState(0);
+  const [citySearchResults, setCitySearchResults] = useState(
+    defaultCitySearchList
   );
   const [showShops, setShowShops] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const { isMobile, isLoaded } = useMatchMedia();
-  const { searchResults, chosenCityId } = searchInfo;
-  const resultShops = geoInfo.shops.filter(i => i.city === chosenCityId);
   const shopListStyle = showShops ? "flex" : "hidden";
   const shouldDisplayMobileShops = isMobile !== null && isMobile && isLoaded;
+
+  const currentCity: City = useMemo(
+    () => cities[chosenCityIndex],
+    [cities, chosenCityIndex]
+  );
+
+  const currentShop: ShopWithIndexObject = useMemo(
+    () => ({ ...currentCity.shops[chosenShopIndex], index: chosenShopIndex }),
+    [chosenShopIndex, currentCity.shops]
+  );
 
   const memoizedGMap = useMemo(
     () => (
       <GMap
-        currentShop={searchInfo.chosenShop}
-        allShopsInCurrentCity={geoInfo.shops.filter(
-          i => i.city === searchInfo.chosenCityId
-        )}
+        currentShop={currentShop}
+        allShopsInCurrentCity={shopWithIndexObject(currentCity.shops)}
       />
     ),
-    [searchInfo.chosenShop, searchInfo.chosenCityId, geoInfo.shops]
+    [currentCity.shops, currentShop]
   );
 
   const toggleShopList = () => {
     setShowShops(!showShops);
   };
 
-  function selectCityAccordingToValue(value: string) {
+  function findMatchingCities(value: string): CitySearchResult[] {
     try {
-      const regEx = new RegExp("^" + value, "i");
-      const resultCities = geoInfo.cities.filter(i => i.name.match(regEx));
-
-      resultCities.length > 0
-        ? searchInfoDispatch({
-            type: "change-city-search-results",
-            payload: resultCities
-          })
-        : searchInfoDispatch({
-            type: "change-city-search-results",
-            payload: geoInfo.cities
-          });
+      const regEx = new RegExp("^" + value.trim(), "i");
+      const resultCities = defaultCitySearchList.filter(i =>
+        i.name.match(regEx)
+      );
+      return resultCities;
     } catch {
-      searchInfoDispatch({
-        type: "change-city-search-results",
-        payload: geoInfo.cities
-      });
+      return defaultCitySearchList;
     }
   }
 
   const searchCity: FormEventHandler<HTMLInputElement> = event => {
     const { value } = event.target as HTMLInputElement;
     setSearchValue(value);
-    selectCityAccordingToValue(value);
+    const resultCities = findMatchingCities(value);
+    setCitySearchResults(resultCities);
   };
 
   const submitSerach: FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
-    selectCityAccordingToValue(searchValue);
+    const resultCities = findMatchingCities(searchValue);
+    if (resultCities.length !== 0) setChosenCityIndex(resultCities[0].index);
+    setChosenShopIndex(0);
   };
 
-  const chooseShop = useCallback(
-    (shopObj: Shop) => {
-      return () => {
-        if (shopObj.id !== searchInfo.chosenShop.id) {
-          searchInfoDispatch({ type: "change-shop", payload: shopObj });
-        }
-      };
-    },
-    [searchInfo.chosenShop.id]
-  );
-
-  function changeCity(cityId: City["id"]) {
+  const changeShop = useCallback((shopIndex: number) => {
     return () => {
-      if (cityId !== searchInfo.chosenCityId) {
-        searchInfoDispatch({ type: "change-city", payload: cityId });
-        chooseShop(geoInfo.shops.find(i => i.city === cityId) as Shop)();
-      }
+      setChosenShopIndex(shopIndex);
     };
-  }
+  }, []);
+
+  const changeCity = useCallback((cityIndex: number) => {
+    return () => {
+      setChosenShopIndex(0);
+      setChosenCityIndex(cityIndex);
+    };
+  }, []);
 
   useEffect(() => {
-    function handler(event: CustomEvent<Shop>) {
-      searchInfoDispatch({ type: "change-shop", payload: event.detail });
+    function handler(event: ChangeShopEvent) {
+      setChosenShopIndex(event.detail);
     }
 
     const SHOP_LIST_EVENT_NAME = "change-shop";
@@ -150,24 +123,37 @@ const ShopMap: FC<{ geoInfo: GeoInfo }> = ({ geoInfo }) => {
     };
   }, []);
 
-  const shopList = resultShops.map(i => (
-    <Shop
-      key={i.id}
-      shopObj={i}
-      onClick={chooseShop(i)}
-      isSelected={i.id === searchInfo.chosenShop.id}
-    />
-  ));
+  const cityList = useMemo(
+    () =>
+      citySearchResults.length !== 0 ? (
+        citySearchResults.map((i, index) => (
+          <button
+            key={`city_${index}`}
+            className="font-light text-sm w-full text-left"
+            onClick={changeCity(i.index)}
+            type="button"
+          >
+            {i.name}
+          </button>
+        ))
+      ) : (
+        <p className="font-light text-sm w-full text-left">Результатов нет</p>
+      ),
+    [changeCity, citySearchResults]
+  );
 
-  const cityList = searchResults.map(i => (
-    <button
-      key={i.id}
-      className="font-light text-sm w-full text-left"
-      onClick={changeCity(i.id)}
-    >
-      {i.name}
-    </button>
-  ));
+  const shopList = useMemo(
+    () =>
+      currentCity.shops.map((i, index) => (
+        <Shop
+          key={`shop_${index}`}
+          shopObj={i}
+          onClick={changeShop(index)}
+          isSelected={index === chosenShopIndex}
+        />
+      )),
+    [changeShop, chosenShopIndex, currentCity.shops]
+  );
 
   return (
     <div className="relative">
