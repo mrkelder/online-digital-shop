@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-import { SCHEMA_OPTIONS, CITY_MODEL_NAME, SHOP_MODEL_NAME } from "constants/db";
+import { SCHEMA_OPTIONS, SHOP_MODEL_NAME } from "constants/db";
 
 const shopSchema = new Schema(
   {
@@ -8,7 +8,6 @@ const shopSchema = new Schema(
       type: String,
       default: "New London Shop"
     },
-    city: { type: Schema.Types.ObjectId, ref: CITY_MODEL_NAME },
     geo: [Number, Number],
     schedule: [
       {

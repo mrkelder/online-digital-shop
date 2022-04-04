@@ -1,13 +1,15 @@
 import mongoose, { Schema } from "mongoose";
 
-import { CITY_MODEL_NAME, SCHEMA_OPTIONS } from "constants/db";
+import { CITY_MODEL_NAME, SCHEMA_OPTIONS, SHOP_MODEL_NAME } from "constants/db";
+import "models/Shop";
 
 const citySchema = new Schema(
   {
     name: {
       type: String,
       default: "City"
-    }
+    },
+    shops: [{ type: Schema.Types.ObjectId, ref: SHOP_MODEL_NAME }]
   },
   SCHEMA_OPTIONS
 );
