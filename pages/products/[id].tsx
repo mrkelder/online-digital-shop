@@ -81,7 +81,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   const items = useSelector<RootStore>(
     store => store.cart.items
   ) as CartState["items"];
-  const buttonProperty = items.find(i => i.id === itemObj._id)
+  const buttonProperty = items.find(i => i._id === itemObj._id)
     ? { color: "grey", text: "В корзине" }
     : { color: "red", text: "Купить" };
 

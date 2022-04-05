@@ -51,7 +51,7 @@ const CartPage: NextPage = () => {
         <div className="flex flex-col w-full lg:flex-row">
           <ul className="space-y-4 py-4 flex-1">
             {storeItems.map(i => (
-              <CartItem item={i} key={i.id} />
+              <CartItem item={i} key={i._id} />
             ))}
           </ul>
           <div

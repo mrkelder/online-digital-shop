@@ -2,8 +2,8 @@ import { ReduxCartProduct } from "types/cart-reducer";
 
 class DTO {
   public static productToReduxCartProduct(product: Product): ReduxCartProduct {
-    const { id, name, price, photo } = product;
-    return { id, name, price, photo, quantity: 1 };
+    const { _id, name, price, photo } = product;
+    return { _id, name, price, photo, quantity: 1 };
   }
 
   public static categoriesToSubCategoryIds(categories: Category[]) {

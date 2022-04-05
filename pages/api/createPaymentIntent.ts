@@ -1,8 +1,9 @@
+import mongoose from "mongoose";
 import type { NextApiRequest, NextApiResponse } from "next";
 import stripe from "stripe";
 
+import Item from "models/Item";
 import { CreatePaymentIntentResponse } from "types/api";
-import Firebase from "utils/firebase";
 
 interface FailureResolve {
   message: unknown;
@@ -23,34 +24,44 @@ export default async function handler(
 ) {
   if (req.method?.toLocaleLowerCase() === "post") {
     try {
-      const firebase = new Firebase();
-      const items: ReadonlyArray<{ quantity: number; id: string }> = JSON.parse(
-        req.body
-      );
+      await mongoose.connect(process.env.MONGODB_HOST as string);
+      const items: ReadonlyArray<{ quantity: number; _id: string }> =
+        JSON.parse(req.body);
+      const mognodbSearchItems = [];
 
-      const arrayOfIds = items.map(i => i.id);
+      for (const { quantity, _id } of items) {
+        mognodbSearchItems.push(
+          Item.aggregate([
+            { $match: { _id: new mongoose.Types.ObjectId(_id) } },
+            { $addFields: { quantity } },
+            {
+              $project: {
+                name: 1,
+                quantity: 1,
+                price: 1,
+                total: { $multiply: ["$price", "$quantity"] }
+              }
+            }
+          ])
+        );
+      }
 
-      const data = await firebase.getDocumentsByIds<FirebaseProduct>(
-        "products",
-        arrayOfIds
-      );
+      const mongodbItems = (await Promise.all(mognodbSearchItems))
+        .map(i => i[0])
+        .filter(i => i);
 
-      const firebaseProductsIds = data.map(i => i.id);
-
-      const descriptionReadyItems = items.filter(i =>
-        firebaseProductsIds.includes(i.id)
-      );
-
-      const totalPriceInGRN = data.map(i => i.price).reduce((a, b) => a + b, 0);
+      const totalPriceInGRN = mongodbItems
+        .map(i => i.total)
+        .reduce((a, b) => a + b, 0);
       const totalPriceInUSD = Math.ceil(totalPriceInGRN / USDToGRNExchangeRate);
 
-      if (data.length !== 0) {
+      if (mongodbItems.length !== 0) {
         const { client_secret: clientSecret } =
           await stripeObj.paymentIntents.create({
-            amount: totalPriceInUSD * CentsToDollarsRation,
+            amount: +(totalPriceInUSD * CentsToDollarsRation).toFixed(2),
             currency: "USD",
-            description: descriptionReadyItems
-              .map(i => `${i.id} (${i.quantity})`)
+            description: mongodbItems
+              .map(i => `${i._id} (${i.quantity})`)
               .join(", ")
           });
 
@@ -60,10 +71,12 @@ export default async function handler(
           message: "CreatePaymentIntent: unacceptable data has been passed"
         });
       }
-    } catch {
+    } catch (err) {
       res.status(500).json({
         message: "CreatePaymentIntent: server couldn't handle this request"
       });
+    } finally {
+      await mongoose.disconnect();
     }
   } else {
     res

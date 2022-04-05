@@ -32,20 +32,20 @@ const CartItem: FC<Props> = ({ item }) => {
   }
 
   const removeItem = () => {
-    dispatch({ type: "cart/removeItem", payload: item.id });
+    dispatch({ type: "cart/removeItem", payload: item._id });
   };
 
   const incItemQuantity = () => {
     dispatch({
       type: "cart/changeQuantity",
-      payload: { id: item.id, quantity: item.quantity + 1 }
+      payload: { id: item._id, quantity: item.quantity + 1 }
     });
   };
 
   const decItemQuantity = () => {
     dispatch({
       type: "cart/changeQuantity",
-      payload: { id: item.id, quantity: item.quantity - 1 }
+      payload: { id: item._id, quantity: item.quantity - 1 }
     });
   };
 
@@ -57,7 +57,7 @@ const CartItem: FC<Props> = ({ item }) => {
     >
       <div className="relative w-16 h-16">
         <Image
-          src={item.photo?.image2x as string}
+          src={(process.env.NEXT_PUBLIC_STATIC_HOST as string) + item.photo}
           alt="Фото товара"
           layout="fill"
           objectFit="contain"
@@ -67,7 +67,7 @@ const CartItem: FC<Props> = ({ item }) => {
       </div>
       <div className="flex-1 flex flex-col px-2 relative lg:flex-row lg:items-center">
         <div className="pr-4 lg:w-2/4">
-          <Link href={`/products/${item.id}`}>
+          <Link href={`/products/${item._id}`}>
             <a className="text-sm lg:text-lg" itemProp="url">
               {item.name}
             </a>

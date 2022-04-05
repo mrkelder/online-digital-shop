@@ -1,6 +1,6 @@
 export type ReduxCartProduct = Pick<
   Product,
-  "id" | "name" | "photo" | "price"
+  "_id" | "name" | "photo" | "price"
 > & { quantity: number };
 
 export interface CartState {
