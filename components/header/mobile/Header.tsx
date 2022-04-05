@@ -14,7 +14,7 @@ import findSubCategories from "utils/findSubCategories";
 
 import MobileDialog from "../../MobileDialog";
 import Loading from "./Loading";
-import SubCategory from "./SubCategory";
+import SubCategories from "./SubCategories";
 
 /**
  * @type {0} - menu is closed
@@ -139,7 +139,7 @@ const MobileMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
                 ))}
             </div>
             {subCategories && (
-              <SubCategory
+              <SubCategories
                 isOpened={menuState === 2}
                 closeSubMenu={changeState("open-menu")}
                 closeMenu={changeState("close")}

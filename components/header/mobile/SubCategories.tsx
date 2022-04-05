@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import Tab from "components/header/Tab";
 import ArrowIcon from "public/img/arrow.svg";
 
-const SubCategory: FC<{
+const SubCategories: FC<{
   isOpened: boolean;
   closeSubMenu: () => void;
   closeMenu: () => void;
@@ -50,4 +50,4 @@ const SubCategory: FC<{
   );
 };
 
-export default SubCategory;
+export default SubCategories;
