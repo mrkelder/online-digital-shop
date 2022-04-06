@@ -2,24 +2,20 @@ import { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
 
 import MetaHead from "components/meta/MetaHead";
-import DTO from "utils/DTO";
-import Firebase from "utils/firebase";
-
 interface Props {
   category: Category;
-  subcategories: SubCategory[];
 }
 
-const CategoryPage: NextPage<Props> = ({ category, subcategories }) => {
+const CategoryPage: NextPage<Props> = ({ category }) => {
   return (
     <div>
       <MetaHead title={category.name} noindex />
 
       <h1>{category.name}</h1>
       <ul>
-        {subcategories.map(i => (
-          <li key={i.id} className="bg-white px-5 py-2.5 shadow-xl mb-2">
-            <Link href={`/catalog?id=${i.id}`}>
+        {category.subCategories.map(i => (
+          <li key={i._id} className="bg-white px-5 py-2.5 shadow-xl mb-2">
+            <Link href={`/catalog?id=${i._id}`}>
               <a className="text-2xl">{i.name}</a>
             </Link>
           </li>
@@ -29,27 +25,18 @@ const CategoryPage: NextPage<Props> = ({ category, subcategories }) => {
   );
 };
 
-const firebase = new Firebase();
-
 export const getServerSideProps: GetServerSideProps = async context => {
   const { id } = context.query;
 
-  const category = (
-    await firebase.getDocumentsByIds<Category>("categories", [id as string])
-  )[0];
-
-  if (!category) {
-    return {
-      notFound: true
-    };
+  if (id) {
+    const categoryFetch = await fetch(
+      process.env.NEXT_PUBLIC_HOSTNAME + "/api/getCategory/" + id
+    );
+    const category = (await categoryFetch.json()) as Category;
+    return { props: { category } };
   }
 
-  const subcategories = await firebase.getDocumentsByIds<SubCategory>(
-    "subcategories",
-    DTO.categoriesToSubCategoryIds([category])
-  );
-
-  return { props: { subcategories, category } };
+  return { notFound: true };
 };
 
 export default CategoryPage;

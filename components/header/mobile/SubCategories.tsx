@@ -16,12 +16,15 @@ const SubCategories: FC<{
 
   function changeLink(link: string) {
     return () => {
+      console.log(link);
+
       closeMenu();
       push(link);
     };
   }
 
   const translate = isOpened ? "translate-x-0" : "translate-x-full";
+
   return (
     <div
       className={`absolute top-0 left-0 w-full h-screen bg-white z-20 transition-transform transform ${translate}`}
@@ -39,9 +42,9 @@ const SubCategories: FC<{
       <div className="lex flex-col overflow-y-auto h-full flex-1 relative">
         {subCategories.map(i => (
           <Tab
-            key={i.id}
+            key={i._id}
             name={i.name}
-            onClick={changeLink(`/catalog?id=${i.id}`)}
+            onClick={changeLink(`/catalog?id=${i._id}`)}
             tabIndex={tabIndex}
           />
         ))}

@@ -1,11 +1,14 @@
 import { FC } from "react";
 
+import Image from "next/image";
+
 import ArrowIcon from "public/img/arrow.svg";
 
 interface Props {
   onClick: () => void;
   onMouseEnter?: () => void;
   showIcon?: boolean;
+  icon?: string;
   name: string;
   focused?: boolean;
   tabIndex?: number;
@@ -17,7 +20,8 @@ const Tab: FC<Props> = ({
   name,
   focused,
   onMouseEnter,
-  tabIndex
+  tabIndex,
+  icon
 }) => {
   const background = focused ? "bg-grey-75" : "bg-white focus:bg-grey-75";
   return (
@@ -29,7 +33,17 @@ const Tab: FC<Props> = ({
       onMouseEnter={onMouseEnter}
       tabIndex={tabIndex}
     >
-      <span className="mr-5 text-xs">icon</span>
+      {icon && (
+        <div className="w-5 h-5 mr-3 relative">
+          <Image
+            src={process.env.NEXT_PUBLIC_STATIC_HOST + icon}
+            layout="fill"
+            alt="Иконка"
+            objectFit="contain"
+            objectPosition="50%"
+          />
+        </div>
+      )}
       <p className="flex-1 text-left text-base lg:text-xl lg:font-light">
         {name}
       </p>

@@ -14,7 +14,11 @@ const categorySchema = new Schema(
     },
     subCategories: [
       { type: Schema.Types.ObjectId, ref: SUB_CATEGORY_MODEL_NAME }
-    ]
+    ],
+    icon: {
+      type: String,
+      required: true
+    }
   },
   SCHEMA_OPTIONS
 );
