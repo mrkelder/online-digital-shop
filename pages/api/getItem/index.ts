@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import Item from "models/Item";
+import { GetItemsResponse } from "types/api";
 
 import "models/Characteristic";
 
@@ -23,7 +24,7 @@ function matchCharacteristics(queryCharacteristicsArray: string[]) {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse<GetItemsResponse | string>
 ) {
   try {
     await mongoose.connect(process.env.MONGODB_HOST as string);
