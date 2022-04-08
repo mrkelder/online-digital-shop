@@ -12,10 +12,12 @@ const characteristicSchema = new Schema(
       type: String,
       default: "Characteristic"
     },
-    subCategories: {
-      type: Schema.Types.ObjectId,
-      ref: SUB_CATEGORY_MODEL_NAME
-    },
+    subCategories: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: SUB_CATEGORY_MODEL_NAME
+      }
+    ],
     values: [String]
   },
   SCHEMA_OPTIONS
