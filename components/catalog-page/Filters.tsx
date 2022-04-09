@@ -9,9 +9,13 @@ import Input from "components/Input";
 import { CHANGE_FILTERS_EVENT_NAME } from "constants/catalog";
 import { GetItemsResponse } from "types/api";
 import { ChangeFiltersEventDetail } from "types/catalog";
-import type { CharacteristicQuery } from "utils/fetchCatalog";
 
 type PriceFilterField = "min" | "max";
+
+interface CharacteristicQuery {
+  valueIndex: number;
+  id: string;
+}
 
 interface Props {
   queryPrice: { min: number; max: number };
