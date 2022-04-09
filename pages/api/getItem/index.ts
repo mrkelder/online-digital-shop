@@ -74,7 +74,7 @@ export default async function handler(
       {
         $project: { name: 1, characteristics: 1, photo: 1, price: 1, rating: 1 }
       }
-    ])) as unknown as GetItemsResponse["items"];
+    ])) as GetItemsResponse["items"];
 
     const characteristics = await Characteristic.find({
       ...(subCategoryId && {

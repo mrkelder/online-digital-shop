@@ -6,7 +6,7 @@ export interface GetItemsResponse {
   items: Pick<
     Product,
     "_id" | "photo" | "name" | "characteristics" | "rating" | "price"
-  >;
+  >[];
   minPrice: number;
   maxPrice: number;
   characteristics: Characteristic[];
