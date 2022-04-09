@@ -9,6 +9,11 @@ import MetaHead from "components/meta/MetaHead";
 import MobileDialog from "components/MobileDialog";
 import MobileSlideMenu from "components/MobileSlideMenu";
 import Card from "components/product-card/Card";
+import {
+  ITEMS_PER_PAGE,
+  DEFAULT_PAGE,
+  CHANGE_FILTERS_EVENT_NAME
+} from "constants/catalog";
 import useMatchMedia from "hooks/useMatchMedia";
 import CrossIcon from "public/img/cross.svg";
 import { GetItemsResponse } from "types/api";
@@ -27,10 +32,6 @@ interface Props {
 type PageNumberFromQuery = string | string[] | undefined | number;
 
 const TITLE = "Каталог";
-const ITEMS_PER_PAGE = 10; // FIXME: extract
-const FIRST_PAGE = 1; // FIXME: extract
-const DEFAULT_PAGE = FIRST_PAGE; // FIXME: extract
-const CHANGE_FILTERS_EVENT_NAME = "change-filters"; // FIXME: extract
 
 function getQuantityOfPages(amountOfProducts: number): number {
   return Math.ceil(amountOfProducts / ITEMS_PER_PAGE);
@@ -39,7 +40,7 @@ function getQuantityOfPages(amountOfProducts: number): number {
 function validatePage(page: PageNumberFromQuery): number {
   // FIXME: extract
   if (checkForNumberOrString(page)) {
-    return Math.max(Number(page ?? DEFAULT_PAGE), FIRST_PAGE);
+    return Math.max(Number(page ?? DEFAULT_PAGE), DEFAULT_PAGE);
   }
   return DEFAULT_PAGE;
 }
@@ -60,6 +61,7 @@ const CatalogPage: NextPage<Props> = ({
   // FIXME: make window size available with redux
   // FIXME: when you reload page with chosen filters they don't visually appear as chosen on the reloaded page
   // FIXME: filters can only show the items that are eligible to ALL criterias
+  // TODO: when some option is not available, make it disabled
 
   const router = useRouter();
   const [areMobileFiltersOpened, setAreMobileFiltersOpened] = useState(false);
@@ -91,7 +93,7 @@ const CatalogPage: NextPage<Props> = ({
             ...(minPrice !== min && { min }),
             ...(maxPrice !== max && { max }),
             c: values.map(i => `${i.id}.${i.valueIndex}`),
-            page: FIRST_PAGE
+            page: DEFAULT_PAGE
           }
         },
         undefined,
@@ -99,7 +101,7 @@ const CatalogPage: NextPage<Props> = ({
           shallow: true
         }
       );
-      setCurrentPage(FIRST_PAGE);
+      setCurrentPage(DEFAULT_PAGE);
     }
 
     addEventListener(
@@ -235,13 +237,10 @@ const CatalogPage: NextPage<Props> = ({
               <p className="font-bold font-light ">Фильтры</p>
             </div>
             <Filters
-              {...{
-                queryPrice,
-                minPrice,
-                maxPrice,
-                characteristics
-              }}
-              filterEventName={CHANGE_FILTERS_EVENT_NAME}
+              queryPrice={queryPrice}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+              characteristics={characteristics}
             />
           </MobileSlideMenu>
         </MobileDialog>
@@ -260,7 +259,6 @@ const CatalogPage: NextPage<Props> = ({
                 minPrice={minPrice}
                 maxPrice={maxPrice}
                 characteristics={characteristics}
-                filterEventName={CHANGE_FILTERS_EVENT_NAME}
               />
             )}
           </div>

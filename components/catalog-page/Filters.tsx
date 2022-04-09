@@ -6,6 +6,7 @@ import ReactSlider from "react-slider";
 import Button from "components/Button";
 import ContentWrapper from "components/ContentWrapper";
 import Input from "components/Input";
+import { CHANGE_FILTERS_EVENT_NAME } from "constants/catalog";
 import { GetItemsResponse } from "types/api";
 import { ChangeFiltersEventDetail } from "types/catalog";
 import type { CharacteristicQuery } from "utils/fetchCatalog";
@@ -17,15 +18,13 @@ interface Props {
   maxPrice: number;
   minPrice: number;
   characteristics: GetItemsResponse["characteristics"];
-  filterEventName: string;
 }
 
 const Filters: FC<Props> = ({
   queryPrice,
   minPrice,
   maxPrice,
-  characteristics,
-  filterEventName
+  characteristics
 }) => {
   const router = useRouter();
   const characteristicsQuery = useRef<Set<string>>(new Set());
@@ -92,7 +91,7 @@ const Filters: FC<Props> = ({
 
     const detail: ChangeFiltersEventDetail = { min, max, route, values };
 
-    const changeFiltersEvent = new CustomEvent(filterEventName, {
+    const changeFiltersEvent = new CustomEvent(CHANGE_FILTERS_EVENT_NAME, {
       detail
     });
     dispatchEvent(changeFiltersEvent);

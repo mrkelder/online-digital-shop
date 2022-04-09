@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { NextApiRequest, NextApiResponse } from "next";
 
+import { DEFAULT_PAGE, ITEMS_PER_PAGE } from "constants/catalog";
 import Characteristic from "models/Characteristic";
 import Item from "models/Item";
 import { GetItemsResponse } from "types/api";
@@ -9,8 +10,6 @@ import "models/Characteristic";
 
 const MIN_PRICE = 0;
 const MAX_PRICE = Number.MAX_SAFE_INTEGER;
-const DEFAULT_PAGE = 1; // FIXME: extract
-const ITEMS_PER_PAGE = 10; // FIXME: extract
 const DEFAULT_SKIP = DEFAULT_PAGE - 1;
 const DEFAULT_LIMIT = DEFAULT_PAGE * ITEMS_PER_PAGE;
 
