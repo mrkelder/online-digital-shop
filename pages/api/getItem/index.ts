@@ -82,8 +82,8 @@ export default async function handler(
       })
     });
 
-    const minPrice = await getPrice(-1, subCategoryId);
-    const maxPrice = await getPrice(1, subCategoryId);
+    const maxPrice = await getPrice(-1, subCategoryId);
+    const minPrice = await getPrice(1, subCategoryId);
 
     res.json({ items, minPrice, maxPrice, characteristics });
   } catch (err) {
