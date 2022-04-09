@@ -9,8 +9,25 @@ import "models/Characteristic";
 
 const MIN_PRICE = 0;
 const MAX_PRICE = Number.MAX_SAFE_INTEGER;
-const DEFAULT_PAGE = 1;
-const ITEMS_PER_PAGE = 10;
+const DEFAULT_PAGE = 1; // FIXME: extract
+const ITEMS_PER_PAGE = 10; // FIXME: extract
+const DEFAULT_SKIP = DEFAULT_PAGE - 1;
+const DEFAULT_LIMIT = DEFAULT_PAGE * ITEMS_PER_PAGE;
+
+function getSkipAndLimitValues(page: unknown): {
+  skip: number;
+  limit: number;
+} {
+  if (typeof page === "number") {
+    const skip = (+page - 1) * ITEMS_PER_PAGE;
+    const limit = +page * ITEMS_PER_PAGE;
+    return {
+      skip: Math.max(skip, DEFAULT_SKIP),
+      limit: Math.max(limit, DEFAULT_LIMIT)
+    };
+  }
+  return { skip: DEFAULT_SKIP, limit: DEFAULT_LIMIT };
+}
 
 function matchCharacteristics(queryCharacteristicsArray: string[]) {
   return queryCharacteristicsArray.map(i => ({
@@ -68,10 +85,6 @@ export default async function handler(
         }
       },
       {
-        $skip: (pageNumber - 1) * ITEMS_PER_PAGE
-      },
-      { $limit: pageNumber * ITEMS_PER_PAGE },
-      {
         $project: { name: 1, characteristics: 1, photo: 1, price: 1, rating: 1 }
       }
     ])) as GetItemsResponse["items"];
@@ -85,7 +98,15 @@ export default async function handler(
     const maxPrice = await getPrice(-1, subCategoryId);
     const minPrice = await getPrice(1, subCategoryId);
 
-    res.json({ items, minPrice, maxPrice, characteristics });
+    const { skip, limit } = getSkipAndLimitValues(pageNumber);
+
+    res.json({
+      items: items.slice(skip, limit),
+      minPrice,
+      maxPrice,
+      characteristics,
+      totalQuantityOfItems: items.length
+    });
   } catch (err) {
     res.status(500).send("GetItem: something went wrong");
   } finally {

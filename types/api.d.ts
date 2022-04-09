@@ -10,6 +10,7 @@ export interface GetItemsResponse {
   minPrice: number;
   maxPrice: number;
   characteristics: Characteristic[];
+  totalQuantityOfItems: number;
 }
 
 export type GetSliderResponse = Array<{ mobile: string; desktop: string }>;
