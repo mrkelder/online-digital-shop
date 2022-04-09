@@ -11,62 +11,37 @@ import MobileSlideMenu from "components/MobileSlideMenu";
 import Card from "components/product-card/Card";
 import useMatchMedia from "hooks/useMatchMedia";
 import CrossIcon from "public/img/cross.svg";
-import fetchCatalog, { CharacteristicQuery } from "utils/fetchCatalog";
-import Firebase from "utils/firebase";
+import { GetItemsResponse } from "types/api";
+import { ChangeFiltersEventDetail } from "types/catalog";
 
 interface Props {
-  products: FirebaseProduct[];
-  allProducts: FirebaseProduct[];
-  characteristics: Characteristic[];
+  items: GetItemsResponse["items"];
+  characteristics: GetItemsResponse["characteristics"];
   minPrice: number;
   maxPrice: number;
   queryPrice: { min: number; max: number };
   page: number;
-  totalQuantitiyOfPages: number;
+  totalQuantityOfPages: number;
 }
 
 type PageNumberFromQuery = string | string[] | undefined | number;
 
-// FIXME: DRY
-interface ChangeFiltersEventDetail {
-  min: number;
-  max: number;
-  route: string;
-  values: ReadonlyArray<CharacteristicQuery>;
-}
-
 const TITLE = "Каталог";
-const ITEMS_PER_PAGE = 10;
-const FIRST_PAGE = 1;
-const DEFAULT_PAGE = FIRST_PAGE;
-const DEFAULT_SKIP = DEFAULT_PAGE - 1;
-const DEFAULT_LIMIT = DEFAULT_PAGE * ITEMS_PER_PAGE;
-const CHANGE_FILTERS_EVENT_NAME = "change-filters";
+const ITEMS_PER_PAGE = 10; // FIXME: extract
+const FIRST_PAGE = 1; // FIXME: extract
+const DEFAULT_PAGE = FIRST_PAGE; // FIXME: extract
+const CHANGE_FILTERS_EVENT_NAME = "change-filters"; // FIXME: extract
 
-function getAmountOfPages(amountOfProducts: number): number {
+function getQuantityOfPages(amountOfProducts: number): number {
   return Math.ceil(amountOfProducts / ITEMS_PER_PAGE);
 }
 
 function validatePage(page: PageNumberFromQuery): number {
+  // FIXME: extract
   if (checkForNumberOrString(page)) {
     return Math.max(Number(page ?? DEFAULT_PAGE), FIRST_PAGE);
   }
   return DEFAULT_PAGE;
-}
-
-function getSkipAndLimitValues(page: PageNumberFromQuery): {
-  skip: number;
-  limit: number;
-} {
-  if (checkForNumberOrString(page)) {
-    const skip = (Number(page) - 1) * ITEMS_PER_PAGE;
-    const limit = Number(page) * ITEMS_PER_PAGE;
-    return {
-      skip: Math.max(skip, DEFAULT_SKIP),
-      limit: Math.max(limit, DEFAULT_LIMIT)
-    };
-  }
-  return { skip: DEFAULT_SKIP, limit: DEFAULT_LIMIT };
 }
 
 function checkForNumberOrString(value: any): boolean {
@@ -74,14 +49,13 @@ function checkForNumberOrString(value: any): boolean {
 }
 
 const CatalogPage: NextPage<Props> = ({
-  products,
   characteristics,
-  allProducts,
   minPrice,
   maxPrice,
   queryPrice,
   page,
-  totalQuantitiyOfPages
+  totalQuantityOfPages,
+  items
 }) => {
   // FIXME: make window size available with redux
   // FIXME: when you reload page with chosen filters they don't visually appear as chosen on the reloaded page
@@ -89,9 +63,9 @@ const CatalogPage: NextPage<Props> = ({
 
   const router = useRouter();
   const [areMobileFiltersOpened, setAreMobileFiltersOpened] = useState(false);
-  const [quantityOfPages, setQuantityOfPages] = useState(totalQuantitiyOfPages);
+  const [quantityOfPages, setQuantityOfPages] = useState(totalQuantityOfPages);
   const [currentPage, setCurrentPage] = useState(page);
-  const [catalog, setCatalog] = useState<FirebaseProduct[]>(products);
+  const [catalog, setCatalog] = useState(items);
   const { isLoaded, isMobile } = useMatchMedia();
 
   const toggleMobileFilters = useCallback(
@@ -142,23 +116,36 @@ const CatalogPage: NextPage<Props> = ({
   }, [maxPrice, minPrice, router]);
 
   useEffect(() => {
+    // FIXME: this effect fetches items for no reason
     async function handle() {
-      const page = validatePage(router.query.page);
-      const { skip, limit } = getSkipAndLimitValues(page);
+      const { subCategoryId, min, max, page, c } = router.query;
+      const actualPage = validatePage(page);
+      const queryCharacteristics = Array.isArray(c) ? c : [c];
 
-      const { items, amountOfItems } = await fetchCatalog(
-        router.query,
-        minPrice,
-        maxPrice,
-        allProducts,
-        skip,
-        limit
+      const queryArray = [
+        subCategoryId ? "subCategoryId=" + subCategoryId : null,
+        min ? "min=" + min : null,
+        max ? "max=" + max : null,
+        page ? "page=" + actualPage : null,
+        c ? queryCharacteristics.map(i => "c=" + i).join("&") : null
+      ].filter(i => i); // FIXME: extract to a function
+
+      const queryString =
+        queryArray.length > 0 ? "?" + queryArray.join("&") : "";
+
+      const fetchCatalog = await fetch(
+        process.env.NEXT_PUBLIC_HOSTNAME + "/api/getItem/" + queryString
       );
+
+      const { items, totalQuantityOfItems }: GetItemsResponse =
+        await fetchCatalog.json();
+
       setCatalog(items);
-      setQuantityOfPages(getAmountOfPages(amountOfItems));
+      setQuantityOfPages(getQuantityOfPages(totalQuantityOfItems));
     }
+
     handle();
-  }, [router.query, maxPrice, minPrice, allProducts]);
+  }, [router.query]);
 
   function buildPagination(
     currentpage: number,
@@ -269,12 +256,10 @@ const CatalogPage: NextPage<Props> = ({
           <div id="desktop-filters">
             {isLoaded && !isMobile && (
               <Filters
-                {...{
-                  queryPrice,
-                  minPrice,
-                  maxPrice,
-                  characteristics
-                }}
+                queryPrice={queryPrice}
+                minPrice={minPrice}
+                maxPrice={maxPrice}
+                characteristics={characteristics}
                 filterEventName={CHANGE_FILTERS_EVENT_NAME}
               />
             )}
@@ -283,12 +268,12 @@ const CatalogPage: NextPage<Props> = ({
             <div className="grid grid-cols-1 self-center gap-10 sm:grid-cols-2">
               {catalog.map(i => (
                 <Card
-                  key={i.id}
+                  key={i._id}
                   rating={i.rating}
                   price={i.price}
                   name={i.name}
                   photo={i.photo}
-                  id={i.id}
+                  _id={i._id}
                 />
               ))}
               {catalog.length === 0 && <b>Ничего не найдено</b>}
@@ -341,59 +326,51 @@ const REDIRECT_CONFIG = {
 };
 
 export const getServerSideProps: GetServerSideProps<Props> = async context => {
-  const firebase = new Firebase();
-  const { id, min, max, page } = context.query;
-  const actualPage = validatePage(page);
-  const { skip, limit } = getSkipAndLimitValues(page);
+  try {
+    const { subCategoryId, min, max, page, c } = context.query;
+    const actualPage = validatePage(page);
 
-  if (!id) return REDIRECT_CONFIG;
+    const queryCharacteristics = Array.isArray(c) ? c : [c];
 
-  const searchConfig: QueryObject = {
-    field: "subcategory",
-    condition: "==",
-    value: id
-  };
+    const queryArray = [
+      subCategoryId ? "subCategoryId=" + subCategoryId : null,
+      min ? "min=" + min : null,
+      max ? "max=" + max : null,
+      page ? "page=" + actualPage : null,
+      c ? queryCharacteristics.map(i => "c=" + i).join("&") : null
+    ].filter(i => i); // FIXME: extract to a function
 
-  const allProducts = await firebase.getDocumentsByQuery<FirebaseProduct>(
-    "products",
-    [searchConfig]
-  );
+    const queryString = queryArray.length > 0 ? "?" + queryArray.join("&") : "";
 
-  if (allProducts.length === 0) return REDIRECT_CONFIG;
+    const fetchCatalog = await fetch(
+      process.env.NEXT_PUBLIC_HOSTNAME + "/api/getItem/" + queryString
+    );
 
-  allProducts.sort((a, b) => a.price - b.price);
-  const minPrice = allProducts[0].price;
-  const maxPrice = allProducts[allProducts.length - 1].price;
-
-  const { items, amountOfItems } = await fetchCatalog(
-    context.query,
-    minPrice,
-    maxPrice,
-    allProducts,
-    skip,
-    limit
-  );
-
-  const characteristics = await firebase.getDocumentsByQuery<Characteristic>(
-    "characteristics",
-    [searchConfig]
-  );
-
-  return {
-    props: {
-      products: items ? items : [],
-      characteristics,
-      allProducts,
+    const {
       minPrice,
       maxPrice,
-      queryPrice: {
-        min: Number(min ?? minPrice),
-        max: Number(max ?? maxPrice)
-      },
-      page: actualPage,
-      totalQuantitiyOfPages: getAmountOfPages(amountOfItems)
-    }
-  };
+      items,
+      characteristics,
+      totalQuantityOfItems
+    }: GetItemsResponse = await fetchCatalog.json();
+
+    return {
+      props: {
+        items: items ? items : [],
+        characteristics,
+        minPrice,
+        maxPrice,
+        queryPrice: {
+          min: Number(min ?? minPrice),
+          max: Number(max ?? maxPrice)
+        },
+        page: actualPage,
+        totalQuantityOfPages: getQuantityOfPages(totalQuantityOfItems)
+      }
+    };
+  } catch {
+    return REDIRECT_CONFIG;
+  }
 };
 
 export default CatalogPage;

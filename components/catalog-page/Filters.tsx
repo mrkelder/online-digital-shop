@@ -6,17 +6,9 @@ import ReactSlider from "react-slider";
 import Button from "components/Button";
 import ContentWrapper from "components/ContentWrapper";
 import Input from "components/Input";
+import { GetItemsResponse } from "types/api";
+import { ChangeFiltersEventDetail } from "types/catalog";
 import type { CharacteristicQuery } from "utils/fetchCatalog";
-
-
-
-// FIXME: DRY
-interface ChangeFiltersEventDetail {
-  min: number;
-  max: number;
-  route: string;
-  values: ReadonlyArray<CharacteristicQuery>;
-}
 
 type PriceFilterField = "min" | "max";
 
@@ -24,7 +16,7 @@ interface Props {
   queryPrice: { min: number; max: number };
   maxPrice: number;
   minPrice: number;
-  characteristics: Characteristic[];
+  characteristics: GetItemsResponse["characteristics"];
   filterEventName: string;
 }
 
@@ -148,19 +140,19 @@ const Filters: FC<Props> = ({
       </div>
       <div className="overflow-y-auto flex-1 lg:space-y-3 lg:mb-3">
         {characteristics.map(c => (
-          <ContentWrapper text={c.name} key={c.id}>
+          <ContentWrapper text={c.name} key={c._id}>
             <ul className="px-3.5 my-1">
               {c.values.map((v, index) => (
-                <li key={v + c.id}>
+                <li key={v + c._id}>
                   <input
                     className="mr-1"
                     onChange={applyCharacteristic}
-                    id={c.id + index}
+                    id={(c._id as string) + index}
                     type="checkbox"
-                    name={c.id}
-                    value={JSON.stringify({ id: c.id, valueIndex: index })}
+                    name={c._id}
+                    value={JSON.stringify({ id: c._id, valueIndex: index })}
                   />
-                  <label htmlFor={c.id + index}>{v}</label>
+                  <label htmlFor={(c._id as string) + index}>{v}</label>
                 </li>
               ))}
             </ul>
