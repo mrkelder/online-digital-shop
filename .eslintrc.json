@@ -19,6 +19,9 @@
           "caseInsensitive": true
         }
       }
-    ]
+    ],
+    "no-alert": "warn",
+    "no-console": "warn",
+    "no-debugger": "warn"
   }
 }
