@@ -3,13 +3,9 @@
 ![Version](https://img.shields.io/github/package-json/v/mrkelder/online-digital-shop?color=green)
 ![Code-Size](https://img.shields.io/github/languages/code-size/mrkelder/online-digital-shop)
 
-It's a pet-project to showcase my general skills in a web development.
+It's a pet-project to showcase my general skills in a web development. This project is about my capability of developing modern e-commerce projects. The project will be polished over time and will be receiving new updates as long as I get new valuable and profound skills. If you're just looking for practice, feel free to copy and modify this code in any way
 
-This project is about my capability of developing modern e-commerce projects.
-
-The project will be polished over time and will be receiving new updates as long as I get new valuable and profound skills.
-
-If you're just looking for practice, feel free to copy and modify this code in any way.
+In case you require static files and mongodb data, you can just download a couple of zip files [here](https://github.com/mrkelder/online-digital-shop/discussions/32)
 
 ## Quick Navigation
 
