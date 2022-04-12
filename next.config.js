@@ -10,7 +10,7 @@ module.exports = {
     return config;
   },
   images: {
-    domains: ["firebasestorage.googleapis.com", "nl.proga.site"]
+    domains: ["nl.proga.site"]
   },
   reactStrictMode: true
 };
