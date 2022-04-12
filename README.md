@@ -54,9 +54,7 @@ Please note that this stack **may change in the future**.
 
 **In the nearest future, the stack above might also include:**
 
-1. MongoDB (replacing firebase firestore)
-2. Mongoose
-3. Docker
+1. Docker
 
 **Excluded technologies:**
 
@@ -71,16 +69,6 @@ To start the application properly you have to specify the following options in *
 - NEXT_PUBLIC_HOSTNAME - the host name of the site (e.g. **http://localhost:port**)
 - NEXT_PUBLIC_STATIC_HOST - the host of a static server (e.g. **http://localhost:port/static/**)
 - MONGODB_HOST - the host of mongodb server (e.g. **mongodb://localhost:port/db**)
-
-### Firebase Data
-
-- NEXT_PUBLIC_API_KEY
-- NEXT_PUBLIC_AUTH_DOMAIN
-- NEXT_PUBLIC_PROJECT_ID
-- NEXT_PUBLIC_STORAGE_BUCKET
-- NEXT_PUBLIC_MESSAGING_SENDER_ID
-- NEXT_PUBLIC_APP_ID
-- NEXT_PUBLIC_MEASUREMENT_ID
 
 ### Stripe Data
 
