@@ -14,7 +14,9 @@ const cartReducer: Reducer<CartState, CartActions> = (
   let newState = state;
   switch (action.type) {
     case "cart/addItem": {
-      const foundIndex = state.items.findIndex(i => i.id === action.payload.id);
+      const foundIndex = state.items.findIndex(
+        i => i._id === action.payload._id
+      );
       if (foundIndex !== -1) newState.items[foundIndex].quantity += 1;
       else {
         newState = {
@@ -26,7 +28,9 @@ const cartReducer: Reducer<CartState, CartActions> = (
     }
 
     case "cart/changeQuantity": {
-      const foundIndex = state.items.findIndex(i => i.id === action.payload.id);
+      const foundIndex = state.items.findIndex(
+        i => i._id === action.payload.id
+      );
       const payloadNumber = action.payload.quantity;
       if (foundIndex !== -1) {
         newState.items[foundIndex].quantity =
@@ -37,7 +41,7 @@ const cartReducer: Reducer<CartState, CartActions> = (
     }
 
     case "cart/removeItem": {
-      newState.items = state.items.filter(i => i.id !== action.payload);
+      newState.items = state.items.filter(i => i._id !== action.payload);
       break;
     }
 

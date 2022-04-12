@@ -4,23 +4,21 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import ArrowButton from "components/ArrowButton";
 import MailNotification from "components/MailNotification";
-import ShopMap from "components/map/ShopMap";
+import Map from "components/map/Map";
 import MetaHead from "components/meta/MetaHead";
 import Card from "components/product-card/Card";
 import Slider from "components/Slider";
 import GuaranteeIcon from "public/img/guarantee.svg";
 import LikeIcon from "public/img/like.svg";
 import TruckIcon from "public/img/truck.svg";
-import DTO from "utils/DTO";
-import Firebase from "utils/firebase";
+import { GetRecommendationsResponse, GetSliderResponse } from "types/api";
 
 import "swiper/css";
 import "swiper/css/autoplay";
-
 interface Props {
-  slides: ReadonlyArray<{ mobile: string; desktop: string }>;
-  reccommendedItems: ReadonlyArray<Product>;
-  geoInfo: GeoInfo;
+  slides: GetSliderResponse;
+  recommendedItems: GetRecommendationsResponse;
+  cities: City[];
 }
 
 const advantages = [
@@ -60,11 +58,8 @@ const swiperConfig: SwiperOptions = {
   }
 };
 
-const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
-  const geoInfoCondition =
-    geoInfo.cities.length !== 0 && geoInfo.shops.length !== 0;
-
-  const isRecommenedItemsEmpty = reccommendedItems.length !== 0;
+const Home: NextPage<Props> = ({ slides, recommendedItems, cities }) => {
+  const isRecommenedItemsEmpty = recommendedItems.length !== 0;
 
   return (
     <>
@@ -110,11 +105,11 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
             <ArrowButton buttonClassName="items_navigation_left" />
           )}
           <Swiper {...swiperConfig}>
-            {reccommendedItems.map(item => (
-              <SwiperSlide key={`slide_${item.id}`}>
+            {recommendedItems.map(({ item }) => (
+              <SwiperSlide key={`slide_${item._id}`}>
                 <div className="w-full flex justify-center">
                   <Card
-                    id={item.id}
+                    _id={item._id}
                     name={item.name}
                     price={item.price}
                     photo={item.photo}
@@ -141,13 +136,7 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
           на карте
         </strong>
         <div className="w-full">
-          {geoInfoCondition ? (
-            <ShopMap {...{ geoInfo }} />
-          ) : (
-            <div className="w-full bg-grey-500 text-white text-xl h-86 flex items-center justify-center text-center px-2 lg:h-130">
-              Возникла проблема при загрузке карты
-            </div>
-          )}
+          <Map cities={cities} />
         </div>
       </section>
       <MailNotification />
@@ -156,40 +145,23 @@ const Home: NextPage<Props> = ({ slides, reccommendedItems, geoInfo }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const firebase = new Firebase();
-  const dbSlides = await firebase.getAllDocumentsInCollection<Slide>("slider");
-  const dbReccommendations =
-    await firebase.getAllDocumentsInCollection<Reccommendation>(
-      "reccommendations"
-    );
-  const slideNames = dbSlides.map(i => i.name);
-
-  const mobile = await firebase.downloadFiles("slider/mobile", slideNames);
-  const desktop = await firebase.downloadFiles("slider/desktop", slideNames);
-
-  const slides = mobile.map((i, index) => ({
-    mobile: i,
-    desktop: desktop[index]
-  }));
-
-  const reccommendations = dbReccommendations.map(i => i.item_id);
-  const reccommendedItems = await firebase.getDocumentsByIds(
-    "products",
-    reccommendations
+  const slidesFetch = await fetch(
+    (process.env.NEXT_PUBLIC_HOSTNAME as string) + "/api/getSlider"
+  );
+  const citiesFetch = await fetch(
+    (process.env.NEXT_PUBLIC_HOSTNAME as string) + "/api/getCity"
+  );
+  const recommendationsFetch = await fetch(
+    (process.env.NEXT_PUBLIC_HOSTNAME as string) + "/api/getRecommendations"
   );
 
-  const shops = await firebase.getAllDocumentsInCollection<FirebaseShop>(
-    "shops"
-  );
-  const cities = await firebase.getAllDocumentsInCollection<City>("cities");
-
-  const geoInfo: GeoInfo = {
-    shops: shops.map(shop => DTO.firebaseShopToShop(shop)),
-    cities
-  };
+  const recommendedItems: GetRecommendationsResponse =
+    await recommendationsFetch.json();
+  const slides: GetSliderResponse = await slidesFetch.json();
+  const cities = await citiesFetch.json();
 
   return {
-    props: { slides, reccommendedItems, geoInfo }
+    props: { slides, recommendedItems, cities }
   };
 };
 

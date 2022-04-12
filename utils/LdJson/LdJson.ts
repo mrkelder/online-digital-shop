@@ -18,12 +18,12 @@ class LdJson {
     return JSON.stringify(obj);
   }
 
-  public static itemProduct(itemObj: Product) {
+  public static itemProduct(itemObj: Item) {
     const obj = {
       "@context": "https://schema.org/",
       "@type": "Product",
       name: itemObj.name,
-      image: [itemObj.photo?.image2x],
+      image: [itemObj.photo],
       description: itemObj.description,
       aggregateRating: {
         "@type": "AggregateRating",

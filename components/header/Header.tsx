@@ -1,39 +1,29 @@
-import { FC, useContext, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 import useMatchMedia from "hooks/useMatchMedia";
-import DTO from "utils/DTO";
-import { FirebaseContext } from "utils/firebase";
+import { GetCategoriesResponse } from "types/api";
 
 import DesktopMenu from "./desktop/Header";
 import MobileMenu from "./mobile/Header";
 
 const Header: FC = () => {
-  const firebase = useContext(FirebaseContext);
-  const [catalogInfo, setCatalogInfo] = useState<CatalogInfo>({
-    categories: null,
-    subcategories: null
-  });
+  const [categories, setCategories] = useState<GetCategoriesResponse>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const { isMobile, isLoaded } = useMatchMedia();
 
   useEffect(() => {
-    async function fetch() {
+    async function fetchCategories() {
       setCategoriesLoading(true);
-      const categories = await firebase.getAllDocumentsInCollection<Category>(
-        "categories"
+      const categoriesFetch = await fetch(
+        process.env.NEXT_PUBLIC_HOSTNAME + "/api/getCategory"
       );
 
-      const subcategories = await firebase.getDocumentsByIds<SubCategory>(
-        "subcategories",
-        DTO.categoriesToSubCategoryIds(categories)
-      );
-
-      setCatalogInfo({ categories, subcategories });
+      setCategories(await categoriesFetch.json());
       setCategoriesLoading(false);
     }
 
-    fetch();
-  }, [firebase]);
+    fetchCategories();
+  }, []);
 
   return (
     <>
@@ -44,9 +34,15 @@ const Header: FC = () => {
         {isLoaded && (
           <>
             {isMobile ? (
-              <MobileMenu {...{ catalogInfo }} isLoading={categoriesLoading} />
+              <MobileMenu
+                categories={categories}
+                isLoading={categoriesLoading}
+              />
             ) : (
-              <DesktopMenu {...{ catalogInfo }} isLoading={categoriesLoading} />
+              <DesktopMenu
+                categories={categories}
+                isLoading={categoriesLoading}
+              />
             )}
           </>
         )}

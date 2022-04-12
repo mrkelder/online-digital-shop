@@ -169,8 +169,9 @@ const CheckoutPage: NextPage = () => {
       const endpoint =
         process.env.NEXT_PUBLIC_HOSTNAME + "/api/createPaymentIntent";
       const body = JSON.stringify(
-        cartItems.map(i => ({ id: i.id, quantity: i.quantity }))
+        cartItems.map(i => ({ _id: i._id, quantity: i.quantity }))
       );
+
       const result = await fetch(endpoint, {
         method: "POST",
         body

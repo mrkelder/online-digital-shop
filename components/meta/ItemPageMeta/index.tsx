@@ -6,7 +6,7 @@ import MetaHead from "../MetaHead";
 import MetaScript from "../MetaScript";
 
 interface Props {
-  itemObj: Product;
+  itemObj: Item;
 }
 
 const ItemPageMeta: FC<Props> = ({ itemObj }) => {
@@ -23,7 +23,10 @@ const ItemPageMeta: FC<Props> = ({ itemObj }) => {
       </MetaScript>
 
       <meta itemProp="name" content={itemObj.name} />
-      <link itemProp="image" href={itemObj.photo?.image2x} />
+      <link
+        itemProp="image"
+        href={(process.env.NEXT_PUBLIC_STATIC_HOST as string) + itemObj.photo}
+      />
       <meta itemProp="description" content={itemObj.description} />
 
       <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>

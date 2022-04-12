@@ -10,11 +10,10 @@ import CrossIcon from "public/img/cross.svg";
 import Logo from "public/img/logo.svg";
 import MenuIcon from "public/img/menu.svg";
 import SearchIcon from "public/img/search.svg";
-import findSubCategories from "utils/findSubCategories";
 
 import MobileDialog from "../../MobileDialog";
 import Loading from "./Loading";
-import SubCategory from "./SubCategory";
+import SubCategories from "./SubCategories";
 
 /**
  * @type {0} - menu is closed
@@ -57,21 +56,18 @@ const staticPages = [
 ];
 
 interface Props {
-  catalogInfo: CatalogInfo;
+  categories: Category[];
   isLoading: boolean;
 }
 
-const MobileMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
+const MobileMenu: FC<Props> = ({ categories, isLoading }) => {
   const [menuState, dispatch] = useReducer(menuReducer, DEFAULT_MENU_STATE);
   const [navState, setNavState] = useState(false);
-  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const [chosenCategoryIndex, setChosenCategoryIndex] = useState<number>(0);
   const tabIndex = menuState === 1 ? 0 : -1;
 
-  // TODO: add icons instead of "icon"
-
-  const switchSubCategories = (categoryId: string) => {
-    const data = findSubCategories(catalogInfo, categoryId);
-    setSubCategories(data);
+  const switchSubCategories = (categoryIndex: number) => {
+    setChosenCategoryIndex(categoryIndex);
   };
 
   function changeState(type: MenuActions) {
@@ -80,9 +76,9 @@ const MobileMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
     };
   }
 
-  function TabClick(categoryId: string) {
+  function tabClick(categoryIndex: number) {
     return () => {
-      switchSubCategories(categoryId);
+      switchSubCategories(categoryIndex);
       changeState("open-sub-menu")();
     };
   }
@@ -127,23 +123,24 @@ const MobileMenu: FC<Props> = ({ catalogInfo, isLoading }) => {
             </div>
             <div className="flex flex-col overflow-y-auto h-full flex-1 relative">
               <Loading {...{ isLoading }} />
-              {catalogInfo.categories &&
-                catalogInfo.categories.map(i => (
+              {categories.length > 0 &&
+                categories.map((i, index) => (
                   <Tab
                     name={i.name}
-                    key={i.id}
-                    onClick={TabClick(i.id)}
+                    key={i._id}
+                    onClick={tabClick(index)}
                     tabIndex={tabIndex}
                     showIcon
+                    icon={i.icon}
                   />
                 ))}
             </div>
-            {subCategories && (
-              <SubCategory
+            {categories.length > 0 && (
+              <SubCategories
                 isOpened={menuState === 2}
                 closeSubMenu={changeState("open-menu")}
                 closeMenu={changeState("close")}
-                {...{ subCategories }}
+                subCategories={categories[chosenCategoryIndex].subCategories}
               />
             )}
           </div>

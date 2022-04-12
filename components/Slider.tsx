@@ -27,7 +27,11 @@ const Slider: FC<{
         <Swiper {...swiperParams}>
           {slides.map((i, index) => (
             <SwiperSlide key={`slide_${index}`}>
-              <Picture image1x={i.mobile} image2x={i.desktop} alt="Баннер" />
+              <Picture
+                image1x={process.env.NEXT_PUBLIC_STATIC_HOST + i.mobile}
+                image2x={process.env.NEXT_PUBLIC_STATIC_HOST + i.desktop}
+                alt="Баннер"
+              />
             </SwiperSlide>
           ))}
         </Swiper>
