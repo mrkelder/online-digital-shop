@@ -17,8 +17,6 @@ export default async function handler(
       "subCategories"
     );
 
-    console.log(data);
-
     if (!data) {
       res.status(404).send("GetCategory/[id]: not found");
       return;

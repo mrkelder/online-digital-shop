@@ -16,8 +16,6 @@ const SubCategories: FC<{
 
   function changeLink(link: string) {
     return () => {
-      console.log(link);
-
       closeMenu();
       push(link);
     };
