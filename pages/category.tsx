@@ -15,7 +15,7 @@ const CategoryPage: NextPage<Props> = ({ category }) => {
       <ul>
         {category.subCategories.map(i => (
           <li key={i._id} className="bg-white px-5 py-2.5 shadow-xl mb-2">
-            <Link href={`/catalog?id=${i._id}`}>
+            <Link href={`/catalog?subCategoryId=${i._id}`}>
               <a className="text-2xl">{i.name}</a>
             </Link>
           </li>
