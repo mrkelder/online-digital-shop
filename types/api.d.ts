@@ -20,3 +20,5 @@ export type GetRecommendationsResponse = Array<{
 }>;
 
 export type GetCategoriesResponse = Category[];
+
+export type GetCitiesResponse = City[];
