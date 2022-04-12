@@ -8,13 +8,10 @@ import DefaultPhoto from "public/img/default-photo.jpg";
 import starActiveIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
 
-type Props = Pick<
-  FirebaseProduct,
-  "rating" | "price" | "name" | "photo" | "id"
->;
+type Props = Pick<Item, "rating" | "price" | "name" | "photo" | "_id">;
 
-const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
-  const link = `/products/${id}`;
+const Card: FC<Props> = ({ rating, price, name, photo, _id }) => {
+  const link = `/products/${_id}`;
 
   return (
     <div
@@ -27,7 +24,7 @@ const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
           {photo ? (
             // FIXME: Keep in mind, the photo won't probably work on server
             <Image
-              src={photo.image2x}
+              src={(process.env.NEXT_PUBLIC_STATIC_HOST as string) + photo}
               alt="Фотография товара"
               objectFit="contain"
               layout="fill"
@@ -89,7 +86,7 @@ const Card: FC<Props> = ({ rating, price, name, photo, id }) => {
 };
 
 Card.defaultProps = {
-  id: "none",
+  _id: "none",
   rating: 3,
   price: 9999,
   name: "Смартфон Samsung Galaxy A52 4/128GB Black Смартфон Samsung Galaxy A52 4/128GB Black Смартфон Samsung Galaxy A52 4/128GB Black Смартфон Samsung Galaxy A52 4/128GB Black",

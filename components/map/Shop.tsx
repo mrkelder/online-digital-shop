@@ -36,6 +36,8 @@ const Shop: FC<Props> = ({ onClick, shopObj, isSelected }) => {
   const buttonStyle = isSelected ? "bg-grey-100" : "bg-white";
   const timetableStyle = isSelected ? "flex" : "hidden";
 
+  const [lat, lng] = shopObj.geo.map(i => i.toString());
+
   return (
     <button
       {...{ onClick }}
@@ -46,8 +48,8 @@ const Shop: FC<Props> = ({ onClick, shopObj, isSelected }) => {
       <meta itemProp="currenciesAccepted" content="UAH" />
       <meta itemProp="priceRange" content="$$" />
       <div itemProp="geo">
-        <meta itemProp="latitude" content={shopObj.geo.lat.toString()} />
-        <meta itemProp="longitude" content={shopObj.geo.lng.toString()} />
+        <meta itemProp="latitude" content={lat} />
+        <meta itemProp="longitude" content={lng} />
       </div>
 
       <div className="flex justify-between items-center w-full">

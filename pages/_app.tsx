@@ -7,12 +7,6 @@ import { Provider } from "react-redux";
 import Layout from "components/Layout";
 import { storeInitiator, epmtyStore } from "store/index";
 import cookieInitiator from "utils/Cookie/cookieInitiator";
-import Firebase from "utils/firebase";
-import { FirebaseContext } from "utils/firebase";
-
-// FIXME: order imports
-
-const firebase = new Firebase();
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [store, setStore] = useState(epmtyStore);
@@ -24,13 +18,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <FirebaseContext.Provider value={firebase}>
-      <Provider store={store}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </Provider>
-    </FirebaseContext.Provider>
+    <Provider store={store}>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </Provider>
   );
 }
 

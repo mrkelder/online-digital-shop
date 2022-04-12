@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import Tab from "components/header/Tab";
 import ArrowIcon from "public/img/arrow.svg";
 
-const SubCategory: FC<{
+const SubCategories: FC<{
   isOpened: boolean;
   closeSubMenu: () => void;
   closeMenu: () => void;
@@ -22,6 +22,7 @@ const SubCategory: FC<{
   }
 
   const translate = isOpened ? "translate-x-0" : "translate-x-full";
+
   return (
     <div
       className={`absolute top-0 left-0 w-full h-screen bg-white z-20 transition-transform transform ${translate}`}
@@ -39,9 +40,9 @@ const SubCategory: FC<{
       <div className="lex flex-col overflow-y-auto h-full flex-1 relative">
         {subCategories.map(i => (
           <Tab
-            key={i.id}
+            key={i._id}
             name={i.name}
-            onClick={changeLink(`/catalog?id=${i.id}`)}
+            onClick={changeLink(`/catalog?subCategoryId=${i._id}`)}
             tabIndex={tabIndex}
           />
         ))}
@@ -50,4 +51,4 @@ const SubCategory: FC<{
   );
 };
 
-export default SubCategory;
+export default SubCategories;

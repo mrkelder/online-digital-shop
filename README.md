@@ -23,6 +23,7 @@ If you're just looking for practice, feel free to copy and modify this code in a
 
 - [Architecture](./docs/ARCHITECTURE.md)
 - [API Endpoints](./docs/API_ENDPOINTS.md)
+- [Deployment](./docs/DEPLOYMENT.md)
 
 ## Setting Up
 
@@ -43,18 +44,21 @@ The tech stack I'm currently using in this project:
 1. ReactJS
 2. NextJS
 3. Redux
-4. Firebase
+4. NGINX
 5. Google Maps API
 6. Tailwindcss
 7. Stripe
+8. MongoDB (Mongoose)
 
 Please note that this stack **may change in the future**.
 
-_In the nearest future, the stack above might also include:_
+**In the nearest future, the stack above might also include:**
 
-1. MongoDB (replacing firebase firestore)
-2. Mongoose
-3. Docker
+1. Docker
+
+**Excluded technologies:**
+
+1. Firebase
 
 ## Environment Variables
 
@@ -62,17 +66,9 @@ To start the application properly you have to specify the following options in *
 
 - NEXT_PUBLIC_MAPS_API_KEY - Google Maps API key
 - NEXT_PUBLIC_MAPS_ID - Google Maps Id (for styling purposes)
-- NEXT_PUBLIC_HOSTNAME - the host name of the site
-
-### Firebase Data
-
-- NEXT_PUBLIC_API_KEY
-- NEXT_PUBLIC_AUTH_DOMAIN
-- NEXT_PUBLIC_PROJECT_ID
-- NEXT_PUBLIC_STORAGE_BUCKET
-- NEXT_PUBLIC_MESSAGING_SENDER_ID
-- NEXT_PUBLIC_APP_ID
-- NEXT_PUBLIC_MEASUREMENT_ID
+- NEXT_PUBLIC_HOSTNAME - the host name of the site (e.g. **http://localhost:port**)
+- NEXT_PUBLIC_STATIC_HOST - the host of a static server (e.g. **http://localhost:port/static/**)
+- MONGODB_HOST - the host of mongodb server (e.g. **mongodb://localhost:port/db**)
 
 ### Stripe Data
 

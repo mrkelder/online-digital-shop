@@ -1,4 +1,11 @@
-import { ChangeEvent, ChangeEventHandler, FC, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  FC,
+  useEffect,
+  useRef,
+  useState
+} from "react";
 
 import { useRouter } from "next/router";
 import ReactSlider from "react-slider";
@@ -6,34 +13,29 @@ import ReactSlider from "react-slider";
 import Button from "components/Button";
 import ContentWrapper from "components/ContentWrapper";
 import Input from "components/Input";
-import type { CharacteristicQuery } from "utils/fetchCatalog";
-
-
-
-// FIXME: DRY
-interface ChangeFiltersEventDetail {
-  min: number;
-  max: number;
-  route: string;
-  values: ReadonlyArray<CharacteristicQuery>;
-}
+import { CHANGE_FILTERS_EVENT_NAME } from "constants/catalog";
+import { GetItemsResponse } from "types/api";
+import { ChangeFiltersEventDetail } from "types/catalog";
 
 type PriceFilterField = "min" | "max";
+
+interface CharacteristicQuery {
+  valueIndex: number;
+  id: string;
+}
 
 interface Props {
   queryPrice: { min: number; max: number };
   maxPrice: number;
   minPrice: number;
-  characteristics: Characteristic[];
-  filterEventName: string;
+  characteristics: GetItemsResponse["characteristics"];
 }
 
 const Filters: FC<Props> = ({
   queryPrice,
   minPrice,
   maxPrice,
-  characteristics,
-  filterEventName
+  characteristics
 }) => {
   const router = useRouter();
   const characteristicsQuery = useRef<Set<string>>(new Set());
@@ -100,11 +102,15 @@ const Filters: FC<Props> = ({
 
     const detail: ChangeFiltersEventDetail = { min, max, route, values };
 
-    const changeFiltersEvent = new CustomEvent(filterEventName, {
+    const changeFiltersEvent = new CustomEvent(CHANGE_FILTERS_EVENT_NAME, {
       detail
     });
     dispatchEvent(changeFiltersEvent);
   }
+
+  useEffect(() => {
+    setPriceFilter({ min: minPrice, max: maxPrice });
+  }, [minPrice, maxPrice]);
 
   return (
     <>
@@ -130,7 +136,7 @@ const Filters: FC<Props> = ({
             <Input
               underline
               placeholder="Цена"
-              value={priceFilter.min}
+              value={priceFilter.min ?? ""}
               type="number"
               onChange={priceInputHanlder("min")}
             />
@@ -139,7 +145,7 @@ const Filters: FC<Props> = ({
             <Input
               underline
               placeholder="Цена"
-              value={priceFilter.max}
+              value={priceFilter.max ?? ""}
               type="number"
               onChange={priceInputHanlder("max")}
             />
@@ -148,19 +154,19 @@ const Filters: FC<Props> = ({
       </div>
       <div className="overflow-y-auto flex-1 lg:space-y-3 lg:mb-3">
         {characteristics.map(c => (
-          <ContentWrapper text={c.name} key={c.id}>
+          <ContentWrapper text={c.name} key={c._id}>
             <ul className="px-3.5 my-1">
               {c.values.map((v, index) => (
-                <li key={v + c.id}>
+                <li key={v + c._id}>
                   <input
                     className="mr-1"
                     onChange={applyCharacteristic}
-                    id={c.id + index}
+                    id={(c._id as string) + index}
                     type="checkbox"
-                    name={c.id}
-                    value={JSON.stringify({ id: c.id, valueIndex: index })}
+                    name={c._id}
+                    value={JSON.stringify({ id: c._id, valueIndex: index })}
                   />
-                  <label htmlFor={c.id + index}>{v}</label>
+                  <label htmlFor={(c._id as string) + index}>{v}</label>
                 </li>
               ))}
             </ul>

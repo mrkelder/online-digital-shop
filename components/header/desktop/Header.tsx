@@ -19,11 +19,11 @@ const staticLinks = [
 ];
 
 interface Props {
-  catalogInfo: CatalogInfo;
+  categories: Category[];
   isLoading: boolean;
 }
 
-const DesktopMenu: FC<Props> = ({ catalogInfo }) => {
+const DesktopMenu: FC<Props> = ({ categories }) => {
   const [isCatalogOpened, setIsCatalogOpened] = useState(false);
 
   const itemsQuantity = useSelector<RootStore>(
@@ -95,7 +95,9 @@ const DesktopMenu: FC<Props> = ({ catalogInfo }) => {
             >
               Каталог товаров
             </button>
-            <Catalog isOpened={isCatalogOpened} {...{ catalogInfo }} />
+            {categories.length > 0 && (
+              <Catalog isOpened={isCatalogOpened} categories={categories} />
+            )}
           </div>
           <div className="flex-1 mx-5">
             <Input type="search" underline placeholder="Поиск" />

@@ -3,21 +3,19 @@ import { FC, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 
 import Tab from "components/header/Tab";
-import findSubCategories from "utils/findSubCategories";
 
 import SubCategory from "./SubCategory";
 
 interface Props {
   isOpened: boolean;
-  catalogInfo: CatalogInfo;
+  categories: Category[];
 }
 
-const Catalog: FC<Props> = ({ isOpened, catalogInfo }) => {
+const Catalog: FC<Props> = ({ isOpened, categories }) => {
   const display = isOpened ? "flex" : "hidden";
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const [chosenCategory, setChosenCategory] = useState("");
-  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const [chosenCategoryIndex, setChosenCategoryIndex] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,11 +54,9 @@ const Catalog: FC<Props> = ({ isOpened, catalogInfo }) => {
     window.dispatchEvent(event);
   };
 
-  function chooseCategory(categoryId: string) {
+  function chooseCategory(categoryIndex: number) {
     return () => {
-      setChosenCategory(categoryId);
-      const data = findSubCategories(catalogInfo, categoryId);
-      setSubCategories(data);
+      setChosenCategoryIndex(categoryIndex);
     };
   }
 
@@ -74,21 +70,21 @@ const Catalog: FC<Props> = ({ isOpened, catalogInfo }) => {
         ref={menuRef}
       >
         <div className="col-span-1">
-          {catalogInfo.categories &&
-            catalogInfo.categories.map(i => (
+          {categories &&
+            categories.map((i, index) => (
               <Tab
-                key={i.id}
+                key={i._id}
                 name={i.name}
-                onMouseEnter={chooseCategory(i.id)}
-                onClick={navigateToCategoryPage(i.id)}
-                focused={chosenCategory === i.id}
+                onMouseEnter={chooseCategory(index)}
+                onClick={navigateToCategoryPage(i._id as string)}
+                focused={index === chosenCategoryIndex}
                 showIcon
               />
             ))}
         </div>
         <div className="col-span-3 bg-grey-75 flex flex-col flex-wrap p-3 space-y-4">
-          {subCategories.map(i => (
-            <SubCategory key={i.id} subCategory={i} />
+          {categories[chosenCategoryIndex].subCategories.map(i => (
+            <SubCategory key={i._id} subCategory={i} />
           ))}
         </div>
       </div>

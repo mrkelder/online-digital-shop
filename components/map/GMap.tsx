@@ -3,26 +3,27 @@ import { FC, useEffect, useRef } from "react";
 import { Loader, LoaderOptions } from "@googlemaps/js-api-loader";
 
 import useMatchMedia from "hooks/useMatchMedia";
+import { ChangeShopEvent, ShopWithIndexObject } from "types/shop-map";
 
 interface Props {
-  allShopsInCurrentCity: Shop[];
-  currentShop: Shop;
+  allShopsInCurrentCity: ShopWithIndexObject[];
+  currentShop: ShopWithIndexObject;
+}
+
+interface GoogleMapMarker {
+  marker: google.maps.Marker;
+  listener: google.maps.MapsEventListener;
 }
 
 const GMap: FC<Props> = ({ allShopsInCurrentCity, currentShop }) => {
-  const markersRef = useRef<
-    Array<{
-      marker: google.maps.Marker;
-      listener: google.maps.MapsEventListener;
-    }>
-  >([]);
+  const markersRef = useRef<Array<GoogleMapMarker>>([]);
   const mapRef = useRef<google.maps.Map | null>(null);
   const { isMobile, isLoaded } = useMatchMedia();
   const GOOGLE_ELEMENT_NAME = "google-map-el";
 
   useEffect(() => {
     async function createMap() {
-      const { lng, lat } = currentShop.geo;
+      const [lat, lng] = currentShop.geo;
 
       if (!mapRef.current) {
         const options: LoaderOptions = {
@@ -48,6 +49,7 @@ const GMap: FC<Props> = ({ allShopsInCurrentCity, currentShop }) => {
 
       removeMarkers();
       drawMarker(mapRef.current, currentShop);
+
       for (const i of allShopsInCurrentCity) {
         drawMarker(mapRef.current, i);
       }
@@ -64,15 +66,20 @@ const GMap: FC<Props> = ({ allShopsInCurrentCity, currentShop }) => {
     markersRef.current = [];
   }
 
-  function drawMarker(map: google.maps.Map, shopObj: Shop) {
+  function drawMarker(map: google.maps.Map, shopObj: ShopWithIndexObject) {
+    const [lat, lng] = shopObj.geo;
+    const geoInfo = { lng, lat };
+
     const marker = new google.maps.Marker({
-      position: shopObj.geo,
+      position: geoInfo,
       map,
       title: shopObj.name
     });
     const listener = marker.addListener("click", () => {
-      mapRef.current?.panTo(shopObj.geo);
-      const event = new CustomEvent("change-shop", { detail: shopObj });
+      mapRef.current?.panTo(geoInfo);
+      const event = new CustomEvent("change-shop", {
+        detail: shopObj.index
+      });
       dispatchEvent(event);
     });
     markersRef.current.push({ marker, listener });
