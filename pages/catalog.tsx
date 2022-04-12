@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { GetServerSideProps, NextPage } from "next";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 
 import Button from "components/Button";
 import Filters from "components/catalog-page/Filters";
@@ -33,8 +33,8 @@ type PageNumberFromQuery = string | string[] | undefined | number;
 
 const TITLE = "Каталог";
 
-function getQuantityOfPages(amountOfProducts: number): number {
-  return Math.ceil(amountOfProducts / ITEMS_PER_PAGE);
+function checkForNumberOrString(value: any): boolean {
+  return typeof value === "string" || typeof value === "number";
 }
 
 function validatePage(page: PageNumberFromQuery): number {
@@ -45,8 +45,41 @@ function validatePage(page: PageNumberFromQuery): number {
   return DEFAULT_PAGE;
 }
 
-function checkForNumberOrString(value: any): boolean {
-  return typeof value === "string" || typeof value === "number";
+function returnValueOrFirstArrayValue(
+  value?: string | string[]
+): string | undefined {
+  const totalValue = Array.isArray(value) ? value[0] : value;
+  return totalValue;
+}
+
+function queryStringCreator(
+  subCategoryId?: string | string[],
+  minPrice?: string | string[],
+  maxPrice?: string | string[],
+  page?: string | string[],
+  c?: string | string[]
+): string {
+  const querySubCategoryId = returnValueOrFirstArrayValue(subCategoryId);
+  const queryMinPrice = returnValueOrFirstArrayValue(minPrice);
+  const queryMaxPrice = returnValueOrFirstArrayValue(maxPrice);
+  const queryPagePrice = validatePage(returnValueOrFirstArrayValue(page));
+  const queryCharacteristics = Array.isArray(c) ? c : [c];
+
+  const queryArray = [
+    subCategoryId ? "subCategoryId=" + querySubCategoryId : null,
+    minPrice ? "min=" + queryMinPrice : null,
+    maxPrice ? "max=" + queryMaxPrice : null,
+    page ? "page=" + queryPagePrice : null,
+    c ? queryCharacteristics.map(i => "c=" + i).join("&") : null
+  ].filter(i => i);
+
+  const queryString = queryArray.length > 0 ? "?" + queryArray.join("&") : "";
+
+  return queryString;
+}
+
+function getQuantityOfPages(amountOfProducts: number): number {
+  return Math.ceil(amountOfProducts / ITEMS_PER_PAGE);
 }
 
 const CatalogPage: NextPage<Props> = ({
@@ -121,19 +154,7 @@ const CatalogPage: NextPage<Props> = ({
     // FIXME: this effect fetches items for no reason
     async function handle() {
       const { subCategoryId, min, max, page, c } = router.query;
-      const actualPage = validatePage(page);
-      const queryCharacteristics = Array.isArray(c) ? c : [c];
-
-      const queryArray = [
-        subCategoryId ? "subCategoryId=" + subCategoryId : null,
-        min ? "min=" + min : null,
-        max ? "max=" + max : null,
-        page ? "page=" + actualPage : null,
-        c ? queryCharacteristics.map(i => "c=" + i).join("&") : null
-      ].filter(i => i); // FIXME: extract to a function
-
-      const queryString =
-        queryArray.length > 0 ? "?" + queryArray.join("&") : "";
+      const queryString = queryStringCreator(subCategoryId, min, max, page, c);
 
       const fetchCatalog = await fetch(
         process.env.NEXT_PUBLIC_HOSTNAME + "/api/getItem/" + queryString
@@ -147,7 +168,7 @@ const CatalogPage: NextPage<Props> = ({
     }
 
     handle();
-  }, [router.query]);
+  }, [router]);
 
   function buildPagination(
     currentpage: number,
@@ -328,17 +349,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
     const { subCategoryId, min, max, page, c } = context.query;
     const actualPage = validatePage(page);
 
-    const queryCharacteristics = Array.isArray(c) ? c : [c];
-
-    const queryArray = [
-      subCategoryId ? "subCategoryId=" + subCategoryId : null,
-      min ? "min=" + min : null,
-      max ? "max=" + max : null,
-      page ? "page=" + actualPage : null,
-      c ? queryCharacteristics.map(i => "c=" + i).join("&") : null
-    ].filter(i => i); // FIXME: extract to a function
-
-    const queryString = queryArray.length > 0 ? "?" + queryArray.join("&") : "";
+    const queryString = queryStringCreator(subCategoryId, min, max, page, c);
 
     const fetchCatalog = await fetch(
       process.env.NEXT_PUBLIC_HOSTNAME + "/api/getItem/" + queryString
