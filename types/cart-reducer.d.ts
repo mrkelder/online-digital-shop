@@ -1,5 +1,5 @@
 export type ReduxCartProduct = Pick<
-  Product,
+  Item,
   "_id" | "name" | "photo" | "price"
 > & { quantity: number };
 
@@ -11,11 +11,11 @@ type RestoreAction = { type: "cart/restore" };
 
 type AddItemAction = { type: "cart/addItem"; payload: ReduxCartProduct };
 
-type RemoveItemAction = { type: "cart/removeItem"; payload: Product["id"] };
+type RemoveItemAction = { type: "cart/removeItem"; payload: Item["id"] };
 
 type ChangeQuantityAction = {
   type: "cart/changeQuantity";
-  payload: { id: Product["id"]; quantity: number };
+  payload: { id: Item["id"]; quantity: number };
 };
 
 export type CartActions =

@@ -1,7 +1,7 @@
 import { ReduxCartProduct } from "types/cart-reducer";
 
 class DTO {
-  public static productToReduxCartProduct(product: Product): ReduxCartProduct {
+  public static productToReduxCartProduct(product: Item): ReduxCartProduct {
     const { _id, name, price, photo } = product;
     return { _id, name, price, photo, quantity: 1 };
   }

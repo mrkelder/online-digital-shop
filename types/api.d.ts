@@ -4,7 +4,7 @@ export interface CreatePaymentIntentResponse {
 
 export interface GetItemsResponse {
   items: Pick<
-    Product,
+    Item,
     "_id" | "photo" | "name" | "characteristics" | "rating" | "price"
   >[];
   minPrice: number;
@@ -16,7 +16,7 @@ export interface GetItemsResponse {
 export type GetSliderResponse = Array<{ mobile: string; desktop: string }>;
 
 export type GetRecommendationsResponse = Array<{
-  item: Pick<Product, "name" | "photo" | "price" | "rating" | "_id">;
+  item: Pick<Item, "name" | "photo" | "price" | "rating" | "_id">;
 }>;
 
 export type GetCategoriesResponse = Category[];

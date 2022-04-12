@@ -3,7 +3,7 @@ import { FC } from "react";
 import styles from "styles/item-page.module.css";
 import DTO from "utils/DTO";
 
-const Characteristics: FC<{ characteristics: Product["characteristics"] }> = ({
+const Characteristics: FC<{ characteristics: Item["characteristics"] }> = ({
   characteristics
 }) => {
   return (

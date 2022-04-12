@@ -29,7 +29,7 @@ import "swiper/css";
 import "swiper/css/free-mode";
 
 interface Props {
-  itemObj: Product;
+  itemObj: Item;
 }
 
 const SWIPER_LEFT_NAVIGATION = "photos_navigation_left";
@@ -327,7 +327,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
     const itemFetch = await fetch(
       process.env.NEXT_PUBLIC_HOSTNAME + "/api/getItem/" + context.params?.id
     );
-    const itemObj: Product = await itemFetch.json();
+    const itemObj: Item = await itemFetch.json();
     return {
       props: { itemObj }
     };

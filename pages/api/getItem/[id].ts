@@ -9,7 +9,7 @@ import "models/Shop";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Product | string>
+  res: NextApiResponse<Item | string>
 ) {
   await mongoose.connect(process.env.MONGODB_HOST as string);
   try {

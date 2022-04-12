@@ -8,7 +8,7 @@ import DefaultPhoto from "public/img/default-photo.jpg";
 import starActiveIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
 
-type Props = Pick<Product, "rating" | "price" | "name" | "photo" | "_id">;
+type Props = Pick<Item, "rating" | "price" | "name" | "photo" | "_id">;
 
 const Card: FC<Props> = ({ rating, price, name, photo, _id }) => {
   const link = `/products/${_id}`;
