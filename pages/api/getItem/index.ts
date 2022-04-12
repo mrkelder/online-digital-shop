@@ -95,7 +95,9 @@ export default async function handler(
     });
 
     const maxPrice = await getPrice(-1, subCategoryId);
-    const minPrice = await getPrice(1, subCategoryId);
+    const temporalMinPrice = await getPrice(1, subCategoryId);
+    const minPrice =
+      temporalMinPrice === maxPrice ? MIN_PRICE : temporalMinPrice;
 
     const { skip, limit } = getSkipAndLimitValues(pageNumber);
 
