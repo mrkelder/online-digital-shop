@@ -1,4 +1,11 @@
-import { ChangeEvent, ChangeEventHandler, FC, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  FC,
+  useEffect,
+  useRef,
+  useState
+} from "react";
 
 import { useRouter } from "next/router";
 import ReactSlider from "react-slider";
@@ -101,6 +108,10 @@ const Filters: FC<Props> = ({
     dispatchEvent(changeFiltersEvent);
   }
 
+  useEffect(() => {
+    setPriceFilter({ min: minPrice, max: maxPrice });
+  }, [minPrice, maxPrice]);
+
   return (
     <>
       <div className="px-3.5 py-2 lg:pt-0 lg:mb-3">
@@ -125,7 +136,7 @@ const Filters: FC<Props> = ({
             <Input
               underline
               placeholder="Цена"
-              value={priceFilter.min}
+              value={priceFilter.min ?? ""}
               type="number"
               onChange={priceInputHanlder("min")}
             />
@@ -134,7 +145,7 @@ const Filters: FC<Props> = ({
             <Input
               underline
               placeholder="Цена"
-              value={priceFilter.max}
+              value={priceFilter.max ?? ""}
               type="number"
               onChange={priceInputHanlder("max")}
             />
