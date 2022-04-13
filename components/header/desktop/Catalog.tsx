@@ -3,6 +3,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 
 import Tab from "components/header/Tab";
+import { CLOSE_CATALOG_EVENT_NAME } from "constants/header";
 
 import SubCategory from "./SubCategory";
 
@@ -50,7 +51,7 @@ const Catalog: FC<Props> = ({ isOpened, categories }) => {
   };
 
   const dispatchCloseEvent = () => {
-    const event = new Event("close-catalog");
+    const event = new Event(CLOSE_CATALOG_EVENT_NAME);
     window.dispatchEvent(event);
   };
 
