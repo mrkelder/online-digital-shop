@@ -22,3 +22,7 @@ export type GetRecommendationsResponse = Array<{
 export type GetCategoriesResponse = Category[];
 
 export type GetCitiesResponse = City[];
+
+export type SearchItemsResponse = Array<
+  Pick<Item, "_id" | "photo" | "price" | "name">
+>;
