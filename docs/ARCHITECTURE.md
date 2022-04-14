@@ -8,7 +8,7 @@ There are some conventions in this project that must be followed to keep the cod
 - [Constants](#constants)
 - [Hooks](#hooks)
 - [Types](#types)
-- [Functions](#)
+- [Functions](#functions)
 
 ## Utilities
 
