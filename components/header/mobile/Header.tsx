@@ -1,19 +1,20 @@
-import { FC, useReducer, useState } from "react";
+import { FC, useEffect, useReducer, useState } from "react";
 
 import Link from "next/link";
 
+import Loading from "components/header/mobile/Loading";
+import SubCategories from "components/header/mobile/SubCategories";
+import Search from "components/header/search/Search";
 import Tab from "components/header/Tab";
+import MobileDialog from "components/MobileDialog";
 import MobileSlideMenu from "components/MobileSlideMenu";
+import { CLOSE_MOBILE_SEARCH_DIALOG_EVENT_NAME } from "constants/header";
 import ArrowIcon from "public/img/arrow.svg";
 import BurgerIcon from "public/img/burger.svg";
 import CrossIcon from "public/img/cross.svg";
 import Logo from "public/img/logo.svg";
 import MenuIcon from "public/img/menu.svg";
 import SearchIcon from "public/img/search.svg";
-
-import MobileDialog from "../../MobileDialog";
-import Loading from "./Loading";
-import SubCategories from "./SubCategories";
 
 /**
  * @type {0} - menu is closed
@@ -63,7 +64,8 @@ interface Props {
 const MobileMenu: FC<Props> = ({ categories, isLoading }) => {
   const [menuState, dispatch] = useReducer(menuReducer, DEFAULT_MENU_STATE);
   const [navState, setNavState] = useState(false);
-  const [chosenCategoryIndex, setChosenCategoryIndex] = useState<number>(0);
+  const [isSerachOpened, setIsSearchOpened] = useState(false);
+  const [chosenCategoryIndex, setChosenCategoryIndex] = useState(0);
   const tabIndex = menuState === 1 ? 0 : -1;
 
   const switchSubCategories = (categoryIndex: number) => {
@@ -85,8 +87,24 @@ const MobileMenu: FC<Props> = ({ categories, isLoading }) => {
 
   const toggleNav = () => setNavState(!navState);
 
+  const openMobileSearch = () => setIsSearchOpened(true);
+
+  useEffect(() => {
+    function handler() {
+      setIsSearchOpened(false);
+    }
+
+    addEventListener(CLOSE_MOBILE_SEARCH_DIALOG_EVENT_NAME, handler);
+
+    return () => {
+      removeEventListener(CLOSE_MOBILE_SEARCH_DIALOG_EVENT_NAME, handler);
+    };
+  }, []);
+
   return (
     <div className="flex items-center h-14 px-3 w-full">
+      <Search isMobileSearchOpened={isSerachOpened} />
+
       <Link href="/">
         <a className="text-red w-8">
           <Logo />
@@ -103,7 +121,7 @@ const MobileMenu: FC<Props> = ({ categories, isLoading }) => {
         <span className="text-base">Каталог товаров</span>
       </button>
       <div className="flex-1" />
-      <button className="text-grey-300 w-5 mr-4">
+      <button className="text-grey-300 w-5 mr-4" onClick={openMobileSearch}>
         <SearchIcon />
       </button>
       <button className="text-grey-300 w-5" onClick={toggleNav}>

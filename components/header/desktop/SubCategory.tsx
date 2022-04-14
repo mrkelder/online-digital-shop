@@ -2,9 +2,11 @@ import { FC } from "react";
 
 import Link from "next/link";
 
+import { CLOSE_CATALOG_EVENT_NAME } from "constants/header";
+
 const SubCategory: FC<{ subCategory: SubCategory }> = ({ subCategory }) => {
   const closeCatalog = () => {
-    const event = new Event("close-catalog");
+    const event = new Event(CLOSE_CATALOG_EVENT_NAME);
     dispatchEvent(event);
   };
 

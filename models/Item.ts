@@ -51,7 +51,5 @@ const itemSchema = new Schema(
   SCHEMA_OPTIONS
 );
 
-itemSchema.index({ name: "text" });
-
 export default mongoose.models[ITEM_MODEL_NAME] ||
   mongoose.model(ITEM_MODEL_NAME, itemSchema);
