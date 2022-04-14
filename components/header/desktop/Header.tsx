@@ -3,12 +3,12 @@ import { FC, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 
-import Input from "components/Input";
 import ArrowIcon from "public/img/arrow.svg";
 import GeoIcon from "public/img/geo-point.svg";
 import Logo from "public/img/logo.svg";
 import type { RootStore } from "types/store";
 
+import Search from "../search/Search";
 import Cart from "./Cart";
 import Catalog from "./Catalog";
 
@@ -99,9 +99,7 @@ const DesktopMenu: FC<Props> = ({ categories }) => {
               <Catalog isOpened={isCatalogOpened} categories={categories} />
             )}
           </div>
-          <div className="flex-1 mx-5">
-            <Input type="search" underline placeholder="Поиск" />
-          </div>
+          <Search />
           <Link href="/cart">
             <a>
               <Cart items={itemsQuantity} />

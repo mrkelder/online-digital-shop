@@ -8,6 +8,7 @@ There are some conventions in this project that must be followed to keep the cod
 - [Constants](#constants)
 - [Hooks](#hooks)
 - [Types](#types)
+- [Functions](#)
 
 ## Utilities
 
@@ -57,3 +58,7 @@ Hooks are located [here](../hooks/). All custom hooks are contained in this fold
 ## Types
 
 Can be found [here](../types/). If you as a developer find some type(s) that are used across around the code base, then it should be moved to a corresponding **.d.ts** file.
+
+## Functions
+
+This folder is located [here](../functions/). This folder is intended for a functionality that's redundant across the code but doesn't fall under any topic to create a theme class

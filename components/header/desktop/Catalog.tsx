@@ -3,6 +3,8 @@ import { FC, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 
 import Tab from "components/header/Tab";
+import { CLOSE_CATALOG_EVENT_NAME } from "constants/header";
+import clickOutside from "functions/clickOutside";
 
 import SubCategory from "./SubCategory";
 
@@ -29,12 +31,8 @@ const Catalog: FC<Props> = ({ isOpened, categories }) => {
   }, [isOpened]);
 
   useEffect(() => {
-    function handleClickOutside(e: Event) {
-      const path = e.composedPath && e.composedPath();
-      if (path && !path.includes(menuRef.current as EventTarget)) {
-        dispatchCloseEvent();
-      }
-    }
+    const handleClickOutside = (e: Event) =>
+      clickOutside(e, menuRef, dispatchCloseEvent);
 
     addEventListener("click", handleClickOutside);
     return () => {
@@ -50,7 +48,7 @@ const Catalog: FC<Props> = ({ isOpened, categories }) => {
   };
 
   const dispatchCloseEvent = () => {
-    const event = new Event("close-catalog");
+    const event = new Event(CLOSE_CATALOG_EVENT_NAME);
     window.dispatchEvent(event);
   };
 

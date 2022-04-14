@@ -10,6 +10,7 @@ In this section you can find all API endpoints, their intentions and return valu
 - [GetItem](#getitem)
 - [GetRecommendations](#getrecommendations)
 - [GetSlider](#getslider)
+- [SearchItems](#searchitems)
 
 ## CreatePaymentIntent
 
@@ -128,4 +129,22 @@ Respondes with a collection of slides for a slider on the main page
 
 ```ts
 type Response = Slide[];
+```
+
+## SearchItems
+
+Method: _GET_
+
+Endpoint: **/api/searchItems**
+
+Looks for the items having the name matching a regular expression from text
+
+```ts
+interface Query {
+  text: string;
+}
+```
+
+```ts
+type Response = Item[];
 ```
