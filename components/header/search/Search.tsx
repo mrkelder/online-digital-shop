@@ -1,8 +1,9 @@
-import { FC, memo, useCallback, useState } from "react";
+import { FC, memo, useCallback, useEffect, useRef, useState } from "react";
 
 import Input from "components/Input";
 import MobileDialog from "components/MobileDialog";
 import { CLOSE_MOBILE_SEARCH_DIALOG_EVENT_NAME } from "constants/header";
+import clickOutside from "functions/clickOutside";
 import useDebounce from "hooks/useDebounce";
 import useMatchMedia from "hooks/useMatchMedia";
 import { SearchItemsResponse } from "types/api";
@@ -16,9 +17,10 @@ interface Props {
 const Search: FC<Props> = ({ isMobileSearchOpened }) => {
   const debounce = useDebounce();
   const { isMobile, isLoaded } = useMatchMedia();
+  const desktopSearchRef = useRef<HTMLDivElement>(null);
   const [itemsList, setItemsList] = useState<SearchItemsResponse>([]);
   const [searchValue, setSearchValue] = useState("");
-  const [areItemsFetched, setAreItemsFetched] = useState(false);
+  const [searchManipultor, setSearchManipulator] = useState(false);
 
   const closeMobileSearchDialog = useCallback(() => {
     const event = new Event(CLOSE_MOBILE_SEARCH_DIALOG_EVENT_NAME);
@@ -29,7 +31,7 @@ const Search: FC<Props> = ({ isMobileSearchOpened }) => {
     e => {
       const value = e.target.value;
 
-      setAreItemsFetched(false);
+      setSearchManipulator(false);
       setSearchValue(value);
       if (value.length > 0) {
         debounce(async () => {
@@ -40,7 +42,7 @@ const Search: FC<Props> = ({ isMobileSearchOpened }) => {
           const items = await fetchItems.json();
 
           setItemsList(items.slice(0, 4));
-          setAreItemsFetched(true);
+          setSearchManipulator(true);
         });
       } else {
         setItemsList([]);
@@ -50,17 +52,27 @@ const Search: FC<Props> = ({ isMobileSearchOpened }) => {
   );
 
   const resetSearch = useCallback(() => {
-    setAreItemsFetched(false);
+    setSearchManipulator(false);
     setSearchValue("");
     setItemsList([]);
     closeMobileSearchDialog();
   }, [closeMobileSearchDialog]);
 
+  useEffect(() => {
+    const handleClickOutside = (e: Event) =>
+      clickOutside(e, desktopSearchRef, () => setSearchManipulator(false));
+
+    addEventListener("click", handleClickOutside);
+    return () => {
+      removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   const showMobile = isMobile && isLoaded;
   const showDesktop = !isMobile && isLoaded;
 
   const itemsNotFound =
-    areItemsFetched && itemsList.length === 0 && searchValue.length > 0;
+    searchManipultor && itemsList.length === 0 && searchValue.length > 0;
 
   return (
     <>
@@ -93,7 +105,7 @@ const Search: FC<Props> = ({ isMobileSearchOpened }) => {
       )}
 
       {showDesktop && (
-        <div className="w-full mx-5 relative">
+        <div className="w-full mx-5 relative" ref={desktopSearchRef}>
           <Input
             type="search"
             underline
@@ -101,20 +113,22 @@ const Search: FC<Props> = ({ isMobileSearchOpened }) => {
             onChange={handleSerachChange}
             value={searchValue}
           />
-          <div className="bg-white absolute w-full box-shadow z-30">
-            {itemsList.map(i => (
-              <SearchItem
-                _id={i._id}
-                name={i.name}
-                price={i.price}
-                photo={i.photo}
-                key={i._id}
-                resetSearch={resetSearch}
-              />
-            ))}
-          </div>
+          {searchManipultor && (
+            <div className="bg-white absolute w-full box-shadow z-30">
+              {itemsList.map(i => (
+                <SearchItem
+                  _id={i._id}
+                  name={i.name}
+                  price={i.price}
+                  photo={i.photo}
+                  key={i._id}
+                  resetSearch={resetSearch}
+                />
+              ))}
+            </div>
+          )}
           {itemsNotFound && (
-            <div className="bg-white absolute w-full box-shadow px-2 py-4 text-grey-600">
+            <div className="bg-white absolute w-full box-shadow px-2 py-4 text-grey-600 z-30">
               Результатов нет
             </div>
           )}
