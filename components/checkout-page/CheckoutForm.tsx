@@ -8,7 +8,7 @@ import {
 
 import Button from "components/Button";
 import LoadingSpinner from "components/LoadingSpinner";
-import { CheckoutFormData } from "utils/Validation";
+import { CheckoutFormData } from "types/checkout";
 
 interface Props {
   swtichToSecondStage: () => void;
