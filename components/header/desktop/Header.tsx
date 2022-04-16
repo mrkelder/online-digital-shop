@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 
+import useLanguage from "hooks/useLanguage";
 import ArrowIcon from "public/img/arrow.svg";
 import GeoIcon from "public/img/geo-point.svg";
 import Logo from "public/img/logo.svg";
@@ -24,6 +25,7 @@ interface Props {
 }
 
 const DesktopMenu: FC<Props> = ({ categories }) => {
+  const { isUA, changeLanguage } = useLanguage();
   const [isCatalogOpened, setIsCatalogOpened] = useState(false);
 
   const itemsQuantity = useSelector<RootStore>(
@@ -67,17 +69,17 @@ const DesktopMenu: FC<Props> = ({ categories }) => {
               <span className="text-base">Киев</span>
             </button>
 
-            <div className="group relative">
-              <button className="text-white flex items-center ">
-                <span className="text-base">Рус</span>
+            <button onClick={changeLanguage} className="group relative">
+              <div className="text-white flex items-center">
+                <span className="text-base">{isUA ? "Укр" : "Рус"}</span>
                 <span className="w-1.5 ml-1.5 transform rotate-90 group-hover:-rotate-90">
                   <ArrowIcon />
                 </span>
-              </button>
-              <button className="hidden group-hover:block top-6 bg-grey-400 absolute p-1 text-base z-10">
-                Укр
-              </button>
-            </div>
+              </div>
+              <div className="hidden group-hover:block group-focus:block top-6 bg-grey-400 absolute p-1 text-base z-10">
+                {isUA ? "Рус" : "Укр"}
+              </div>
+            </button>
           </div>
         </nav>
       </div>

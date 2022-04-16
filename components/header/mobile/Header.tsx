@@ -9,6 +9,7 @@ import Tab from "components/header/Tab";
 import MobileDialog from "components/MobileDialog";
 import MobileSlideMenu from "components/MobileSlideMenu";
 import { CLOSE_MOBILE_SEARCH_DIALOG_EVENT_NAME } from "constants/header";
+import useLanguage from "hooks/useLanguage";
 import ArrowIcon from "public/img/arrow.svg";
 import BurgerIcon from "public/img/burger.svg";
 import CrossIcon from "public/img/cross.svg";
@@ -62,6 +63,7 @@ interface Props {
 }
 
 const MobileMenu: FC<Props> = ({ categories, isLoading }) => {
+  const { isUA, changeLanguage } = useLanguage();
   const [menuState, dispatch] = useReducer(menuReducer, DEFAULT_MENU_STATE);
   const [navState, setNavState] = useState(false);
   const [isSerachOpened, setIsSearchOpened] = useState(false);
@@ -180,13 +182,16 @@ const MobileMenu: FC<Props> = ({ categories, isLoading }) => {
               </button>
               <div className="group flex-1 relative">
                 <button className="text-left text-grey-400 text-sm px-5 flex items-center justify-between w-full">
-                  RU
+                  {isUA ? "UA" : "RU"}
                   <span className="w-1.5 transform rotate-90 group-hover:-rotate-90">
                     <ArrowIcon />
                   </span>
                 </button>
-                <button className="absolute w-full bg-white z-50 text-left text-grey-400 text-sm px-5 py-3 shadow-md top-8 hidden group-hover:block">
-                  UA
+                <button
+                  onClick={changeLanguage}
+                  className="absolute w-full bg-white z-50 text-left text-grey-400 text-sm px-5 py-3 shadow-md top-8 hidden group-hover:block"
+                >
+                  {isUA ? "RU" : "UA"}
                 </button>
               </div>
             </div>
