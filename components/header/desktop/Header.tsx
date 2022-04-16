@@ -13,20 +13,23 @@ import Search from "../search/Search";
 import Cart from "./Cart";
 import Catalog from "./Catalog";
 
-const staticLinks = [
-  { name: "Доставка и оплата", link: "/shipping" },
-  { name: "Гарантия", link: "/guarantee" },
-  { name: "Магазины", link: "/shops" }
-];
-
 interface Props {
   categories: Category[];
   isLoading: boolean;
 }
 
 const DesktopMenu: FC<Props> = ({ categories }) => {
-  const { isUA, changeLanguage } = useLanguage();
+  const { langVariant, changeLanguage } = useLanguage();
   const [isCatalogOpened, setIsCatalogOpened] = useState(false);
+
+  const staticLinks = [
+    {
+      name: langVariant("Доставка і оплата", "Доставка и оплата"),
+      link: "/shipping"
+    },
+    { name: langVariant("Гарантія", "Гарантия"), link: "/guarantee" },
+    { name: langVariant("Магазини", "Магазины"), link: "/shops" }
+  ];
 
   const itemsQuantity = useSelector<RootStore>(
     store => store.cart.items.length
@@ -66,18 +69,18 @@ const DesktopMenu: FC<Props> = ({ categories }) => {
               <span className="w-2.5 mr-1">
                 <GeoIcon />
               </span>
-              <span className="text-base">Киев</span>
+              <span className="text-base">{langVariant("Місто", "Город")}</span>
             </button>
 
             <button onClick={changeLanguage} className="group relative">
               <div className="text-white flex items-center">
-                <span className="text-base">{isUA ? "Укр" : "Рус"}</span>
+                <span className="text-base">{langVariant("Укр", "Рус")}</span>
                 <span className="w-1.5 ml-1.5 transform rotate-90 group-hover:-rotate-90">
                   <ArrowIcon />
                 </span>
               </div>
               <div className="hidden group-hover:block group-focus:block top-6 bg-grey-400 absolute p-1 text-base z-10">
-                {isUA ? "Рус" : "Укр"}
+                {langVariant("Рус", "Укр")}
               </div>
             </button>
           </div>
@@ -95,7 +98,7 @@ const DesktopMenu: FC<Props> = ({ categories }) => {
               className="text-2xl text-grey-400 font-light"
               onClick={toggleCatalog}
             >
-              Каталог товаров
+              {langVariant("Каталог товарів", "Каталог товаров")}
             </button>
             {categories.length > 0 && (
               <Catalog isOpened={isCatalogOpened} categories={categories} />
