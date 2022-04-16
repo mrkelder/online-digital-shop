@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 import queryObjectToURL from "functions/queryObjectToURL";
 
 interface ReturnValue {
-  isUA: boolean;
   changeLanguage: () => void;
+  langVariant: (ua: string, ru: string) => string;
 }
 
 function useLanguage(): ReturnValue {
@@ -17,9 +17,13 @@ function useLanguage(): ReturnValue {
     push(totalURL, totalURL, { locale: isUA ? "ru" : "ua" });
   }
 
+  function langVariant(ua: string, ru: string): string {
+    return isUA ? ua : ru;
+  }
+
   return {
-    isUA,
-    changeLanguage
+    changeLanguage,
+    langVariant
   };
 }
 
