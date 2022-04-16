@@ -12,5 +12,9 @@ module.exports = {
   images: {
     domains: ["nl.proga.site"]
   },
-  reactStrictMode: true
+  reactStrictMode: true,
+  i18n: {
+    locales: ["ru", "ua"],
+    defaultLocale: "ru"
+  }
 };
