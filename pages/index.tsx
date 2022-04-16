@@ -54,27 +54,30 @@ const swiperConfig: SwiperOptions = {
 };
 
 const Home: NextPage<Props> = ({ slides, recommendedItems, cities }) => {
-  const { isUA } = useLanguage();
+  const { langVariant } = useLanguage();
   const isRecommenedItemsEmpty = recommendedItems.length !== 0;
 
   const advantages = [
     {
       img: LikeIcon,
-      text: isUA
-        ? "Поповнення рахунку без комісії"
-        : "Пополнение счета без комиссии"
+      text: langVariant(
+        "Поповнення рахунку без комісії",
+        "Пополнение счета без комиссии"
+      )
     },
     {
       img: TruckIcon,
-      text: isUA
-        ? "Безкоштовна доставка в магазини"
-        : "Бесплатная доставка в магазины"
+      text: langVariant(
+        "Безкоштовна доставка в магазини",
+        "Бесплатная доставка в магазины"
+      )
     },
     {
       img: GuaranteeIcon,
-      text: isUA
-        ? "Офіційна гарантія від виробника"
-        : "Официальная гарантия от производителя"
+      text: langVariant(
+        "Офіційна гарантія від виробника",
+        "Официальная гарантия от производителя"
+      )
     }
   ];
 
@@ -105,7 +108,7 @@ const Home: NextPage<Props> = ({ slides, recommendedItems, cities }) => {
       <section className="flex flex-col items-center">
         <strong className="font-light text-2xl mt-5 mx-5 text-center lg:text-4xl lg:mt-4 lg:mb-3">
           {/* TODO: extract to a separate file */}
-          {isUA ? "Найкращі пропозиції на " : "Лучшие предложения на "}
+          {langVariant("Найкращі пропозиції на ", "Лучшие предложения на ")}
           <span className="text-red text-2xl font-light lg:text-4xl">
             сегодня
           </span>
@@ -113,9 +116,10 @@ const Home: NextPage<Props> = ({ slides, recommendedItems, cities }) => {
 
         {!isRecommenedItemsEmpty && (
           <b className="mx-auto">
-            {isUA
-              ? "Кращих пропозицій поки що немає"
-              : "Лучших предложений пока нет"}
+            {langVariant(
+              "Кращих пропозицій поки що немає",
+              "Лучших предложений пока нет"
+            )}
           </b>
         )}
 
@@ -150,11 +154,11 @@ const Home: NextPage<Props> = ({ slides, recommendedItems, cities }) => {
       </section>
       <section className="flex flex-col items-center my-2">
         <strong className="font-light text-2xl mt-5 mb-2 mx-5 text-center lg:text-4xl lg:mt-4 lg:mb-5">
-          {isUA ? "Магазини " : "Магазины "}
+          {langVariant("Магазини ", "Магазины ")}
           <span className="text-red text-2xl font-light lg:text-4xl">
             New London
           </span>
-          {isUA ? " на карті" : " на карте"}
+          {langVariant(" на карті", " на карте")}
         </strong>
         <div className="w-full">
           <Map cities={cities} />
