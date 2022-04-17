@@ -1,30 +1,44 @@
 import { FC } from "react";
 
+import useLanguage from "hooks/useLanguage";
 import { FAQQuestion } from "types/staic-page";
 import LdJson from "utils/LdJson";
 
 import MetaHead from "../MetaHead";
 import MetaScript from "../MetaScript";
 
-const questions: FAQQuestion[] = [
-  {
-    question: "Доставка",
-    answer: "Доставка осуществляется самовывозом, а также доставкой по адресу"
-  },
-  {
-    question: "Оплата",
-    answer:
-      "Оплатить товар можно как наличными деньгами при получении, так и банковской картой на сайте"
-  }
-];
-
 const ShippingMeta: FC = () => {
+  const { langVariant } = useLanguage();
+
+  const questions: FAQQuestion[] = [
+    {
+      question: "Доставка",
+      answer: langVariant(
+        "Доставка здійснюється самовивозом, а також доставкою за адресою",
+        "Доставка осуществляется самовывозом, а также доставкой по адресу"
+      )
+    },
+    {
+      question: "Оплата",
+      answer: langVariant(
+        "Сплатити товар можна як готівкою при отриманні, так і банківською карткою на сайті",
+        "Оплатить товар можно как наличными деньгами при получении, так и банковской картой на сайте"
+      )
+    }
+  ];
+
   return (
     <>
       <MetaHead
-        title="Доставка и оплата"
-        keywords="Доставка, доставка по Украине, оплата, оплата картой, New London"
-        description="Доставка осуществляется по всей территории Украины. Способами оплаты могут послужить как наличный, так и безналичный расчет"
+        title={langVariant("Доставка і оплата", "Доставка и оплата")}
+        keywords={langVariant(
+          "Доставка, доставка по Україні, оплата, оплата карткою, New London",
+          "Доставка, доставка по Украине, оплата, оплата картой, New London"
+        )}
+        description={langVariant(
+          "Доставка здійснюється по всій території України. Способами оплати можуть бути як готівковий, і безготівковий розрахунок",
+          "Доставка осуществляется по всей территории Украины. Способами оплаты могут послужить как наличный, так и безналичный расчет"
+        )}
       />
 
       <MetaScript id="shipping-structured-data">
