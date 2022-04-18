@@ -14,6 +14,7 @@ import ContentWrapper from "components/ContentWrapper";
 import MailNotification from "components/MailNotification";
 import ItemPageMeta from "components/meta/ItemPageMeta";
 import Characteristics from "components/product-page/Characteristics";
+import useLanguage from "hooks/useLanguage";
 import useMatchMedia from "hooks/useMatchMedia";
 import ArrowIcon from "public/img/arrow.svg";
 import DefaultPhoto from "public/img/default-photo.jpg";
@@ -63,19 +64,10 @@ const swiperConf: SwiperOptions = {
   }
 };
 
-function createStars(starIcon: StaticImageData, quantity: number) {
-  return new Array(quantity).fill(0).map((_, index) => (
-    <div className="relative w-4 h-4" key={`astar-${index}`}>
-      <Image src={starIcon} alt="Положительная оценка" layout="fill" />
-    </div>
-  ));
-}
-
 const ProductPage: NextPage<Props> = ({ itemObj }) => {
+  const { langVariant } = useLanguage();
   const swiperInstance = useRef<null | Swiper>(null);
   const dispatch = useDispatch<Dispatch<CartActions>>();
-  const activeStars = createStars(activeStarIcon, itemObj.rating);
-  const inactiveStars = createStars(starIcon, MAXIMUM_RATING - itemObj.rating);
   const [chosenPhotoIndex, setChosenPhotoIndex] = useState(0);
   const { isMobile, isLoaded } = useMatchMedia();
   const items = useSelector<RootStore>(
@@ -84,6 +76,18 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   const buttonProperty = items.find(i => i._id === itemObj._id)
     ? { color: "grey", text: "В корзине" }
     : { color: "red", text: "Купить" };
+
+  function createStars(starIcon: StaticImageData, quantity: number) {
+    return new Array(quantity).fill(0).map((_, index) => (
+      <div className="relative w-4 h-4" key={`astar-${index}`}>
+        <Image
+          src={starIcon}
+          alt={langVariant("Позитивна оцінка", "Положительная оценка")}
+          layout="fill"
+        />
+      </div>
+    ));
+  }
 
   function switchCurrentSlideToFocused(index: number) {
     return () => {
@@ -118,6 +122,9 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
     else return "Сегодня ваходной";
   };
 
+  const activeStars = createStars(activeStarIcon, itemObj.rating);
+  const inactiveStars = createStars(starIcon, MAXIMUM_RATING - itemObj.rating);
+
   return (
     <>
       <ItemPageMeta itemObj={itemObj} />
@@ -150,7 +157,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                 itemObj.photos[chosenPhotoIndex]
               }
               layout="fill"
-              alt="Фото товара"
+              alt={langVariant("Фото товару", "Фото товара")}
               objectFit="contain"
               objectPosition="50%"
               priority
@@ -185,14 +192,14 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                           height={isMobile ? undefined : 64}
                           objectFit="contain"
                           objectPosition="center"
-                          alt="Фото товара"
+                          alt={langVariant("Фото товару", "Фото товара")}
                           priority
                         />
                       ) : (
                         <Image
                           layout="fill"
                           src={DefaultPhoto}
-                          alt="Фото товара"
+                          alt={langVariant("Фото товару", "Фото товара")}
                           objectFit="cover"
                           objectPosition="50%"
                           priority

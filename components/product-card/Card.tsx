@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import Button from "components/Button";
+import useLanguage from "hooks/useLanguage";
 import DefaultPhoto from "public/img/default-photo.jpg";
 import starActiveIcon from "public/img/star-active.png";
 import starIcon from "public/img/star.png";
@@ -11,6 +12,7 @@ import starIcon from "public/img/star.png";
 type Props = Pick<Item, "rating" | "price" | "name" | "photo" | "_id">;
 
 const Card: FC<Props> = ({ rating, price, name, photo, _id }) => {
+  const { langVariant } = useLanguage();
   const link = `/products/${_id}`;
 
   return (
@@ -25,14 +27,14 @@ const Card: FC<Props> = ({ rating, price, name, photo, _id }) => {
             // FIXME: Keep in mind, the photo won't probably work on server
             <Image
               src={(process.env.NEXT_PUBLIC_STATIC_HOST as string) + photo}
-              alt="Фотография товара"
+              alt={langVariant("Фотографія товару", "Фотография товара")}
               objectFit="contain"
               layout="fill"
             />
           ) : (
             <Image
               src={DefaultPhoto}
-              alt="Фотография товара"
+              alt={langVariant("Фотографія товару", "Фотография товара")}
               objectFit="contain"
               layout="fill"
             />
@@ -52,7 +54,10 @@ const Card: FC<Props> = ({ rating, price, name, photo, _id }) => {
       <div className="flex space-x-1 lg:mt-1">
         {new Array(rating).fill(0).map((_, index) => (
           <div className="w-3 lg:w-4" key={`star_${index}`}>
-            <Image src={starActiveIcon} alt="Рейтинг" />
+            <Image
+              src={starActiveIcon}
+              alt={langVariant("Позитивний рейтинг", "Положительный Рейтинг")}
+            />
           </div>
         ))}
         {new Array(5 - rating).fill(0).map((_, index) => (

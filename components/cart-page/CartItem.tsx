@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 
+import useLanguage from "hooks/useLanguage";
 import CrossIcon from "public/img/cross.svg";
 import styles from "styles/cart-item.module.css";
 import { ReduxCartProduct, CartActions } from "types/cart-reducer";
@@ -13,6 +14,8 @@ interface Props {
 }
 
 const CartItem: FC<Props> = ({ item }) => {
+  const { langVariant } = useLanguage();
+
   const dispatch = useDispatch<Dispatch<CartActions>>();
 
   function validatePrice(price: number): string {
@@ -58,7 +61,7 @@ const CartItem: FC<Props> = ({ item }) => {
       <div className="relative w-16 h-16">
         <Image
           src={(process.env.NEXT_PUBLIC_STATIC_HOST as string) + item.photo}
-          alt="Фото товара"
+          alt={langVariant("Фото товару", "Фото товара")}
           layout="fill"
           objectFit="contain"
           objectPosition="50%"
