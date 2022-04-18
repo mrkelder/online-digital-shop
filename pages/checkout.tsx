@@ -19,6 +19,7 @@ import {
   SECOND_STAGE
 } from "constants/checkout-stages";
 import { AMOUNT_OF_ITEMS_IN_CART } from "constants/cookie-names";
+import useLanguage from "hooks/useLanguage";
 import useMatchMedia from "hooks/useMatchMedia";
 import { CreatePaymentIntentResponse } from "types/api";
 import { ReduxCartProduct } from "types/cart-reducer";
@@ -53,6 +54,7 @@ const stripePromise = loadStripe(
 
 const CheckoutPage: NextPage = () => {
   const router = useRouter();
+  const { langVariant } = useLanguage();
   const dispatch = useDispatch<Dispatch<CheckoutActions>>();
   const cartItems = useSelector<RootStore>(
     store => store.cart.items
@@ -202,12 +204,12 @@ const CheckoutPage: NextPage = () => {
       <h1>{TITLE}</h1>
 
       <button onClick={resetCheckoutData} className="mb-2 underline">
-        Сбросить форму
+        {langVariant("Скинути форму", "Сбросить форму")}
       </button>
 
       <form onChange={formChange} className="space-y-2">
         <StageWrapper
-          title="Данные о покупателе"
+          title={langVariant("Дані про покупця", "Данные о покупателе")}
           stageNumber={FIRST_STAGE}
           active={currentStage === FIRST_STAGE}
         >
@@ -217,34 +219,42 @@ const CheckoutPage: NextPage = () => {
                 <CheckoutInput
                   error={validationErrors.fullName}
                   name="fullName"
-                  placeholder="Фамилия Имя"
-                  errorMessage="Форма может содержать только русские, английские или украинские символы"
+                  placeholder={langVariant("Прізвище Ім'я", "Фамилия Имя")}
+                  errorMessage={langVariant(
+                    "Вкажіть лише Прізвище та Ім'я. Форма може містити лише російські, англійські чи українські символи",
+                    "Укажите только Фамилию и Имя. Форма может содержать только русские, английские или украинские символы"
+                  )}
                 />
               ),
-              [validationErrors.fullName]
+              [validationErrors.fullName, langVariant]
             )}
             {useMemo(
               () => (
                 <CheckoutInput
                   error={validationErrors.email}
                   name="email"
-                  placeholder="Почта"
-                  errorMessage="Указана неверная почта"
+                  placeholder={langVariant("Пошта", "Почта")}
+                  errorMessage={langVariant(
+                    "Вказана неправильна пошта",
+                    "Указана неверная почта"
+                  )}
                 />
               ),
-              [validationErrors.email]
+              [validationErrors.email, langVariant]
             )}
           </div>
 
           <div className="flex justify-between mt-3">
             <div className="w-24 sm:w-36">
-              <Button onClick={firstStageFormHandler}>Продолжить</Button>
+              <Button onClick={firstStageFormHandler}>
+                {langVariant("Продовжити", "Продолжить")}
+              </Button>
             </div>
           </div>
         </StageWrapper>
 
         <StageWrapper
-          title="Место получения"
+          title={langVariant("Місце отримання", "Место получения")}
           stageNumber={SECOND_STAGE}
           active={currentStage === SECOND_STAGE}
         >
@@ -253,34 +263,43 @@ const CheckoutPage: NextPage = () => {
               () => (
                 <CheckoutInput
                   name="city"
-                  placeholder="Город"
+                  placeholder={langVariant("Місто", "Город")}
                   error={validationErrors.city}
-                  errorMessage="Город указан неверно"
+                  errorMessage={langVariant(
+                    "Місто вказано неправильно",
+                    "Город указан неверно"
+                  )}
                 />
               ),
-              [validationErrors.city]
+              [validationErrors.city, langVariant]
             )}
             {useMemo(
               () => (
                 <CheckoutInput
                   name="street"
-                  placeholder="Улица"
+                  placeholder={langVariant("Вулиця", "Улица")}
                   error={validationErrors.street}
-                  errorMessage="Улица указана неверно"
+                  errorMessage={langVariant(
+                    "Вулиця вказана неправильно",
+                    "Улица указана неверно"
+                  )}
                 />
               ),
-              [validationErrors.street]
+              [validationErrors.street, langVariant]
             )}
             {useMemo(
               () => (
                 <CheckoutInput
                   name="house"
-                  placeholder="Дом"
+                  placeholder={langVariant("Будинок", "Дом")}
                   error={validationErrors.house}
-                  errorMessage="Дом указан неверно"
+                  errorMessage={langVariant(
+                    "Будинок вказано неправильно",
+                    "Дом указан неверно"
+                  )}
                 />
               ),
-              [validationErrors.house]
+              [validationErrors.house, langVariant]
             )}
             {useMemo(
               () => (
@@ -288,16 +307,21 @@ const CheckoutPage: NextPage = () => {
                   name="apartment"
                   placeholder="Квартира"
                   error={validationErrors.apartment}
-                  errorMessage="Квартира указана неверно"
+                  errorMessage={langVariant(
+                    "Квартира вказана невірно",
+                    "Квартира указана неверно"
+                  )}
                 />
               ),
-              [validationErrors.apartment]
+              [validationErrors.apartment, langVariant]
             )}
           </div>
 
           <div className="flex justify-between mt-3">
             <div className="w-24 sm:w-36">
-              <Button onClick={secondStageFormHandler}>Продолжить</Button>
+              <Button onClick={secondStageFormHandler}>
+                {langVariant("Продовжити", "Продолжить")}
+              </Button>
             </div>
             <div className="w-24 sm:w-36">
               <Button onClick={switchStage(1)} color="grey">
@@ -316,8 +340,11 @@ const CheckoutPage: NextPage = () => {
             <div className="flex items-center justify-center space-x-2">
               <span>
                 {isStripeFetchSuccessful
-                  ? "Создание заказа"
-                  : "Не удалось создать заказ"}
+                  ? langVariant("Створення замовлення", "Создание заказа")
+                  : langVariant(
+                      "Не вдалося створити замовлення",
+                      "Не удалось создать заказ"
+                    )}
               </span>
               {isStripeFetchSuccessful && <LoadingSpinner size={15} />}
             </div>

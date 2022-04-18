@@ -8,6 +8,7 @@ import {
 
 import Button from "components/Button";
 import LoadingSpinner from "components/LoadingSpinner";
+import useLanguage from "hooks/useLanguage";
 import { CheckoutFormData } from "types/checkout";
 
 interface Props {
@@ -25,6 +26,7 @@ const CheckoutForm: FC<Props> = ({
 }) => {
   const stripe = useStripe();
   const elements = useElements();
+  const { langVariant } = useLanguage();
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
   const [isStripeUIIsLoaded, setIsStripeUIIsLoaded] = useState(false);
   const [isPaymentSent, setIsPaymentSent] = useState(false);
@@ -96,7 +98,9 @@ const CheckoutForm: FC<Props> = ({
       {isStripeUIIsLoaded && (
         <div className="flex mb-3 items-center">
           <div className="flex-1 overflow-hidden">
-            <p className="text-sm">Id вашего заказа:</p>
+            <p className="text-sm">
+              {langVariant("Id вашого замовлення:", "Id вашего заказа:")}
+            </p>
             <p className="text-sm font-bold overflow-x-auto">{clientSecret}</p>
           </div>
           <button
@@ -104,7 +108,7 @@ const CheckoutForm: FC<Props> = ({
             className="text-sm underline w-min ml-10"
             onClick={copyClientSecretToClipboard}
           >
-            Скопировать
+            {langVariant("Копіювати", "Скопировать")}
           </button>
         </div>
       )}
@@ -118,9 +122,15 @@ const CheckoutForm: FC<Props> = ({
       {isStripeUIIsLoaded ? (
         <>
           <p className="text-sm my-2 text-grey-400">
-            Внимание! В случае, если оплата пройдет неуспешно, а средства будут
-            списаны, обратитесь в поддержку, предоставив код, указанный выше -
-            это ускорит возврат средств.
+            {langVariant(
+              `Увага! У разі якщо оплата пройде неуспішно, а кошти будуть
+              списані, зверніться до підтримки, надавши код, вказаний вище -
+              це прискорить повернення коштів.`,
+
+              `Внимание! В случае, если оплата пройдет неуспешно, а средства будут
+              списаны, обратитесь в поддержку, предоставив код, указанный выше -
+              это ускорит возврат средств.`
+            )}
           </p>
 
           <div className="flex justify-between">
@@ -130,7 +140,7 @@ const CheckoutForm: FC<Props> = ({
                 disabled={isFormTotallyReady}
                 onClick={handleSubmit}
               >
-                Продолжить
+                {langVariant("Продовжити", "Продолжить")}
               </Button>
             </div>
             <div className="w-24 sm:w-36">
@@ -142,7 +152,7 @@ const CheckoutForm: FC<Props> = ({
         </>
       ) : (
         <div className="flex items-center justify-center space-x-2">
-          <span>Загрузка формы</span>
+          <span>{langVariant("Завантаження форми", "Загрузка формы")}</span>
           <LoadingSpinner size={15} />
         </div>
       )}
