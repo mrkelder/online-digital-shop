@@ -10,12 +10,12 @@ interface Props {
 
 const ShopsPage: NextPage<Props> = ({ cities }) => {
   const { langVariant } = useLanguage();
-  const TITLE = langVariant("Магазини", "Магазины");
+  const title = langVariant("Магазини", "Магазины");
 
   return (
     <div className="lg:max-w-full lg:mx-auto lg:px-12">
       <MetaHead
-        title={TITLE}
+        title={title}
         keywords={langVariant(
           "Карта магазинів, розташування магазинів, магазини New London",
           "Карта магазинов, местоположение магазинов, магазины New London"
@@ -26,7 +26,7 @@ const ShopsPage: NextPage<Props> = ({ cities }) => {
         )}
       />
 
-      <h1>{TITLE}</h1>
+      <h1>{title}</h1>
       <Map cities={cities} />
     </div>
   );

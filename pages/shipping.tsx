@@ -6,13 +6,13 @@ import useLanguage from "hooks/useLanguage";
 
 const ShippingPage: NextPage = () => {
   const { langVariant } = useLanguage();
-  const TITLE = langVariant("Доставка і оплата", "Доставка и оплата");
+  const title = langVariant("Доставка і оплата", "Доставка и оплата");
 
   return (
     <div className="lg:max-w-full lg:mx-auto lg:px-12">
       <ShippingMeta />
 
-      <h1>{TITLE}</h1>
+      <h1>{title}</h1>
       <h2>Доставка</h2>
       <div className="mt-3 space-y-5">
         <TextBlock title={langVariant("Самовивіз", "Самовывоз")}>

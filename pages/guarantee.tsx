@@ -5,13 +5,13 @@ import useLanguage from "hooks/useLanguage";
 
 const GuaranteePage: NextPage = () => {
   const { langVariant } = useLanguage();
-  const TITLE = langVariant("Гарантія", "Гарантия");
+  const title = langVariant("Гарантія", "Гарантия");
 
   return (
     <div className="slg:max-w-full lg:mx-auto lg:px-12">
       <GuaranteeMeta />
 
-      <h1>{TITLE}</h1>
+      <h1>{title}</h1>
       <div className="space-y-4">
         <p>
           {langVariant(
