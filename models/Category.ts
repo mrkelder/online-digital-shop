@@ -9,8 +9,8 @@ import {
 const categorySchema = new Schema(
   {
     name: {
-      type: String,
-      default: "Category"
+      ua: { type: String, default: "Категорія" },
+      ru: { type: String, default: "Категория" }
     },
     subCategories: [
       { type: Schema.Types.ObjectId, ref: SUB_CATEGORY_MODEL_NAME }

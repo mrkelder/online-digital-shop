@@ -6,8 +6,14 @@ import "models/Shop";
 const citySchema = new Schema(
   {
     name: {
-      type: String,
-      default: "City"
+      ua: {
+        type: String,
+        default: "Місто"
+      },
+      ru: {
+        type: String,
+        default: "Город"
+      }
     },
     shops: [{ type: Schema.Types.ObjectId, ref: SHOP_MODEL_NAME }]
   },

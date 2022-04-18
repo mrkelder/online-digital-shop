@@ -5,8 +5,14 @@ import { SCHEMA_OPTIONS, SHOP_MODEL_NAME } from "constants/db";
 const shopSchema = new Schema(
   {
     name: {
-      type: String,
-      default: "New London Shop"
+      ua: {
+        type: String,
+        default: "New London Shop"
+      },
+      ru: {
+        type: String,
+        default: "New London Shop"
+      }
     },
     geo: [Number, Number],
     schedule: [

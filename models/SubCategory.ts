@@ -5,8 +5,14 @@ import { SCHEMA_OPTIONS, SUB_CATEGORY_MODEL_NAME } from "constants/db";
 const subCategorySchema = new Schema(
   {
     name: {
-      type: String,
-      default: "Sub category"
+      ua: {
+        type: String,
+        default: "Під категорія"
+      },
+      ru: {
+        type: String,
+        default: "Под категория"
+      }
     }
   },
   SCHEMA_OPTIONS
