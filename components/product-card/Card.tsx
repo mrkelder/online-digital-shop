@@ -71,7 +71,7 @@ const Card: FC<Props> = ({ rating, price, name, photo, _id }) => {
 
       <Link href={link}>
         <a className="mt-1" itemProp="url">
-          <Button>Детальнее</Button>
+          <Button>{langVariant("Детальніше", "Детальнее")}</Button>
         </a>
       </Link>
 
@@ -94,7 +94,7 @@ Card.defaultProps = {
   _id: "none",
   rating: 3,
   price: 9999,
-  name: "Смартфон Samsung Galaxy A52 4/128GB Black Смартфон Samsung Galaxy A52 4/128GB Black Смартфон Samsung Galaxy A52 4/128GB Black Смартфон Samsung Galaxy A52 4/128GB Black",
+  name: "Phone",
   photo: null
 };
 
