@@ -1,6 +1,11 @@
+interface MultiLanguageField {
+  ua: string;
+  ru: string;
+}
+
 interface Category {
   _id?: string;
-  name: string;
+  name: MultiLanguageField;
   subCategories: SubCategory[];
   icon: string;
   __v?: number;
@@ -8,7 +13,7 @@ interface Category {
 
 interface Characteristic {
   _id?: string;
-  name: string;
+  name: MultiLanguageField;
   values: string[];
   subCategories: SubCategory[];
   __v?: number;
@@ -16,7 +21,7 @@ interface Characteristic {
 
 interface City {
   _id?: string;
-  name: string;
+  name: MultiLanguageField;
   shops: Shop[];
   __v?: number;
 }
@@ -42,7 +47,7 @@ interface Item {
 
 interface Shop {
   _id?: string;
-  name: string;
+  name: MultiLanguageField;
   city: City;
   geo: [number, number];
   schedule: ReadonlyArray<{ from: string; to: string } | null>;
@@ -51,7 +56,7 @@ interface Shop {
 
 interface SubCategory {
   _id?: string;
-  name: string;
+  name: MultiLanguageField;
   __v: number;
 }
 

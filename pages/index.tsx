@@ -8,6 +8,7 @@ import Map from "components/map/Map";
 import MetaHead from "components/meta/MetaHead";
 import Card from "components/product-card/Card";
 import Slider from "components/Slider";
+import useLanguage from "hooks/useLanguage";
 import GuaranteeIcon from "public/img/guarantee.svg";
 import LikeIcon from "public/img/like.svg";
 import TruckIcon from "public/img/truck.svg";
@@ -20,12 +21,6 @@ interface Props {
   recommendedItems: GetRecommendationsResponse;
   cities: City[];
 }
-
-const advantages = [
-  { img: LikeIcon, text: "Пополнение счета без комиссии" },
-  { img: TruckIcon, text: "Бесплатная доставка в магазины" },
-  { img: GuaranteeIcon, text: "Официальная гарантия от производителя" }
-];
 
 const swiperBreakpoints = {
   320: {
@@ -59,7 +54,32 @@ const swiperConfig: SwiperOptions = {
 };
 
 const Home: NextPage<Props> = ({ slides, recommendedItems, cities }) => {
+  const { langVariant } = useLanguage();
   const isRecommenedItemsEmpty = recommendedItems.length !== 0;
+
+  const advantages = [
+    {
+      img: LikeIcon,
+      text: langVariant(
+        "Поповнення рахунку без комісії",
+        "Пополнение счета без комиссии"
+      )
+    },
+    {
+      img: TruckIcon,
+      text: langVariant(
+        "Безкоштовна доставка в магазини",
+        "Бесплатная доставка в магазины"
+      )
+    },
+    {
+      img: GuaranteeIcon,
+      text: langVariant(
+        "Офіційна гарантія від виробника",
+        "Официальная гарантия от производителя"
+      )
+    }
+  ];
 
   return (
     <>
@@ -88,14 +108,19 @@ const Home: NextPage<Props> = ({ slides, recommendedItems, cities }) => {
       <section className="flex flex-col items-center">
         <strong className="font-light text-2xl mt-5 mx-5 text-center lg:text-4xl lg:mt-4 lg:mb-3">
           {/* TODO: extract to a separate file */}
-          Лучшие предложения на{" "}
+          {langVariant("Найкращі пропозиції на ", "Лучшие предложения на ")}
           <span className="text-red text-2xl font-light lg:text-4xl">
             сегодня
           </span>
         </strong>
 
         {!isRecommenedItemsEmpty && (
-          <b className="mx-auto">Лучших предложений пока нет</b>
+          <b className="mx-auto">
+            {langVariant(
+              "Кращих пропозицій поки що немає",
+              "Лучших предложений пока нет"
+            )}
+          </b>
         )}
 
         <div className="flex items-center w-full my-3 relative">
@@ -129,11 +154,11 @@ const Home: NextPage<Props> = ({ slides, recommendedItems, cities }) => {
       </section>
       <section className="flex flex-col items-center my-2">
         <strong className="font-light text-2xl mt-5 mb-2 mx-5 text-center lg:text-4xl lg:mt-4 lg:mb-5">
-          Магазины{" "}
+          {langVariant("Магазини ", "Магазины ")}
           <span className="text-red text-2xl font-light lg:text-4xl">
             New London
-          </span>{" "}
-          на карте
+          </span>
+          {langVariant(" на карті", " на карте")}
         </strong>
         <div className="w-full">
           <Map cities={cities} />

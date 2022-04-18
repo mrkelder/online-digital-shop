@@ -1,9 +1,10 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, useCallback, useEffect, useRef } from "react";
 
 import { Loader, LoaderOptions } from "@googlemaps/js-api-loader";
 
+import useLanguage from "hooks/useLanguage";
 import useMatchMedia from "hooks/useMatchMedia";
-import { ChangeShopEvent, ShopWithIndexObject } from "types/shop-map";
+import { ShopWithIndexObject } from "types/shop-map";
 
 interface Props {
   allShopsInCurrentCity: ShopWithIndexObject[];
@@ -16,10 +17,33 @@ interface GoogleMapMarker {
 }
 
 const GMap: FC<Props> = ({ allShopsInCurrentCity, currentShop }) => {
+  const { langVariant } = useLanguage();
   const markersRef = useRef<Array<GoogleMapMarker>>([]);
   const mapRef = useRef<google.maps.Map | null>(null);
   const { isMobile, isLoaded } = useMatchMedia();
   const GOOGLE_ELEMENT_NAME = "google-map-el";
+
+  const drawMarker = useCallback(
+    (map: google.maps.Map, shopObj: ShopWithIndexObject) => {
+      const [lat, lng] = shopObj.geo;
+      const geoInfo = { lng, lat };
+
+      const marker = new google.maps.Marker({
+        position: geoInfo,
+        map,
+        title: langVariant(shopObj.name.ua, shopObj.name.ru)
+      });
+      const listener = marker.addListener("click", () => {
+        mapRef.current?.panTo(geoInfo);
+        const event = new CustomEvent("change-shop", {
+          detail: shopObj.index
+        });
+        dispatchEvent(event);
+      });
+      markersRef.current.push({ marker, listener });
+    },
+    [langVariant]
+  );
 
   useEffect(() => {
     async function createMap() {
@@ -56,7 +80,7 @@ const GMap: FC<Props> = ({ allShopsInCurrentCity, currentShop }) => {
     }
 
     if (isLoaded) createMap();
-  }, [currentShop, allShopsInCurrentCity, isLoaded, isMobile]);
+  }, [currentShop, allShopsInCurrentCity, isLoaded, isMobile, drawMarker]);
 
   function removeMarkers() {
     markersRef.current.forEach(markerObj => {
@@ -64,25 +88,6 @@ const GMap: FC<Props> = ({ allShopsInCurrentCity, currentShop }) => {
       markerObj.listener.remove();
     });
     markersRef.current = [];
-  }
-
-  function drawMarker(map: google.maps.Map, shopObj: ShopWithIndexObject) {
-    const [lat, lng] = shopObj.geo;
-    const geoInfo = { lng, lat };
-
-    const marker = new google.maps.Marker({
-      position: geoInfo,
-      map,
-      title: shopObj.name
-    });
-    const listener = marker.addListener("click", () => {
-      mapRef.current?.panTo(geoInfo);
-      const event = new CustomEvent("change-shop", {
-        detail: shopObj.index
-      });
-      dispatchEvent(event);
-    });
-    markersRef.current.push({ marker, listener });
   }
 
   return (

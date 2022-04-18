@@ -1,5 +1,6 @@
 import { FC } from "react";
 
+import useLanguage from "hooks/useLanguage";
 import ArrowIcon from "public/img/arrow.svg";
 
 interface Props {
@@ -8,28 +9,8 @@ interface Props {
   isSelected: boolean;
 }
 
-function getDayName(day: number, isMeta = false) {
-  switch (day) {
-    case 0:
-      return isMeta ? "Su" : "Воскресенье";
-    case 1:
-      return isMeta ? "Mo" : "Понедельник";
-    case 2:
-      return isMeta ? "Tu" : "Вторник";
-    case 3:
-      return isMeta ? "We" : "Среда";
-    case 4:
-      return isMeta ? "Th" : "Четверг";
-    case 5:
-      return isMeta ? "Fr" : "Пятница";
-    case 6:
-      return isMeta ? "Sa" : "Суббота";
-    default:
-      throw new Error();
-  }
-}
-
 const Shop: FC<Props> = ({ onClick, shopObj, isSelected }) => {
+  const { langVariant } = useLanguage();
   const day = new Date().getDay();
   const today = shopObj.schedule[day];
   const arrowStyle = isSelected ? "-rotate-90" : "rotate-90";
@@ -37,6 +18,27 @@ const Shop: FC<Props> = ({ onClick, shopObj, isSelected }) => {
   const timetableStyle = isSelected ? "flex" : "hidden";
 
   const [lat, lng] = shopObj.geo.map(i => i.toString());
+
+  function getDayName(day: number, isMeta = false) {
+    switch (day) {
+      case 0:
+        return isMeta ? "Su" : langVariant("Неділя", "Воскресенье");
+      case 1:
+        return isMeta ? "Mo" : langVariant("Понеділок", "Понедельник");
+      case 2:
+        return isMeta ? "Tu" : langVariant("Вівторок", "Вторник");
+      case 3:
+        return isMeta ? "We" : langVariant("Середа", "Среда");
+      case 4:
+        return isMeta ? "Th" : langVariant("Четвер", "Четверг");
+      case 5:
+        return isMeta ? "Fr" : langVariant("П'ятниця", "Пятница");
+      case 6:
+        return isMeta ? "Sa" : langVariant("Субота", "Суббота");
+      default:
+        throw new Error();
+    }
+  }
 
   return (
     <button
@@ -58,7 +60,7 @@ const Shop: FC<Props> = ({ onClick, shopObj, isSelected }) => {
             className="mb-1 text-grey-600 font-regular text-lg w-full text-left"
             itemProp="name"
           >
-            {shopObj.name}
+            {langVariant(shopObj.name.ua, shopObj.name.ru)}
           </p>
           {!isSelected && (
             <strong className="text-sm font-light text-grey-300 font-normal">
@@ -68,7 +70,7 @@ const Shop: FC<Props> = ({ onClick, shopObj, isSelected }) => {
                   <time dateTime={today?.to}>{today?.to}</time>
                 </>
               ) : (
-                "Сегодня выходной"
+                langVariant("Сьогодні вихідний", "Сегодня выходной")
               )}
             </strong>
           )}
@@ -103,7 +105,7 @@ const Shop: FC<Props> = ({ onClick, shopObj, isSelected }) => {
                 </>
               ) : (
                 <>
-                  выходной
+                  {langVariant("вихідний", "выходной")}
                   <meta
                     itemProp="openingHours"
                     content={`${getDayName(index, true)}, Weekend`}

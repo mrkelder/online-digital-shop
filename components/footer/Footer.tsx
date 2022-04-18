@@ -3,11 +3,11 @@ import { FC } from "react";
 import Link from "next/link";
 
 import ContentWrapper from "components/ContentWrapper";
+import useLanguage from "hooks/useLanguage";
 import FbIcon from "public/img/facebook.svg";
 import InstaIcon from "public/img/instagram.svg";
 import TwIcon from "public/img/twitter.svg";
 import YtIcon from "public/img/youtube.svg";
-
 
 const socialMedias = [
   {
@@ -19,36 +19,41 @@ const socialMedias = [
   { link: "https://twitter.com/vodafone_ua", icon: <TwIcon /> }
 ];
 
-const staticLinks = [
-  {
-    name: "Интернет-магазин",
-    postiion: "first",
-    items: [
-      { name: "Про магазин", link: "/" },
-      { name: "Магазины", link: "/shops" },
-      { name: "Контакты", link: "/" }
-    ]
-  },
-  {
-    name: "Помощь покупателю",
-    postiion: "between",
-    items: [
-      { name: "Доставка и оплата", link: "/shipping" },
-      { name: "Возврат товара", link: "/" },
-      { name: "Гарантия", link: "/guarantee" }
-    ]
-  },
-  {
-    name: "Сервисы",
-    postiion: "last",
-    items: [
-      { name: "Кредит", link: "/" },
-      { name: "Тарифы", link: "/" }
-    ]
-  }
-];
-
 const Footer: FC = () => {
+  const { langVariant } = useLanguage();
+
+  const staticLinks = [
+    {
+      name: langVariant("Інтернет магазин", "Интернет-магазин"),
+      postiion: "first",
+      items: [
+        { name: "Про магазин", link: "/" },
+        { name: langVariant("Магазини", "Магазины"), link: "/shops" },
+        { name: langVariant("Контакти", "Контакты"), link: "/" }
+      ]
+    },
+    {
+      name: langVariant("Допомога покупцю", "Помощь покупателю"),
+      postiion: "between",
+      items: [
+        {
+          name: langVariant("Доставка і оплата", "Доставка и оплата"),
+          link: "/shipping"
+        },
+        { name: langVariant("Повернення товару", "Возврат товара"), link: "/" },
+        { name: langVariant("Гарантія", "Гарантия"), link: "/guarantee" }
+      ]
+    },
+    {
+      name: langVariant("Сервіси", "Сервисы"),
+      postiion: "last",
+      items: [
+        { name: "Кредит", link: "/" },
+        { name: langVariant("Тарифи", "Тарифы"), link: "/" }
+      ]
+    }
+  ];
+
   return (
     <footer className="bg-grey-650 py-5 px-3 lg:px-12 text-white lg:py-10">
       <ul className="grid max-w-7xl mx-auto grid-cols-1 lg:grid-cols-4 lg:gap-x-10">
@@ -83,15 +88,21 @@ const Footer: FC = () => {
                 ООО {'"'}ВФ РИТЕЙЛ{'"'}
               </p>
               <p className="text-sm">
-                Бесплатно с мобильных и стационарных по Украине
+                {langVariant(
+                  "Безкоштовно з мобільних та стаціонарних по Україні",
+                  "Бесплатно с мобильных и стационарных по Украине"
+                )}
               </p>
               <p className="text-grey-300 text-sm">
-                График работы контактного центра
+                {langVariant(
+                  "Графік роботи контактного центру",
+                  "График работы контактного центра"
+                )}
               </p>
             </li>
             <li>
               <strong className="text-2xl font-light font-bold">
-                Ежедневно
+                {langVariant("Щоденно", "Ежедневно")}
                 <br />
                 <time dateTime="8:00">8:00</time>
                 {" - "}

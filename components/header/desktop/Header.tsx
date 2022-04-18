@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 
+import useLanguage from "hooks/useLanguage";
 import ArrowIcon from "public/img/arrow.svg";
 import GeoIcon from "public/img/geo-point.svg";
 import Logo from "public/img/logo.svg";
@@ -12,19 +13,23 @@ import Search from "../search/Search";
 import Cart from "./Cart";
 import Catalog from "./Catalog";
 
-const staticLinks = [
-  { name: "Доставка и оплата", link: "/shipping" },
-  { name: "Гарантия", link: "/guarantee" },
-  { name: "Магазины", link: "/shops" }
-];
-
 interface Props {
   categories: Category[];
   isLoading: boolean;
 }
 
 const DesktopMenu: FC<Props> = ({ categories }) => {
+  const { langVariant, changeLanguage } = useLanguage();
   const [isCatalogOpened, setIsCatalogOpened] = useState(false);
+
+  const staticLinks = [
+    {
+      name: langVariant("Доставка і оплата", "Доставка и оплата"),
+      link: "/shipping"
+    },
+    { name: langVariant("Гарантія", "Гарантия"), link: "/guarantee" },
+    { name: langVariant("Магазини", "Магазины"), link: "/shops" }
+  ];
 
   const itemsQuantity = useSelector<RootStore>(
     store => store.cart.items.length
@@ -64,20 +69,20 @@ const DesktopMenu: FC<Props> = ({ categories }) => {
               <span className="w-2.5 mr-1">
                 <GeoIcon />
               </span>
-              <span className="text-base">Киев</span>
+              <span className="text-base">{langVariant("Місто", "Город")}</span>
             </button>
 
-            <div className="group relative">
-              <button className="text-white flex items-center ">
-                <span className="text-base">Рус</span>
+            <button onClick={changeLanguage} className="group relative">
+              <div className="text-white flex items-center">
+                <span className="text-base">{langVariant("Укр", "Рус")}</span>
                 <span className="w-1.5 ml-1.5 transform rotate-90 group-hover:-rotate-90">
                   <ArrowIcon />
                 </span>
-              </button>
-              <button className="hidden group-hover:block top-6 bg-grey-400 absolute p-1 text-base z-10">
-                Укр
-              </button>
-            </div>
+              </div>
+              <div className="hidden group-hover:block group-focus:block top-6 bg-grey-400 absolute p-1 text-base z-10">
+                {langVariant("Рус", "Укр")}
+              </div>
+            </button>
           </div>
         </nav>
       </div>
@@ -93,7 +98,7 @@ const DesktopMenu: FC<Props> = ({ categories }) => {
               className="text-2xl text-grey-400 font-light"
               onClick={toggleCatalog}
             >
-              Каталог товаров
+              {langVariant("Каталог товарів", "Каталог товаров")}
             </button>
             {categories.length > 0 && (
               <Catalog isOpened={isCatalogOpened} categories={categories} />
