@@ -74,8 +74,8 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
     store => store.cart.items
   ) as CartState["items"];
   const buttonProperty = items.find(i => i._id === itemObj._id)
-    ? { color: "grey", text: "В корзине" }
-    : { color: "red", text: "Купить" };
+    ? { color: "grey", text: langVariant("В кошик", "В корзине") }
+    : { color: "red", text: langVariant("Купити", "Купить") };
 
   function createStars(starIcon: StaticImageData, quantity: number) {
     return new Array(quantity).fill(0).map((_, index) => (
@@ -118,8 +118,11 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   const resolveDaySchedule = (schedule: Shop["schedule"]) => {
     const date = new Date();
     const timetable = schedule[date.getDay()];
-    if (timetable) return `Сегодня с ${timetable.from} по ${timetable.to}`;
-    else return "Сегодня ваходной";
+    if (timetable)
+      return `${langVariant("Сьогодні з", "Сегодня с")} ${
+        timetable.from
+      } ${langVariant("до", "по")} ${timetable.to}`;
+    else return langVariant("Сьогодні вхідний", "Сегодня ваходной");
   };
 
   const activeStars = createStars(activeStarIcon, itemObj.rating);
@@ -136,11 +139,10 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
         }}
       >
         <a className="mt-1 flex items-center text-grey-400 text-sm lg:mx-0">
-          {" "}
           <span className="w-1 inline-block mr-1">
             <ArrowIcon />
-          </span>{" "}
-          На страницу подкатегорий
+          </span>
+          {langVariant("На сторінку підкатегорій", "На страницу подкатегорий")}
         </a>
       </Link>
       <h1 className="text-xl font-bold text-grey-400">{itemObj.name}</h1>
@@ -249,17 +251,20 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                 : "inline" + " mt-1 text-grey-300 lg:mx-0"
             }
           >
-            Нет в наличии
+            {langVariant("Немає в наявності", "Нет в наличии")}
           </b>
           <hr className="hidden mt-2 lg:block" />
           <h2 className="text-base font-regular mt-2 text-grey-650 lg:text-lg">
-            Ключевые особенности
+            {langVariant("Ключові особливості", "Ключевые особенности")}
           </h2>
           <table className={styles["table"]}>
             <tbody>
               {itemObj.key_characteristics.length === 0 && (
                 <p className="text-sm text-grey-300 italic">
-                  Ключевых характеристик пока нет
+                  {langVariant(
+                    "Ключових характеристик поки що немає",
+                    "Ключевых характеристик пока нет"
+                  )}
                 </p>
               )}
               {itemObj.key_characteristics
@@ -279,11 +284,14 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
             href="#all-characteristics"
             className="text-sm underline font-regular mt-2 mb-10 text-grey-650 lg:hidden"
           >
-            Показать все характеристики
+            {langVariant(
+              "Показати всі характеристики",
+              "Показать все характеристики"
+            )}
           </a>
           <div className="my-3 lg:my-1">
             <h2 className="text-grey-650 font-regular text-lg mb-1 flex items-center lg:text-lg lg:mb-2">
-              Доступные магазины{" "}
+              {langVariant("Доступні магазини", "Доступные магазины")}
               <span className="inline-block w-2.5 ml-1 text-red">
                 <LocationIcon />
               </span>
@@ -317,7 +325,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
         </div>
       </div>
       <div className="hidden bg-white mt-10 p-4 mb-2 lg:block">
-        <h2>Описание</h2>
+        <h2>{langVariant("Опис", "Описание")}</h2>
         <p className="text-base text-grey-600 mt-1">{itemObj.description}</p>
       </div>
       <div className="hidden bg-white p-4 mb-2 lg:block">
