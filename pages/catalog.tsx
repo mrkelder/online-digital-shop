@@ -14,6 +14,7 @@ import {
   DEFAULT_PAGE,
   CHANGE_FILTERS_EVENT_NAME
 } from "constants/catalog";
+import useLanguage from "hooks/useLanguage";
 import useMatchMedia from "hooks/useMatchMedia";
 import CrossIcon from "public/img/cross.svg";
 import { GetItemsResponse } from "types/api";
@@ -97,6 +98,7 @@ const CatalogPage: NextPage<Props> = ({
   // TODO: when some option is not available, make it disabled
 
   const router = useRouter();
+  const { langVariant } = useLanguage();
   const [areMobileFiltersOpened, setAreMobileFiltersOpened] = useState(false);
   const [quantityOfPages, setQuantityOfPages] = useState(totalQuantityOfPages);
   const [currentPage, setCurrentPage] = useState(page);
@@ -255,7 +257,9 @@ const CatalogPage: NextPage<Props> = ({
               >
                 <CrossIcon />
               </button>
-              <p className="font-bold font-light ">Фильтры</p>
+              <p className="font-bold font-light ">
+                {langVariant("Фільтри", "Фильтры")}
+              </p>
             </div>
             <Filters
               queryPrice={queryPrice}
@@ -270,7 +274,9 @@ const CatalogPage: NextPage<Props> = ({
       <h1 className="text-center">{TITLE}</h1>
       <div className="flex flex-col">
         <div className="mx-auto w-56 my-3 lg:hidden">
-          <Button onClick={toggleMobileFilters}>Фильтры</Button>
+          <Button onClick={toggleMobileFilters}>
+            {langVariant("Фільтри", "Фильтры")}
+          </Button>
         </div>
         <div className="flex justify-center lg:justify-between">
           <div id="desktop-filters">
@@ -295,7 +301,9 @@ const CatalogPage: NextPage<Props> = ({
                   _id={i._id}
                 />
               ))}
-              {catalog.length === 0 && <b>Ничего не найдено</b>}
+              {catalog.length === 0 && (
+                <b>{langVariant("Нічого не знайдено", "Ничего не найдено")}</b>
+              )}
             </div>
             <div className="flex space-x-2 my-2 lg:my-6 lg:space-x-4">
               {paggination.map((i, index) => (

@@ -14,6 +14,7 @@ import Button from "components/Button";
 import ContentWrapper from "components/ContentWrapper";
 import Input from "components/Input";
 import { CHANGE_FILTERS_EVENT_NAME } from "constants/catalog";
+import useLanguage from "hooks/useLanguage";
 import { GetItemsResponse } from "types/api";
 import { ChangeFiltersEventDetail } from "types/catalog";
 
@@ -38,6 +39,7 @@ const Filters: FC<Props> = ({
   characteristics
 }) => {
   const router = useRouter();
+  const { langVariant } = useLanguage();
   const characteristicsQuery = useRef<Set<string>>(new Set());
   // FIXME: fix inputs, their onChange
   const [priceFilter, setPriceFilter] = useState({
@@ -115,7 +117,7 @@ const Filters: FC<Props> = ({
   return (
     <>
       <div className="px-3.5 py-2 lg:pt-0 lg:mb-3">
-        <p>Цена</p>
+        <p>{langVariant("Ціна", "Цена")}</p>
         <ReactSlider
           min={minPrice}
           max={maxPrice}
@@ -135,7 +137,7 @@ const Filters: FC<Props> = ({
           <div className="w-12 lg:w-16">
             <Input
               underline
-              placeholder="Цена"
+              placeholder={langVariant("Ціна", "Цена")}
               value={priceFilter.min ?? ""}
               type="number"
               onChange={priceInputHanlder("min")}
@@ -144,7 +146,7 @@ const Filters: FC<Props> = ({
           <div className="w-12 lg:w-16">
             <Input
               underline
-              placeholder="Цена"
+              placeholder={langVariant("Ціна", "Цена")}
               value={priceFilter.max ?? ""}
               type="number"
               onChange={priceInputHanlder("max")}
@@ -174,7 +176,7 @@ const Filters: FC<Props> = ({
         ))}
       </div>
       <Button variant="lg" onClick={submitCharacteristics}>
-        Подтвердить
+        {langVariant("Підтвердити", "Подтвердить")}
       </Button>
     </>
   );
