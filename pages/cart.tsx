@@ -8,14 +8,17 @@ import { useSelector } from "react-redux";
 import Button from "components/Button";
 import CartItem from "components/cart-page/CartItem";
 import MetaHead from "components/meta/MetaHead";
+import useLanguage from "hooks/useLanguage";
 import { CartState } from "types/cart-reducer";
 import type { RootStore } from "types/store";
 
 const CartPage: NextPage = () => {
+  const { langVariant } = useLanguage();
   const router = useRouter();
   const storeItems = useSelector<RootStore>(
     store => store.cart.items
   ) as CartState["items"];
+  const title = langVariant("Кошик", "Корзина");
 
   const priceBlockStyle = storeItems.length === 0 ? "hidden" : "block";
 
@@ -30,22 +33,25 @@ const CartPage: NextPage = () => {
 
   return (
     <div>
-      <MetaHead title="Корзина" noindex />
+      <MetaHead title={title} noindex />
 
       <Link href="/catalog">
-        <a className="underline lg:text-base">Продолжить покупки</a>
+        <a className="underline lg:text-base">
+          {langVariant("Продовжити покупки", "Продолжить покупки")}
+        </a>
       </Link>
       <div className="flex flex-col items-center">
-        <h1>Корзина</h1>
+        <h1>{title}</h1>
         <p className="text-grey-300 text-base">
-          {storeItems.length} товаров на сумму{" "}
-          <span className="text-grey-650 font-bold text-base">
+          {storeItems.length}
+          {langVariant(" товарів на суму", " товаров на сумму")}
+          <span className="text-grey-650 font-bold ml-1 text-base">
             {totalPrice} грн
           </span>
         </p>
         {storeItems.length === 0 && (
           <p className="mt-3 text-base lg:mt-16 lg:text-lg lg:font-bold">
-            Корзина пуста
+            {langVariant("Кошик порожній", "Корзина пуста")}
           </p>
         )}
         <div className="flex flex-col w-full lg:flex-row">
@@ -62,11 +68,13 @@ const CartPage: NextPage = () => {
             style={{ height: "min-content" }}
           >
             <div className="flex justify-between items-center mb-3 lg:mb-5">
-              <span className="lg:text-xl">Сумма заказа</span>
+              <span className="lg:text-xl">
+                {langVariant("Сума замовлення", "Сумма заказа")}
+              </span>
               <b className="text-lg lg:text-2xl">{totalPrice} грн</b>
             </div>
             <Button variant="lg" onClick={linkToCheckout}>
-              Оформить заказ
+              {langVariant("Оформити замовлення", "Оформить заказ")}
             </Button>
           </div>
         </div>
