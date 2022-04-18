@@ -35,7 +35,7 @@ const MailNotification: FC = () => {
           </div>
           <div className="mt-2 lg:max-w-sm">
             <Button variant="lg">
-              {langVariant("Подписаться", "Подписаться")}
+              {langVariant("Підписатися", "Подписаться")}
             </Button>
           </div>
         </div>
