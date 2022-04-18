@@ -3,15 +3,24 @@ import { FC } from "react";
 import { useRouter } from "next/router";
 
 import Tab from "components/header/Tab";
+import useLanguage from "hooks/useLanguage";
 import ArrowIcon from "public/img/arrow.svg";
 
-const SubCategories: FC<{
+interface Props {
   isOpened: boolean;
   closeSubMenu: () => void;
   closeMenu: () => void;
   subCategories: SubCategory[];
-}> = ({ isOpened, closeSubMenu, closeMenu, subCategories }) => {
+}
+
+const SubCategories: FC<Props> = ({
+  isOpened,
+  closeSubMenu,
+  closeMenu,
+  subCategories
+}) => {
   const { push } = useRouter();
+  const { langVariant } = useLanguage();
   const tabIndex = isOpened ? 0 : -1;
 
   function changeLink(link: string) {
@@ -41,7 +50,7 @@ const SubCategories: FC<{
         {subCategories.map(i => (
           <Tab
             key={i._id}
-            name={i.name}
+            name={langVariant(i.name.ua, i.name.ru)}
             onClick={changeLink(`/catalog?subCategoryId=${i._id}`)}
             tabIndex={tabIndex}
           />

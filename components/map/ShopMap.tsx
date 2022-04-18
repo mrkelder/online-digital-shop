@@ -7,6 +7,7 @@ import {
   useEffect
 } from "react";
 
+import useLanguage from "hooks/useLanguage";
 import useMatchMedia from "hooks/useMatchMedia";
 import styles from "styles/map.module.css";
 import {
@@ -31,7 +32,7 @@ const ShopMap: FC<MapProps> = ({ cities }) => {
     () => citiesToCitySearchResults(cities),
     [cities]
   );
-
+  const { langVariant } = useLanguage();
   const [chosenCityIndex, setChosenCityIndex] = useState(0);
   const [chosenShopIndex, setChosenShopIndex] = useState(0);
   const [citySearchResults, setCitySearchResults] = useState(
@@ -71,7 +72,7 @@ const ShopMap: FC<MapProps> = ({ cities }) => {
     try {
       const regEx = new RegExp("^" + value.trim(), "i");
       const resultCities = defaultCitySearchList.filter(i =>
-        i.name.match(regEx)
+        langVariant(i.name.ua, i.name.ru).match(regEx)
       );
       return resultCities;
     } catch {
@@ -130,13 +131,13 @@ const ShopMap: FC<MapProps> = ({ cities }) => {
             onClick={changeCity(i.index)}
             type="button"
           >
-            {i.name}
+            {langVariant(i.name.ua, i.name.ru)}
           </button>
         ))
       ) : (
         <p className="font-light text-sm w-full text-left">Результатов нет</p>
       ),
-    [changeCity, citySearchResults]
+    [changeCity, citySearchResults, langVariant]
   );
 
   const shopList = useMemo(
@@ -202,7 +203,7 @@ const ShopMap: FC<MapProps> = ({ cities }) => {
           className="w-full bg-white text-left px-2 border border-grey-400 text-grey-500 font-light h-10"
           onClick={toggleShopList}
         >
-          Показать все магазины
+          {langVariant("Показати всі магазини", "Показать все магазины")}
         </button>
       </div>
     </div>

@@ -153,7 +153,7 @@ const MobileMenu: FC<Props> = ({ categories, isLoading }) => {
               {categories.length > 0 &&
                 categories.map((i, index) => (
                   <Tab
-                    name={i.name}
+                    name={langVariant(i.name.ua, i.name.ru)}
                     key={i._id}
                     onClick={tabClick(index)}
                     tabIndex={tabIndex}

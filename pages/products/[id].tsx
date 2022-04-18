@@ -271,7 +271,9 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                 .map(index => itemObj.characteristics[index])
                 .map(({ c, values }, index) => (
                   <tr key={`c_${index}`}>
-                    <th className={styles["th-name"]}>{c.name}</th>
+                    <th className={styles["th-name"]}>
+                      {langVariant(c.name.ua, c.name.ru)}
+                    </th>
                     <th className={styles["th-value"]}>
                       {DTO.mongodbCharacteristicValueToString(c.values, values)}
                     </th>
@@ -299,7 +301,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
             {itemObj.available_in.map((i, index) => (
               <div key={`city_${index}`} className="flex flex-col mb-2 lg:mb-3">
                 <address className="text-grey-650 text-xs mb-0.5">
-                  {i.name}
+                  {langVariant(i.name.ua, i.name.ru)}
                 </address>
                 <span className="text-xs text-grey-300 underline">
                   {resolveDaySchedule(i.schedule)}
@@ -308,7 +310,10 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
             ))}
           </div>
           <div className="lg:hidden">
-            <ContentWrapper text="Описание" position="first">
+            <ContentWrapper
+              text={langVariant("Опис", "Описание")}
+              position="first"
+            >
               <p className="text-base my-2 mx-3 text-grey-600">
                 {itemObj.description}
               </p>
@@ -343,6 +348,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
       process.env.NEXT_PUBLIC_HOSTNAME + "/api/getItem/" + context.params?.id
     );
     const itemObj: Item = await itemFetch.json();
+
     return {
       props: { itemObj }
     };

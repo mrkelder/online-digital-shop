@@ -156,7 +156,7 @@ const Filters: FC<Props> = ({
       </div>
       <div className="overflow-y-auto flex-1 lg:space-y-3 lg:mb-3">
         {characteristics.map(c => (
-          <ContentWrapper text={c.name} key={c._id}>
+          <ContentWrapper text={langVariant(c.name.ua, c.name.ru)} key={c._id}>
             <ul className="px-3.5 my-1">
               {c.values.map((v, index) => (
                 <li key={v + c._id}>
