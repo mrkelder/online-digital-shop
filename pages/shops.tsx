@@ -2,25 +2,35 @@ import { GetServerSideProps, NextPage } from "next";
 
 import Map from "components/map/Map";
 import MetaHead from "components/meta/MetaHead";
+import useLanguage from "hooks/useLanguage";
 
 interface Props {
   cities: City[];
 }
 
-const TITLE = "Магазины";
+const ShopsPage: NextPage<Props> = ({ cities }) => {
+  const { langVariant } = useLanguage();
+  const TITLE = langVariant("Магазини", "Магазины");
 
-const ShopsPage: NextPage<Props> = ({ cities }) => (
-  <div className="lg:max-w-full lg:mx-auto lg:px-12">
-    <MetaHead
-      title={TITLE}
-      keywords="Карта магазинов, местоположение магазинов, магазины New London"
-      description="Наши магазины расположены по всей территории Украины и способны осуществлять доставку"
-    />
+  return (
+    <div className="lg:max-w-full lg:mx-auto lg:px-12">
+      <MetaHead
+        title={TITLE}
+        keywords={langVariant(
+          "Карта магазинів, розташування магазинів, магазини New London",
+          "Карта магазинов, местоположение магазинов, магазины New London"
+        )}
+        description={langVariant(
+          "Наші магазини розташовані по всій території України та здатні здійснювати доставку",
+          "Наши магазины расположены по всей территории Украины и способны осуществлять доставку"
+        )}
+      />
 
-    <h1>{TITLE}</h1>
-    <Map cities={cities} />
-  </div>
-);
+      <h1>{TITLE}</h1>
+      <Map cities={cities} />
+    </div>
+  );
+};
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const citiesFetch = await fetch(
