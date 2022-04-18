@@ -9,6 +9,7 @@ import Tab from "components/header/Tab";
 import MobileDialog from "components/MobileDialog";
 import MobileSlideMenu from "components/MobileSlideMenu";
 import { CLOSE_MOBILE_SEARCH_DIALOG_EVENT_NAME } from "constants/header";
+import useLanguage from "hooks/useLanguage";
 import ArrowIcon from "public/img/arrow.svg";
 import BurgerIcon from "public/img/burger.svg";
 import CrossIcon from "public/img/cross.svg";
@@ -32,6 +33,11 @@ type MenuActions = "close" | "open-menu" | "open-sub-menu";
 
 type MenuAction = { type: MenuActions };
 
+interface Props {
+  categories: Category[];
+  isLoading: boolean;
+}
+
 function menuReducer(state: MenuState, action: MenuAction) {
   switch (action.type) {
     case "close":
@@ -45,28 +51,27 @@ function menuReducer(state: MenuState, action: MenuAction) {
   }
 }
 
-const functionalPages = [
-  { name: "На главную", link: "/" },
-  { name: "Корзина", link: "/cart" }
-];
-
-const staticPages = [
-  { name: "Доставка и оплата", link: "/shipping" },
-  { name: "Гарантия", link: "/guarantee" },
-  { name: "Магазины", link: "/shops" }
-];
-
-interface Props {
-  categories: Category[];
-  isLoading: boolean;
-}
-
 const MobileMenu: FC<Props> = ({ categories, isLoading }) => {
+  const { langVariant, changeLanguage } = useLanguage();
   const [menuState, dispatch] = useReducer(menuReducer, DEFAULT_MENU_STATE);
   const [navState, setNavState] = useState(false);
   const [isSerachOpened, setIsSearchOpened] = useState(false);
   const [chosenCategoryIndex, setChosenCategoryIndex] = useState(0);
   const tabIndex = menuState === 1 ? 0 : -1;
+
+  const functionalPages = [
+    { name: langVariant("На головну", "На главную"), link: "/" },
+    { name: langVariant("Кошик", "Корзина"), link: "/cart" }
+  ];
+
+  const staticPages = [
+    {
+      name: langVariant("Доставка і оплата", "Доставка и оплата"),
+      link: "/shipping"
+    },
+    { name: langVariant("Гарантія", "Гарантия"), link: "/guarantee" },
+    { name: langVariant("Магазини", "Магазины"), link: "/shops" }
+  ];
 
   const switchSubCategories = (categoryIndex: number) => {
     setChosenCategoryIndex(categoryIndex);
@@ -118,7 +123,9 @@ const MobileMenu: FC<Props> = ({ categories, isLoading }) => {
         <span className="w-3 mr-1">
           <MenuIcon />
         </span>
-        <span className="text-base">Каталог товаров</span>
+        <span className="text-base">
+          {langVariant("Каталог товарів", "Каталог товаров")}
+        </span>
       </button>
       <div className="flex-1" />
       <button className="text-grey-300 w-5 mr-4" onClick={openMobileSearch}>
@@ -137,14 +144,16 @@ const MobileMenu: FC<Props> = ({ categories, isLoading }) => {
               >
                 <CrossIcon />
               </button>
-              <span className="font-light text-lg">Каталог товаров</span>
+              <span className="font-light text-lg">
+                {langVariant("Каталог товарів", "Каталог товаров")}
+              </span>
             </div>
             <div className="flex flex-col overflow-y-auto h-full flex-1 relative">
               <Loading {...{ isLoading }} />
               {categories.length > 0 &&
                 categories.map((i, index) => (
                   <Tab
-                    name={i.name}
+                    name={langVariant(i.name.ua, i.name.ru)}
                     key={i._id}
                     onClick={tabClick(index)}
                     tabIndex={tabIndex}
@@ -176,17 +185,20 @@ const MobileMenu: FC<Props> = ({ categories, isLoading }) => {
             </div>
             <div className="flex divide-x divide-grey-300 border-t border-b border-grey-100 py-2 my-2">
               <button className="flex-1 text-left text-grey-400 text-sm pl-5">
-                Киев
+                {langVariant("Місто", "Город")}
               </button>
               <div className="group flex-1 relative">
                 <button className="text-left text-grey-400 text-sm px-5 flex items-center justify-between w-full">
-                  RU
+                  {langVariant("UA", "RU")}
                   <span className="w-1.5 transform rotate-90 group-hover:-rotate-90">
                     <ArrowIcon />
                   </span>
                 </button>
-                <button className="absolute w-full bg-white z-50 text-left text-grey-400 text-sm px-5 py-3 shadow-md top-8 hidden group-hover:block">
-                  UA
+                <button
+                  onClick={changeLanguage}
+                  className="absolute w-full bg-white z-50 text-left text-grey-400 text-sm px-5 py-3 shadow-md top-8 hidden group-hover:block"
+                >
+                  {langVariant("RU", "UA")}
                 </button>
               </div>
             </div>

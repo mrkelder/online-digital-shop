@@ -5,6 +5,7 @@ import MobileDialog from "components/MobileDialog";
 import { CLOSE_MOBILE_SEARCH_DIALOG_EVENT_NAME } from "constants/header";
 import clickOutside from "functions/clickOutside";
 import useDebounce from "hooks/useDebounce";
+import useLanguage from "hooks/useLanguage";
 import useMatchMedia from "hooks/useMatchMedia";
 import { SearchItemsResponse } from "types/api";
 
@@ -16,6 +17,7 @@ interface Props {
 
 const Search: FC<Props> = ({ isMobileSearchOpened }) => {
   const debounce = useDebounce();
+  const { langVariant } = useLanguage();
   const { isMobile, isLoaded } = useMatchMedia();
   const desktopSearchRef = useRef<HTMLDivElement>(null);
   const [itemsList, setItemsList] = useState<SearchItemsResponse>([]);
@@ -98,7 +100,7 @@ const Search: FC<Props> = ({ isMobileSearchOpened }) => {
           </div>
           {itemsNotFound && (
             <div className="bg-white border-b px-2 py-4 text-grey-600">
-              Результатов нет
+              {langVariant("Результатів немає", "Результатов нет")}
             </div>
           )}
         </MobileDialog>
@@ -109,7 +111,7 @@ const Search: FC<Props> = ({ isMobileSearchOpened }) => {
           <Input
             type="search"
             underline
-            placeholder="Поиск"
+            placeholder={langVariant("Пошук", "Поиск")}
             onChange={handleSerachChange}
             value={searchValue}
           />
@@ -129,7 +131,7 @@ const Search: FC<Props> = ({ isMobileSearchOpened }) => {
           )}
           {itemsNotFound && (
             <div className="bg-white absolute w-full box-shadow px-2 py-4 text-grey-600 z-30">
-              Результатов нет
+              {langVariant("Результатів немає", "Результатов нет")}
             </div>
           )}
         </div>

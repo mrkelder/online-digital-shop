@@ -9,8 +9,8 @@ import {
 const characteristicSchema = new Schema(
   {
     name: {
-      type: String,
-      default: "Characteristic"
+      ua: { type: String, default: "Характеристика" },
+      ru: { type: String, default: "Характеристика" }
     },
     subCategories: [
       {

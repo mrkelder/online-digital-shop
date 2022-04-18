@@ -14,6 +14,7 @@ import ContentWrapper from "components/ContentWrapper";
 import MailNotification from "components/MailNotification";
 import ItemPageMeta from "components/meta/ItemPageMeta";
 import Characteristics from "components/product-page/Characteristics";
+import useLanguage from "hooks/useLanguage";
 import useMatchMedia from "hooks/useMatchMedia";
 import ArrowIcon from "public/img/arrow.svg";
 import DefaultPhoto from "public/img/default-photo.jpg";
@@ -63,27 +64,30 @@ const swiperConf: SwiperOptions = {
   }
 };
 
-function createStars(starIcon: StaticImageData, quantity: number) {
-  return new Array(quantity).fill(0).map((_, index) => (
-    <div className="relative w-4 h-4" key={`astar-${index}`}>
-      <Image src={starIcon} alt="Положительная оценка" layout="fill" />
-    </div>
-  ));
-}
-
 const ProductPage: NextPage<Props> = ({ itemObj }) => {
+  const { langVariant } = useLanguage();
   const swiperInstance = useRef<null | Swiper>(null);
   const dispatch = useDispatch<Dispatch<CartActions>>();
-  const activeStars = createStars(activeStarIcon, itemObj.rating);
-  const inactiveStars = createStars(starIcon, MAXIMUM_RATING - itemObj.rating);
   const [chosenPhotoIndex, setChosenPhotoIndex] = useState(0);
   const { isMobile, isLoaded } = useMatchMedia();
   const items = useSelector<RootStore>(
     store => store.cart.items
   ) as CartState["items"];
   const buttonProperty = items.find(i => i._id === itemObj._id)
-    ? { color: "grey", text: "В корзине" }
-    : { color: "red", text: "Купить" };
+    ? { color: "grey", text: langVariant("В кошику", "В корзине") }
+    : { color: "red", text: langVariant("Купити", "Купить") };
+
+  function createStars(starIcon: StaticImageData, quantity: number) {
+    return new Array(quantity).fill(0).map((_, index) => (
+      <div className="relative w-4 h-4" key={`astar-${index}`}>
+        <Image
+          src={starIcon}
+          alt={langVariant("Позитивна оцінка", "Положительная оценка")}
+          layout="fill"
+        />
+      </div>
+    ));
+  }
 
   function switchCurrentSlideToFocused(index: number) {
     return () => {
@@ -114,9 +118,15 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
   const resolveDaySchedule = (schedule: Shop["schedule"]) => {
     const date = new Date();
     const timetable = schedule[date.getDay()];
-    if (timetable) return `Сегодня с ${timetable.from} по ${timetable.to}`;
-    else return "Сегодня ваходной";
+    if (timetable)
+      return `${langVariant("Сьогодні з", "Сегодня с")} ${
+        timetable.from
+      } ${langVariant("до", "по")} ${timetable.to}`;
+    else return langVariant("Сьогодні вхідний", "Сегодня ваходной");
   };
+
+  const activeStars = createStars(activeStarIcon, itemObj.rating);
+  const inactiveStars = createStars(starIcon, MAXIMUM_RATING - itemObj.rating);
 
   return (
     <>
@@ -129,11 +139,10 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
         }}
       >
         <a className="mt-1 flex items-center text-grey-400 text-sm lg:mx-0">
-          {" "}
           <span className="w-1 inline-block mr-1">
             <ArrowIcon />
-          </span>{" "}
-          На страницу подкатегорий
+          </span>
+          {langVariant("На сторінку підкатегорій", "На страницу подкатегорий")}
         </a>
       </Link>
       <h1 className="text-xl font-bold text-grey-400">{itemObj.name}</h1>
@@ -150,7 +159,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                 itemObj.photos[chosenPhotoIndex]
               }
               layout="fill"
-              alt="Фото товара"
+              alt={langVariant("Фото товару", "Фото товара")}
               objectFit="contain"
               objectPosition="50%"
               priority
@@ -185,14 +194,14 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                           height={isMobile ? undefined : 64}
                           objectFit="contain"
                           objectPosition="center"
-                          alt="Фото товара"
+                          alt={langVariant("Фото товару", "Фото товара")}
                           priority
                         />
                       ) : (
                         <Image
                           layout="fill"
                           src={DefaultPhoto}
-                          alt="Фото товара"
+                          alt={langVariant("Фото товару", "Фото товара")}
                           objectFit="cover"
                           objectPosition="50%"
                           priority
@@ -242,24 +251,29 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
                 : "inline" + " mt-1 text-grey-300 lg:mx-0"
             }
           >
-            Нет в наличии
+            {langVariant("Немає в наявності", "Нет в наличии")}
           </b>
           <hr className="hidden mt-2 lg:block" />
           <h2 className="text-base font-regular mt-2 text-grey-650 lg:text-lg">
-            Ключевые особенности
+            {langVariant("Ключові особливості", "Ключевые особенности")}
           </h2>
           <table className={styles["table"]}>
             <tbody>
               {itemObj.key_characteristics.length === 0 && (
                 <p className="text-sm text-grey-300 italic">
-                  Ключевых характеристик пока нет
+                  {langVariant(
+                    "Ключових характеристик поки що немає",
+                    "Ключевых характеристик пока нет"
+                  )}
                 </p>
               )}
               {itemObj.key_characteristics
                 .map(index => itemObj.characteristics[index])
                 .map(({ c, values }, index) => (
                   <tr key={`c_${index}`}>
-                    <th className={styles["th-name"]}>{c.name}</th>
+                    <th className={styles["th-name"]}>
+                      {langVariant(c.name.ua, c.name.ru)}
+                    </th>
                     <th className={styles["th-value"]}>
                       {DTO.mongodbCharacteristicValueToString(c.values, values)}
                     </th>
@@ -272,11 +286,14 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
             href="#all-characteristics"
             className="text-sm underline font-regular mt-2 mb-10 text-grey-650 lg:hidden"
           >
-            Показать все характеристики
+            {langVariant(
+              "Показати всі характеристики",
+              "Показать все характеристики"
+            )}
           </a>
           <div className="my-3 lg:my-1">
             <h2 className="text-grey-650 font-regular text-lg mb-1 flex items-center lg:text-lg lg:mb-2">
-              Доступные магазины{" "}
+              {langVariant("Доступні магазини", "Доступные магазины")}
               <span className="inline-block w-2.5 ml-1 text-red">
                 <LocationIcon />
               </span>
@@ -284,7 +301,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
             {itemObj.available_in.map((i, index) => (
               <div key={`city_${index}`} className="flex flex-col mb-2 lg:mb-3">
                 <address className="text-grey-650 text-xs mb-0.5">
-                  {i.name}
+                  {langVariant(i.name.ua, i.name.ru)}
                 </address>
                 <span className="text-xs text-grey-300 underline">
                   {resolveDaySchedule(i.schedule)}
@@ -293,7 +310,10 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
             ))}
           </div>
           <div className="lg:hidden">
-            <ContentWrapper text="Описание" position="first">
+            <ContentWrapper
+              text={langVariant("Опис", "Описание")}
+              position="first"
+            >
               <p className="text-base my-2 mx-3 text-grey-600">
                 {itemObj.description}
               </p>
@@ -310,7 +330,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
         </div>
       </div>
       <div className="hidden bg-white mt-10 p-4 mb-2 lg:block">
-        <h2>Описание</h2>
+        <h2>{langVariant("Опис", "Описание")}</h2>
         <p className="text-base text-grey-600 mt-1">{itemObj.description}</p>
       </div>
       <div className="hidden bg-white p-4 mb-2 lg:block">
@@ -328,6 +348,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
       process.env.NEXT_PUBLIC_HOSTNAME + "/api/getItem/" + context.params?.id
     );
     const itemObj: Item = await itemFetch.json();
+
     return {
       props: { itemObj }
     };

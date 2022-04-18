@@ -2,6 +2,7 @@ import { FC } from "react";
 
 import Image from "next/image";
 
+import useLanguage from "hooks/useLanguage";
 import ArrowIcon from "public/img/arrow.svg";
 
 interface Props {
@@ -23,7 +24,9 @@ const Tab: FC<Props> = ({
   tabIndex,
   icon
 }) => {
+  const { langVariant } = useLanguage();
   const background = focused ? "bg-grey-75" : "bg-white focus:bg-grey-75";
+
   return (
     <button
       className={
@@ -38,7 +41,7 @@ const Tab: FC<Props> = ({
           <Image
             src={process.env.NEXT_PUBLIC_STATIC_HOST + icon}
             layout="fill"
-            alt="Иконка"
+            alt={langVariant("Іконка", "Иконка")}
             objectFit="contain"
             objectPosition="50%"
           />

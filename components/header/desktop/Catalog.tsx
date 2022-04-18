@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import Tab from "components/header/Tab";
 import { CLOSE_CATALOG_EVENT_NAME } from "constants/header";
 import clickOutside from "functions/clickOutside";
+import useLanguage from "hooks/useLanguage";
 
 import SubCategory from "./SubCategory";
 
@@ -14,6 +15,7 @@ interface Props {
 }
 
 const Catalog: FC<Props> = ({ isOpened, categories }) => {
+  const { langVariant } = useLanguage();
   const display = isOpened ? "flex" : "hidden";
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -72,7 +74,7 @@ const Catalog: FC<Props> = ({ isOpened, categories }) => {
             categories.map((i, index) => (
               <Tab
                 key={i._id}
-                name={i.name}
+                name={langVariant(i.name.ua, i.name.ru)}
                 onMouseEnter={chooseCategory(index)}
                 onClick={navigateToCategoryPage(i._id as string)}
                 focused={index === chosenCategoryIndex}

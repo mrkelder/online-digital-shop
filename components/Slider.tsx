@@ -4,8 +4,13 @@ import { Autoplay, Pagination } from "swiper";
 import { Swiper, SwiperProps, SwiperSlide } from "swiper/react";
 
 import Picture from "components/Picture";
+import useLanguage from "hooks/useLanguage";
 import "swiper/css/pagination";
 import "swiper/css";
+
+interface Props {
+  slides: ReadonlyArray<{ mobile: string; desktop: string }>;
+}
 
 const swiperParams: SwiperProps = {
   slidesPerView: 1,
@@ -14,9 +19,8 @@ const swiperParams: SwiperProps = {
   pagination: { clickable: true }
 };
 
-const Slider: FC<{
-  slides: ReadonlyArray<{ mobile: string; desktop: string }>;
-}> = ({ slides }) => {
+const Slider: FC<Props> = ({ slides }) => {
+  const { langVariant } = useLanguage();
   const errorMessageStyle = slides.length === 0 ? "block" : "hidden";
 
   return (
@@ -30,7 +34,7 @@ const Slider: FC<{
               <Picture
                 image1x={process.env.NEXT_PUBLIC_STATIC_HOST + i.mobile}
                 image2x={process.env.NEXT_PUBLIC_STATIC_HOST + i.desktop}
-                alt="Баннер"
+                alt={langVariant("Банер", "Баннер")}
               />
             </SwiperSlide>
           ))}
