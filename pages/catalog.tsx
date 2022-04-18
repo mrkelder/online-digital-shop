@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { GetServerSideProps, NextPage } from "next";
-import { NextRouter, useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 import Button from "components/Button";
 import Filters from "components/catalog-page/Filters";
