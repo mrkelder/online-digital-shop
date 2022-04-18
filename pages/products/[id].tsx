@@ -74,7 +74,7 @@ const ProductPage: NextPage<Props> = ({ itemObj }) => {
     store => store.cart.items
   ) as CartState["items"];
   const buttonProperty = items.find(i => i._id === itemObj._id)
-    ? { color: "grey", text: langVariant("В кошик", "В корзине") }
+    ? { color: "grey", text: langVariant("В кошику", "В корзине") }
     : { color: "red", text: langVariant("Купити", "Купить") };
 
   function createStars(starIcon: StaticImageData, quantity: number) {
